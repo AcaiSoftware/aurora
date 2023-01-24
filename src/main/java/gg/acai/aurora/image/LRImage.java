@@ -37,22 +37,6 @@ public class LRImage implements Image {
         }
 
         return ASCIIGraph.fromSeries(ys).plot();
-
-        /*
-        for (int y = 10; y >= -10; y--) {
-            StringBuilder line = new StringBuilder();
-            for (int x = -10; x <= 10; x++) {
-                double yCalc = slope * x + intercept;
-                int yRounded = (int) Math.round(yCalc);
-                if (yRounded == y) {
-                    line.append("*");
-                } else {
-                    line.append(" ");
-                }
-            }
-            System.out.println(line);
-        }
-         */
     }
 
     @Override
