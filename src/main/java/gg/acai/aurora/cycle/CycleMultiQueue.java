@@ -41,9 +41,7 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public boolean contains(Object o) {
         for (Set<E> set : remaining.values()) {
-            if (set.contains(o)) {
-                return true;
-            }
+            if (set.contains(o)) return true;
         }
         return false;
     }
@@ -98,9 +96,7 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public boolean remove(Object o) {
         for (Set<E> set : remaining.values()) {
-            if (set.remove(o)) {
-                return true;
-            }
+            if (set.remove(o)) return true;
         }
         return false;
     }
@@ -118,9 +114,7 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
-            if (!contains(o)) {
-                return false;
-            }
+            if (!contains(o)) return false;
         }
         return true;
     }
@@ -128,9 +122,7 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public boolean addAll(Collection<? extends E> c) {
         for (Set<E> set : remaining.values()) {
-            if (set.addAll(c)) {
-                return true;
-            }
+            if (set.addAll(c)) return true;
         }
         return false;
     }
@@ -138,18 +130,16 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean rem = false;
-        for (Object o : c) {
+        for (Object o : c)
             rem |= remove(o);
-        }
         return rem;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean rem = false;
-        for (Set<E> set : remaining.values()) {
+        for (Set<E> set : remaining.values())
             rem |= set.retainAll(c);
-        }
         return rem;
     }
 
@@ -166,7 +156,11 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
 
     @Override
     public E remove() {
-        return remaining.values().iterator().next().iterator().next();
+        return remaining.values()
+                .iterator()
+                .next()
+                .iterator()
+                .next();
     }
 
     @Override
@@ -186,9 +180,8 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public E peek() {
         for (Set<E> set : remaining.values()) {
-            if (!set.isEmpty()) {
+            if (!set.isEmpty())
                 return set.iterator().next();
-            }
         }
         return null;
     }
