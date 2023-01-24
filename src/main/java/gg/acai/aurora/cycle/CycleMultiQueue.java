@@ -31,7 +31,6 @@ public class CycleMultiQueue<E> implements Queue<E>, AutoCloseable {
     @Override
     public int size() {
         return remaining.size();
-
     }
 
     @Override
