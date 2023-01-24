@@ -55,6 +55,10 @@ public final class LR implements Performer {
         return new Double[]{m, b, min, max, median, rSquared};
     };
 
+    public static Function<Vec2D, Double[]> LRF() {
+        return LR;
+    }
+
     /**
      * Perform the linear regression calculation on a given Vec2D object and returns a LRResult object
      *
