@@ -1,0 +1,18 @@
+package gg.acai.aurora;
+
+import gg.acai.aurora.image.Image;
+
+/**
+ * @author Clouke
+ * @since 24.01.2023 14:45
+ * © Acava - All Rights Reserved
+ */
+@FunctionalInterface
+public interface Graph {
+
+    /**
+     * @return Returns a new graph of the data
+     */
+    Image toImage();
+
+}
