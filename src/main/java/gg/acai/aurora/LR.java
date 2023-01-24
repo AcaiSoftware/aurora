@@ -32,8 +32,10 @@ public final class LR implements Performer {
             sx2 += x[i] * x[i];
             sxy += x[i] * y[i];
         }
-        double m = (num * sxy - sx * sy) / (num * sx2 - sx * sx);
-        double b = (sy - m * sx) / num;
+        double ybar = sy / num;
+
+        double slope = (num * sxy - sx * sy) / (num * sx2 - sx * sx);
+        double intercept = (sy - slope * sx) / num;
 
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
@@ -41,18 +43,21 @@ public final class LR implements Performer {
             if (d < min) min = d;
             if (d > max) max = d;
         }
-
         double median = (min + max) / 2;
-        double rSquared = 0;
-        for (int i = 0; i < num; i++) {
-            double yHat = m * x[i] + b;
-            double yMinusYHat = y[i] - yHat;
-            double yMinusYHatSquared = yMinusYHat * yMinusYHat;
-            rSquared += yMinusYHatSquared;
-        }
-        rSquared /= num;
 
-        return new Double[]{m, b, min, max, median, rSquared};
+        double yybar = 0.0;
+        for (int i = 0; i < num; i++)
+            yybar += (y[i] - ybar) * (y[i] - ybar);
+
+        double ssr = 0.0;
+        for (double v : x) {
+            double fit = slope * v + intercept;
+            ssr += (fit - ybar) * (fit - ybar);
+        }
+
+        double r2 = ssr / yybar;
+
+        return new Double[]{slope, intercept, min, max, median, r2};
     };
 
     public static Function<Vec2D, Double[]> LRF() {
