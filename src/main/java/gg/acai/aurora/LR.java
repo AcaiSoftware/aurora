@@ -56,7 +56,6 @@ public final class LR implements Performer {
         }
 
         double r2 = ssr / yybar;
-
         return new Double[]{slope, intercept, min, max, median, r2};
     };
 
