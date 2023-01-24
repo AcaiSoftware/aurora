@@ -2,6 +2,7 @@ package gg.acai.aurora;
 
 import gg.acai.aurora.image.Image;
 import gg.acai.aurora.image.LRImage;
+import gg.acai.aurora.image.LRPredictionImage;
 
 import java.util.function.Consumer;
 
@@ -99,6 +100,10 @@ public class LRResult implements Graph {
 
     public double predict(double x) {
         return slope * x + intercept;
+    }
+
+    public Image drawPredictionGraph(double prediction) {
+        return new LRPredictionImage(this, prediction);
     }
 
     /**
