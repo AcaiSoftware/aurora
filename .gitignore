@@ -97,6 +97,7 @@ $RECYCLE.BIN/
 
 target/
 Test.java
+TestModel.java
 
 pom.xml.tag
 pom.xml.releaseBackup
