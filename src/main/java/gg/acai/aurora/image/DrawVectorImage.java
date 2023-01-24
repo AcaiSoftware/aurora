@@ -43,18 +43,15 @@ public class DrawVectorImage implements Image {
                 boolean pointFound = false;
                 for (int k = 0; k < x.length; k++) {
                     if (Math.round(x[k] * xScale) == j && Math.round(y[k] * yScale) == i) {
-                        //System.out.print("*");
                         builder.append("*");
                         pointFound = true;
                         break;
                     }
                 }
                 if (!pointFound) {
-                    //System.out.print(" ");
                     builder.append(" ");
                 }
             }
-            //System.out.println();
             builder.append("\n");
         }
         return builder.toString();
