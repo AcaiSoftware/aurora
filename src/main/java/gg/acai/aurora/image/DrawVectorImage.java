@@ -48,9 +48,7 @@ public class DrawVectorImage implements Image {
                         break;
                     }
                 }
-                if (!pointFound) {
-                    builder.append(" ");
-                }
+                if (!pointFound) builder.append(" ");
             }
             builder.append("\n");
         }
