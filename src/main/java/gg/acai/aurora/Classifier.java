@@ -5,8 +5,4 @@ package gg.acai.aurora;
  * @since 24.01.2023 12:25
  * © Acava - All Rights Reserved
  */
-public interface Classifier {
-
-
-
-}
+public interface Classifier {}
