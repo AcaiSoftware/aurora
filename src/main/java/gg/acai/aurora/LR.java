@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 /**
  * @author Clouke
  * @since 24.01.2023 12:44
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 public final class LR implements Performer {
 

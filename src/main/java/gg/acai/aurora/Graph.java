@@ -5,7 +5,7 @@ import gg.acai.aurora.image.Image;
 /**
  * @author Clouke
  * @since 24.01.2023 14:45
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 @FunctionalInterface
 public interface Graph {

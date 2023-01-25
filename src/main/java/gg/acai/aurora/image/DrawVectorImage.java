@@ -5,7 +5,7 @@ import gg.acai.aurora.Vec2D;
 /**
  * @author Clouke
  * @since 24.01.2023 13:28
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 public class DrawVectorImage implements Image {
 

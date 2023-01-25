@@ -6,7 +6,7 @@ import gg.acai.aurora.LRResult;
 /**
  * @author Clouke
  * @since 24.01.2023 13:52
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 public class LRImage implements Image {
 

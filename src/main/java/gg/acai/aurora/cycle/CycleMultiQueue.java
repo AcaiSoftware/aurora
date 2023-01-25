@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * @author Clouke
  * @since 24.01.2023 15:02
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  * Idea behind this; Works as if a node has a queue of data to process on multiple process provider ids
  * @param <E> - The type of data to be processed in multiple queues of types
  */

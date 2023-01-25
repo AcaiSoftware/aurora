@@ -10,7 +10,7 @@ import gg.acai.aurora.image.Image;
  *
  * @author Clouke
  * @since 24.01.2023 12:45
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 public class Vec2D implements Graph {
 

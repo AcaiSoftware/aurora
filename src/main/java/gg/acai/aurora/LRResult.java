@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 /**
  * @author Clouke
  * @since 24.01.2023 13:18
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 public class LRResult implements Graph {
 

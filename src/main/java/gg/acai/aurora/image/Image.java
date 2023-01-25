@@ -3,7 +3,7 @@ package gg.acai.aurora.image;
 /**
  * @author Clouke
  * @since 24.01.2023 13:41
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 @FunctionalInterface
 public interface Image {

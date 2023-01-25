@@ -6,7 +6,7 @@ import gg.acai.aurora.TestModel;
 /**
  * @author Clouke
  * @since 24.01.2023 19:32
- * © Acava - All Rights Reserved
+ * © Acai - All Rights Reserved
  */
 public class LRPredictionImage implements Image {
 
