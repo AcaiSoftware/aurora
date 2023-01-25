@@ -108,6 +108,33 @@ public class Vec2D implements Graph {
         }
     }
 
+    public double dot(Vec2D other) {
+        if (x.length != other.x.length || y.length != other.y.length)
+            throw new IllegalArgumentException("Vectors must have the same length");
+        double sum = 0;
+        for (int i = 0; i < x.length; i++) {
+            sum += x[i] * other.x[i];
+            sum += y[i] * other.y[i];
+        }
+        return sum;
+    }
+
+    public double normalize() {
+        if (x.length != y.length)
+            throw new IllegalArgumentException("x and y arrays must be of equal length");
+
+        double max = 0;
+        for (int i = 0; i < x.length; i++) {
+            double length = Math.sqrt(x[i] * x[i] + y[i] * y[i]);
+            if (length > max) max = length;
+        }
+        for (int i = 0; i < x.length; i++) {
+            x[i] /= max;
+            y[i] /= max;
+        }
+        return max;
+    }
+
     /**
      * Passes the x and y coordinates to the given image object.
      * @return the image object
