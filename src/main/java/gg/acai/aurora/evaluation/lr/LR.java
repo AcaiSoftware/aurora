@@ -1,7 +1,8 @@
-package gg.acai.aurora;
+package gg.acai.aurora.evaluation.lr;
 
-import gg.acai.aurora.performer.Performer;
-import gg.acai.aurora.performer.PerformerContext;
+import gg.acai.aurora.Vec2D;
+import gg.acai.aurora.evaluation.Evaluator;
+import gg.acai.aurora.evaluation.EvaluationContext;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
  * @since 24.01.2023 12:44
  * © Acai - All Rights Reserved
  */
-public final class LR implements Performer {
+public final class LR implements Evaluator {
 
     /**
      * Function that performs the linear regression calculation on a given Vec2D
@@ -79,7 +80,7 @@ public final class LR implements Performer {
     }
 
     @Override
-    public PerformerContext getContext() {
-        return PerformerContext.LINEAR_REGRESSION;
+    public EvaluationContext getContext() {
+        return EvaluationContext.LINEAR_REGRESSION;
     }
 }
