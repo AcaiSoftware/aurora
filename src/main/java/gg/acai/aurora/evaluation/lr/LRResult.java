@@ -1,5 +1,6 @@
-package gg.acai.aurora;
+package gg.acai.aurora.evaluation.lr;
 
+import gg.acai.aurora.Graph;
 import gg.acai.aurora.image.Image;
 import gg.acai.aurora.image.LRImage;
 import gg.acai.aurora.image.LRPredictionImage;
