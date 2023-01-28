@@ -41,6 +41,6 @@ public class LRImage implements Image {
 
     @Override
     public String description() {
-        return "Draws a linear regression line graph of the data.";
+        return "Draws a linear regression graph of the data.";
     }
 }
