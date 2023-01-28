@@ -1,6 +1,6 @@
 package gg.acai.aurora.image;
 
-import gg.acai.aurora.LRResult;
+import gg.acai.aurora.evaluation.lr.LRResult;
 import gg.acai.aurora.TestModel;
 
 /**
