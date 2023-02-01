@@ -7,5 +7,5 @@ package gg.acai.aurora.evaluation;
  */
 public enum EvaluationContext {
     LINEAR_REGRESSION,
-    EUCLIDEAN_DISTANCE
+    NEURAL_NETWORK
 }
