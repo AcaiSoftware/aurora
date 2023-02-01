@@ -3,6 +3,8 @@ package gg.acai.aurora;
 import gg.acai.aurora.image.DrawVectorImage;
 import gg.acai.aurora.image.Image;
 
+import java.util.List;
+
 /**
  * Vec2D is a 2 dimensional Vector, holding two arrays of doubles, x and y.
  * The class provides methods for accessing individual elements of the arrays, as well as methods for reversing the order of the elements in the arrays.
@@ -27,6 +29,10 @@ public class Vec2D implements Graph {
         return new Vec2D(x, y);
     }
 
+    public static Vec2D of(List<Double> x, List<Double> y) {
+        return new Vec2D(x, y);
+    }
+
     /**
      * Constructor for creating an instance of the class with the given x and y coordinates.
      * @param x the x-coordinates of the vector
@@ -35,6 +41,11 @@ public class Vec2D implements Graph {
     public Vec2D(double[] x, double[] y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Vec2D(List<Double> x, List<Double> y) {
+        this.x = x.stream().mapToDouble(Double::doubleValue).toArray();
+        this.y = y.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
     /**
