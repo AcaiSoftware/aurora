@@ -3,7 +3,7 @@ package gg.acai.aurora;
 import gg.acai.aurora.image.DrawVectorImage;
 import gg.acai.aurora.image.Image;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Vec2D is a 2 dimensional Vector, holding two arrays of doubles, x and y.
@@ -29,7 +29,7 @@ public class Vec2D implements Graph {
         return new Vec2D(x, y);
     }
 
-    public static Vec2D of(List<Double> x, List<Double> y) {
+    public static Vec2D of(Collection<Double> x, Collection<Double> y) {
         return new Vec2D(x, y);
     }
 
@@ -43,7 +43,7 @@ public class Vec2D implements Graph {
         this.y = y;
     }
 
-    public Vec2D(List<Double> x, List<Double> y) {
+    public Vec2D(Collection<Double> x, Collection<Double> y) {
         this.x = x.stream().mapToDouble(Double::doubleValue).toArray();
         this.y = y.stream().mapToDouble(Double::doubleValue).toArray();
     }
