@@ -44,9 +44,10 @@ public final class LR implements Evaluator {
             if (d < min) min = d;
             if (d > max) max = d;
         }
-        double median = (min + max) / 2;
 
+        double median = (min + max) / 2;
         double yybar = 0.0;
+
         for (int i = 0; i < num; i++)
             yybar += (y[i] - ybar) * (y[i] - ybar);
 
