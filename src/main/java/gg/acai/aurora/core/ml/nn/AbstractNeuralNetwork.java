@@ -1,4 +1,4 @@
-package gg.acai.aurora.evaluation.nn;
+package gg.acai.aurora.core.ml.nn;
 
 import gg.acai.aurora.QRMath;
 
@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class AbstractNeuralNetwork {
 
     protected String model;
+
     protected final double[][] weights_input_to_hidden;
     protected final double[][] weights_hidden_to_output;
     protected final double[] biases_hidden;
