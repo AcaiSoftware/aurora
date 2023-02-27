@@ -8,7 +8,7 @@ import gg.acai.aurora.image.Image;
  * © Acai - All Rights Reserved
  */
 @FunctionalInterface
-public interface Graph {
+public interface Display {
 
     /**
      * @return Returns a new graph of the data
