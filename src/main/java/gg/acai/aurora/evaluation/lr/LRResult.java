@@ -1,6 +1,6 @@
 package gg.acai.aurora.evaluation.lr;
 
-import gg.acai.aurora.Graph;
+import gg.acai.aurora.Display;
 import gg.acai.aurora.image.Image;
 import gg.acai.aurora.image.LRImage;
 import gg.acai.aurora.image.LRPredictionImage;
@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * @since 24.01.2023 13:18
  * © Acai - All Rights Reserved
  */
-public class LRResult implements Graph {
+public class LRResult implements Display {
 
     /**
      * The slope of the best-fit line
