@@ -1,5 +1,7 @@
 package gg.acai.aurora.image;
 
+import gg.acai.aurora.Aurora;
+
 /**
  * @author Clouke
  * @since 24.01.2023 13:41
@@ -12,7 +14,7 @@ public interface Image {
 
     default void print() {
         String graph = draw();
-        System.out.println(graph);
+        Aurora.log(graph);
     }
 
     default String description() {
