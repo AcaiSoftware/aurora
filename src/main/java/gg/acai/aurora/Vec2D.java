@@ -14,7 +14,7 @@ import java.util.Collection;
  * @since 24.01.2023 12:45
  * © Acai - All Rights Reserved
  */
-public class Vec2D implements Graph {
+public class Vec2D implements Display {
 
     private final double[] x;
     private final double[] y;
