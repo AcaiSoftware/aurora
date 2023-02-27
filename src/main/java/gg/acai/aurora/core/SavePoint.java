@@ -5,6 +5,7 @@ package gg.acai.aurora.core;
  * @since 27.02.2023 18:49
  * © Aurora - All Rights Reserved
  */
+@FunctionalInterface
 public interface SavePoint {
     void save();
 }
