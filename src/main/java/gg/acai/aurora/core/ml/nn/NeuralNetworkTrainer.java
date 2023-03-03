@@ -140,7 +140,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
     this.callback = callback;
   }
 
-  public TrainingStats getStats() {
+  public TrainingStats stats() {
     if (!completed) {
       throw new IllegalStateException("Training is not completed yet!");
     }
@@ -221,7 +221,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
       callback.onCallback(this);
 
     if (shouldPrintStats) {
-      TrainingStats stats = getStats();
+      TrainingStats stats = stats();
       stats.print();
     }
   }
@@ -250,17 +250,17 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
     String bullet = Aurora.BULLET;
 
     System.out.println(b + "WARNING: The training process has been stopped due to training stagnation" + r + " (The model got stuck and is not improving).\n" +
-            b + "Options:" + r + "\n" +
-            bullet + "Try re-training the model\n" +
-            bullet + "Change the learning rate (current: " + learningRate + ")\n" +
-            bullet + "Change the model architecture" + "\n" +
-            bullet + "Change the training data" + "\n" +
-            bullet + "Change the training parameters (epochs, etc.)" + "\n"
+      b + "Options:" + r + "\n" +
+      bullet + "Try re-training the model\n" +
+      bullet + "Change the learning rate (current: " + learningRate + ")\n" +
+      bullet + "Change the model architecture" + "\n" +
+      bullet + "Change the training data" + "\n" +
+      bullet + "Change the training parameters (epochs, etc.)" + "\n"
     );
 
     System.out.println(
-            "Buffered for " + cycle.current() + "/" + maxCycleBuffer + " cycles. If you wish to disable this feature, " +
-            "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1"
+      "Buffered for " + cycle.current() + "/" + maxCycleBuffer + " cycles. If you wish to disable this feature, " +
+      "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1"
     );
   }
 }
