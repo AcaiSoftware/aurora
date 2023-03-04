@@ -1,4 +1,4 @@
-package gg.acai.aurora.core.ml.lr;
+package gg.acai.aurora.ml.lr;
 
 import gg.acai.aurora.Display;
 import gg.acai.aurora.image.Image;
