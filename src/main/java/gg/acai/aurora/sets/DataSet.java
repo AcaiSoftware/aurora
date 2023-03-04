@@ -1,7 +1,7 @@
-package gg.acai.aurora.core.sets;
+package gg.acai.aurora.sets;
 
 import gg.acai.acava.io.Closeable;
-import gg.acai.aurora.core.Serializer;
+import gg.acai.aurora.Serializer;
 
 /**
  * @author Clouke
