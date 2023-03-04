@@ -1,4 +1,4 @@
-package gg.acai.aurora.core.ml.nn;
+package gg.acai.aurora.ml.nn;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
