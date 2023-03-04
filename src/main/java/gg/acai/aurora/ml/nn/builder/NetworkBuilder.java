@@ -1,6 +1,6 @@
-package gg.acai.aurora.core.ml.nn.builder;
+package gg.acai.aurora.ml.nn.builder;
 
-import gg.acai.aurora.core.ml.nn.TrainingBuilder;
+import gg.acai.aurora.ml.nn.TrainingBuilder;
 
 /**
  * @author Clouke
