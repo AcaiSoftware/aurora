@@ -7,15 +7,16 @@ package gg.acai.aurora.core.sets;
  */
 public class ImmutableDataSet extends AbstractDataSet {
 
-    public ImmutableDataSet(double[][] inputs, double[][] targets) {
-        super();
-        super.inputs = inputs;
-        super.targets = targets;
-    }
+  public ImmutableDataSet(double[][] inputs, double[][] targets) {
+    super();
+    super.inputs = inputs;
+    super.targets = targets;
+  }
 
-    @Override @Deprecated
-    public void add(double[][] input, double[][] target) {
-        throw new UnsupportedOperationException("Cannot add to an immutable data set");
-    }
+  @Override
+  @Deprecated
+  public void add(double[][] input, double[][] target) {
+    throw new UnsupportedOperationException("Cannot add to an immutable data set");
+  }
 
 }
