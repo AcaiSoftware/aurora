@@ -7,35 +7,30 @@ package gg.acai.aurora.core.sets;
  */
 public class FixedSizeDataSet extends AbstractDataSet {
 
-    private final int maxSize;
+  private final int maxSize;
 
-    public FixedSizeDataSet(int maxSize) {
-        if (maxSize < 1)
-            throw new IllegalArgumentException("Max size must be greater than 0");
+  public FixedSizeDataSet(int maxSize) {
+    super.inputs = new double[maxSize][];
+    super.targets = new double[maxSize][];
+    this.maxSize = maxSize;
+  }
 
-        this.maxSize = maxSize;
+  @Override
+  public void add(double[][] input, double[][] target) {
+    if (size() >= maxSize) {
+      // evict the oldest data
+      System.arraycopy(super.inputs, input.length, super.inputs, 0, super.inputs.length - input.length);
+      System.arraycopy(super.targets, target.length, super.targets, 0, super.targets.length - target.length);
+
+    } else {
+      // add to the end
+      System.arraycopy(input, 0, super.inputs, size(), input.length);
+      System.arraycopy(target, 0, super.targets, size(), target.length);
     }
+  }
 
-    @Override
-    public void add(double[][] input, double[][] target) {
-        if (size() >= maxSize) {
-            inputs = shift(super.inputs, input);
-            targets = shift(super.targets, target);
-            return;
-        }
-
-        super.add(input, target);
-    }
-
-    private double[][] shift(double[][] array, double[][] toAdd) {
-        double[][] newArray = new double[array.length][];
-        System.arraycopy(array, toAdd.length, newArray, 0, array.length - toAdd.length);
-        System.arraycopy(toAdd, 0, newArray, array.length - toAdd.length, toAdd.length);
-        return newArray;
-    }
-
-    public int maxSize() {
-        return maxSize;
-    }
+  public int maxSize() {
+    return maxSize;
+  }
 
 }
