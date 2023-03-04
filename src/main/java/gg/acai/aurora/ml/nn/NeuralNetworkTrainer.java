@@ -1,16 +1,16 @@
-package gg.acai.aurora.core.ml.nn;
+package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.Requisites;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.acava.io.Callback;
 import gg.acai.aurora.Aurora;
 import gg.acai.aurora.QRMath;
-import gg.acai.aurora.core.CycleBuffer;
-import gg.acai.aurora.core.TimeEstimator;
-import gg.acai.aurora.core.ml.TrainingTimeEstimator;
-import gg.acai.aurora.core.event.ModelTrainEvent;
-import gg.acai.aurora.core.event.TrainingTickEvent;
-import gg.acai.aurora.core.ml.nn.builder.NetworkBuilder;
+import gg.acai.aurora.CycleBuffer;
+import gg.acai.aurora.TimeEstimator;
+import gg.acai.aurora.ml.TrainingTimeEstimator;
+import gg.acai.aurora.event.ModelTrainEvent;
+import gg.acai.aurora.event.TrainingTickEvent;
+import gg.acai.aurora.ml.nn.builder.NetworkBuilder;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
