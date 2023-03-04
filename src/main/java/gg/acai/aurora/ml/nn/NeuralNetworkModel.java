@@ -1,10 +1,10 @@
-package gg.acai.aurora.core.ml.nn;
+package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.io.Closeable;
 import gg.acai.aurora.Aurora;
 import gg.acai.aurora.GsonSpec;
-import gg.acai.aurora.core.SavePoint;
-import gg.acai.aurora.core.Serializer;
+import gg.acai.aurora.SavePoint;
+import gg.acai.aurora.Serializer;
 
 import java.io.File;
 import java.io.FileWriter;
