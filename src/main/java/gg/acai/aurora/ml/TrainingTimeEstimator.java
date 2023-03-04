@@ -1,6 +1,6 @@
-package gg.acai.aurora.core.ml;
+package gg.acai.aurora.ml;
 
-import gg.acai.aurora.core.TimeEstimator;
+import gg.acai.aurora.TimeEstimator;
 
 /**
  * @author Clouke
