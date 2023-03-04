@@ -10,11 +10,17 @@ import gg.acai.aurora.core.Serializer;
  */
 public interface DataSet extends Serializer, Closeable {
 
+    static DataSetBuilder builder() {
+        return new DataSetBuilder();
+    }
+
     double[][] inputs();
 
     double[][] targets();
 
     void add(double[][] input, double[][] target);
+
+    void add(double[][] input, boolean[][] target);
 
     @Override
     void close();
