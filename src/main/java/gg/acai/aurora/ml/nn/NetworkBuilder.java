@@ -1,5 +1,7 @@
-package gg.acai.aurora.ml.nn.builder;
+package gg.acai.aurora.ml.nn;
 
+import gg.acai.aurora.ml.nn.AbstractNetworkBuilder;
+import gg.acai.aurora.ml.nn.ModelBuilder;
 import gg.acai.aurora.ml.nn.TrainingBuilder;
 
 /**
