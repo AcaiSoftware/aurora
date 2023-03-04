@@ -1,4 +1,4 @@
-package gg.acai.aurora.core.sets;
+package gg.acai.aurora.sets;
 
 import gg.acai.acava.Requisites;
 import gg.acai.aurora.GsonSpec;
