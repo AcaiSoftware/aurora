@@ -1,4 +1,4 @@
-package gg.acai.aurora.core.ml.nn.builder;
+package gg.acai.aurora.ml.nn.builder;
 
 import gg.acai.acava.Requisites;
 import gg.acai.acava.collect.Mutability;
@@ -6,8 +6,8 @@ import gg.acai.acava.commons.graph.Graph;
 import gg.acai.aurora.Aurora;
 import gg.acai.aurora.Compatibility;
 import gg.acai.aurora.GsonSpec;
-import gg.acai.aurora.core.ml.nn.AbstractNeuralNetwork;
-import gg.acai.aurora.core.ml.nn.NeuralNetworkModel;
+import gg.acai.aurora.ml.nn.AbstractNeuralNetwork;
+import gg.acai.aurora.ml.nn.NeuralNetworkModel;
 import gg.acai.aurora.exception.IncompatibleModelException;
 import gg.acai.aurora.exception.InvalidModelException;
 
