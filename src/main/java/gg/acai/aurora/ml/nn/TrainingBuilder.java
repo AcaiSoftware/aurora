@@ -1,8 +1,8 @@
-package gg.acai.aurora.core.ml.nn;
+package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.Requisites;
 import gg.acai.acava.commons.graph.Graph;
-import gg.acai.aurora.core.event.ModelTrainEvent;
+import gg.acai.aurora.event.ModelTrainEvent;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
