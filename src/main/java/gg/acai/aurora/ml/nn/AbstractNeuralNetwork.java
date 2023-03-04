@@ -4,6 +4,8 @@ import gg.acai.acava.annotated.Optionally;
 import gg.acai.acava.scheduler.AsyncPlaceholder;
 import gg.acai.acava.scheduler.Schedulers;
 import gg.acai.aurora.QRMath;
+import gg.acai.aurora.ml.ML;
+import gg.acai.aurora.ml.MLContext;
 
 import java.util.Optional;
 import java.util.Random;
@@ -15,7 +17,7 @@ import java.util.stream.Stream;
  * @since 15.02.2023 06:38
  * © Acava - All Rights Reserved
  */
-public abstract class AbstractNeuralNetwork {
+public abstract class AbstractNeuralNetwork implements ML {
 
   @Optionally
   protected String model;
@@ -97,4 +99,8 @@ public abstract class AbstractNeuralNetwork {
     return Stream.of(inputs).map(this::predict);
   }
 
+  @Override
+  public MLContext getContext() {
+    return MLContext.NEURAL_NETWORK;
+  }
 }
