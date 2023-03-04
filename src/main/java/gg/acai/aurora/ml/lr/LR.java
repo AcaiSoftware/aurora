@@ -1,8 +1,8 @@
-package gg.acai.aurora.core.ml.lr;
+package gg.acai.aurora.ml.lr;
 
 import gg.acai.aurora.Vec2D;
-import gg.acai.aurora.core.ml.ML;
-import gg.acai.aurora.core.ml.MLContext;
+import gg.acai.aurora.ml.ML;
+import gg.acai.aurora.ml.MLContext;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
