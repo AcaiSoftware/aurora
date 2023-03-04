@@ -10,7 +10,6 @@ import gg.acai.aurora.TimeEstimator;
 import gg.acai.aurora.ml.TrainingTimeEstimator;
 import gg.acai.aurora.event.ModelTrainEvent;
 import gg.acai.aurora.event.TrainingTickEvent;
-import gg.acai.aurora.ml.nn.builder.NetworkBuilder;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
