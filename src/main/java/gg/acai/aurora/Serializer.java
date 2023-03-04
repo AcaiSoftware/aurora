@@ -1,4 +1,4 @@
-package gg.acai.aurora.core;
+package gg.acai.aurora;
 
 /**
  * @author Clouke
