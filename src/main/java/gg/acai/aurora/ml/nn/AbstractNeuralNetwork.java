@@ -1,4 +1,4 @@
-package gg.acai.aurora.core.ml.nn;
+package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.annotated.Optionally;
 import gg.acai.acava.scheduler.AsyncPlaceholder;
