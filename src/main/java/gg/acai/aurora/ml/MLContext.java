@@ -6,6 +6,7 @@ package gg.acai.aurora.ml;
  * © Acai - All Rights Reserved
  */
 public enum MLContext {
-    LINEAR_REGRESSION,
-    NEURAL_NETWORK
+  LINEAR_REGRESSION,
+  NEURAL_NETWORK,
+  NATURAL_LANGUAGE_PROCESSING,
 }
