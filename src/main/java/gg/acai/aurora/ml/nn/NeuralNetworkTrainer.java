@@ -8,8 +8,8 @@ import gg.acai.aurora.QRMath;
 import gg.acai.aurora.CycleBuffer;
 import gg.acai.aurora.TimeEstimator;
 import gg.acai.aurora.ml.TrainingTimeEstimator;
-import gg.acai.aurora.event.ModelTrainEvent;
-import gg.acai.aurora.event.TrainingTickEvent;
+import gg.acai.aurora.ml.nn.extension.ModelTrainEvent;
+import gg.acai.aurora.ml.nn.extension.TrainingTickEvent;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
