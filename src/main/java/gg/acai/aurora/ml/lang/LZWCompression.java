@@ -8,7 +8,7 @@ import java.util.zip.Inflater;
  * @since 06.03.2023 21:47
  * © Aurora - All Rights Reserved
  */
-public class StringCompression {
+public class LZWCompression {
 
   public static byte[] compress(String text) {
     byte[] input = text.getBytes();
