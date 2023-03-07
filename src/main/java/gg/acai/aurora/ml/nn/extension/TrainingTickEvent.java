@@ -1,4 +1,4 @@
-package gg.acai.aurora.event;
+package gg.acai.aurora.ml.nn.extension;
 
 import javax.annotation.Nullable;
 
