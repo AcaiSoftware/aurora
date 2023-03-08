@@ -144,7 +144,7 @@ public class ClusterClassification implements QRCluster<String> {
   public String serialize() {
     StringBuilder serialized = new StringBuilder();
     for (Group<String> group : groups) {
-      serialized.append(group);
+      serialized.append(group).append("\n");
     }
     return serialized.toString();
   }
