@@ -139,13 +139,14 @@ public class Group<T> implements Iterable<T>, Predicate<T> {
   public String toString() {
     StringBuilder builder = new StringBuilder();
     builder.append("Group{");
+    T highest = getHighestDegreeNode();
+    if (highest != null) {
+      builder.append("degreeNode=").append(highest).append(", ");
+    }
     for (T t : content) {
-      builder.append(t.toString()).append(", ");
+      builder.append(t).append(", ");
     }
-    T highestDegreeNode = getHighestDegreeNode();
-    if (highestDegreeNode != null) {
-      builder.append("selNode: ").append(highestDegreeNode).append(", ");
-    }
+    builder.delete(builder.length() - 2, builder.length());
     builder.append("}");
     return builder.toString();
   }
