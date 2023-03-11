@@ -15,8 +15,8 @@ public class EventStreamResponse {
   private final Callback<String> reader;
   private final long latency;
 
-  public EventStreamResponse(Callback<String> write, long latency) {
-    this.reader = write;
+  public EventStreamResponse(Callback<String> reader, long latency) {
+    this.reader = reader;
     this.latency = latency;
   }
 
