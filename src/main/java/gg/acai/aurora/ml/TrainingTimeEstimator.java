@@ -1,5 +1,7 @@
 package gg.acai.aurora.ml;
 
+import gg.acai.acava.collect.pairs.ImmutablePair;
+import gg.acai.acava.collect.pairs.Pairs;
 import gg.acai.aurora.TimeEstimator;
 
 /**
@@ -35,4 +37,12 @@ public final class TrainingTimeEstimator implements TimeEstimator<Integer> {
 
         return Math.round(average * 10.0) / 10.0;
     }
+
+  @Override
+  public Pairs<Double, Time> estimateWith(Integer integer) {
+    double estimated = estimated(integer);
+    if (estimated < 60) return new ImmutablePair<>(estimated, Time.SECONDS);
+    else if (estimated < 3600) return new ImmutablePair<>(estimated / 60.0, Time.MINUTES);
+    return new ImmutablePair<>(estimated / 3600.0, Time.HOURS);
+  }
 }
