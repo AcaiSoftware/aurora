@@ -60,7 +60,7 @@ public class TrainingStats {
     String acc = accuracy == -1 ? "Missing Accuracy Test" : accuracy + "%";
     double seconds = time / 1000.0D;
     int estimationDiff = (int) Math.abs(seconds - accurateEstimate);
-    String s = ANSI_BOLD + "Training Stats:" + "\n" + RESET +
+    String s = "\n" + ANSI_BOLD + "Training Stats:" + "\n" + RESET +
             "• Accuracy: " + acc + "\n" +
             "• Time: " + seconds + "s" + "\n" +
             "• Accurate Estimate Time: " + accurateEstimate + "s" + "\n" +
