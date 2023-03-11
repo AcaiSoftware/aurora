@@ -7,6 +7,7 @@ import gg.acai.aurora.QRMath;
 import gg.acai.aurora.ml.ML;
 import gg.acai.aurora.ml.MLContext;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -102,5 +103,16 @@ public abstract class AbstractNeuralNetwork implements ML {
   @Override
   public MLContext getContext() {
     return MLContext.NEURAL_NETWORK;
+  }
+
+  @Override
+  public String toString() {
+    return "AbstractNeuralNetwork{" +
+      "model='" + model + '\'' +
+      ", weights_input_to_hidden=" + Arrays.deepToString(weights_input_to_hidden) +
+      ", weights_hidden_to_output=" + Arrays.deepToString(weights_hidden_to_output) +
+      ", biases_hidden=" + Arrays.toString(biases_hidden) +
+      ", biases_output=" + Arrays.toString(biases_output) +
+      '}';
   }
 }
