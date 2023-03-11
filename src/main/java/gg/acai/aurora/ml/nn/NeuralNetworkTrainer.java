@@ -1,6 +1,7 @@
 package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.Requisites;
+import gg.acai.acava.collect.pairs.Pairs;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.acava.io.Callback;
 import gg.acai.aurora.Aurora;
@@ -202,7 +203,9 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
       lastAccuracy = accuracy;
       String b = Aurora.ANSI_BOLD;
       String r = Aurora.RESET;
-      System.out.println(progress + " ─ " + b + pct + "/100%" + r + " ─ Time Left: " + b + estimation + "s" + r + (accuracy != -1.0 ? " ─ Accuracy: " + b + accuracy + "%" : ""));
+      Pairs<Double, TimeEstimator.Time> estim = estimator.estimateWith(currentEpoch);
+      double roundedEstimation = QRMath.round(estim.left());
+      System.out.print("\r" + progress + " ─ " + b + pct + "/100%" + r + " ─ Time Left: " + b + roundedEstimation + estim.right().plural() + r + (accuracy != -1.0 ? " ─ Accuracy: " + b + accuracy + "%" : ""));
     }
     lastPercentage = (int) percent;
     return toReturn;
@@ -262,4 +265,5 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
       "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1"
     );
   }
+
 }
