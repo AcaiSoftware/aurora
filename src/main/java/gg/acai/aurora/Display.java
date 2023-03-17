@@ -10,9 +10,9 @@ import gg.acai.aurora.image.Image;
 @FunctionalInterface
 public interface Display {
 
-    /**
-     * @return Returns a new graph of the data
-     */
-    Image toImage();
+  /**
+   * @return Returns a new graph of the data
+   */
+  Image toImage();
 
 }
