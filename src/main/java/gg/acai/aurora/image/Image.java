@@ -10,15 +10,15 @@ import gg.acai.aurora.Aurora;
 @FunctionalInterface
 public interface Image {
 
-    String draw();
+  String draw();
 
-    default void print() {
-        String graph = draw();
-        Aurora.log(graph);
-    }
+  default void print() {
+    String graph = draw();
+    Aurora.log(graph);
+  }
 
-    default String description() {
-        return "Visualisation of a data graph";
-    }
+  default String description() {
+    return "Visualisation of a data graph";
+  }
 
 }
