@@ -2,6 +2,7 @@ package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.Requisites;
 import gg.acai.acava.commons.graph.Graph;
+import gg.acai.aurora.ml.ActivationFunction;
 import gg.acai.aurora.ml.nn.extension.ModelTrainEvent;
 
 import java.util.concurrent.ExecutorService;
@@ -12,7 +13,7 @@ import java.util.concurrent.Executors;
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
-public class TrainingBuilder {
+public class TrainingBuilder { // TODO: Rename to factory
 
   protected boolean shouldPrintTrainingProgress = true;
   protected boolean shouldPrintStats = true;
@@ -20,6 +21,7 @@ public class TrainingBuilder {
 
   protected int epochs = -1;
   protected double learningRate = -1.0;
+
 
   protected int inputLayerSize;
   protected int outputLayerSize;
@@ -29,6 +31,7 @@ public class TrainingBuilder {
   protected double[] accuracyTest;
   protected int maxCycleBuffer = 30;
   protected Graph<Double> graph;
+  protected ActivationFunction activationFunction = ActivationFunction.SIGMOID;
 
   public TrainingBuilder inputLayerSize(int inputLayerSize) {
     this.inputLayerSize = inputLayerSize;
@@ -52,6 +55,11 @@ public class TrainingBuilder {
 
   public TrainingBuilder learningRate(double learningRate) {
     this.learningRate = learningRate;
+    return this;
+  }
+
+  public TrainingBuilder activationFunction(ActivationFunction activationFunction) {
+    this.activationFunction = activationFunction;
     return this;
   }
 
