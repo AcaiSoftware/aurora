@@ -7,6 +7,6 @@ package gg.acai.aurora.ml;
  */
 public interface ML {
 
-    MLContext getContext();
+  MLContext getContext();
 
 }

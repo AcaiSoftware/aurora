@@ -12,31 +12,31 @@ import gg.acai.aurora.TimeEstimator;
  */
 public final class TrainingTimeEstimator implements TimeEstimator<Integer> {
 
-    private long last = -1;
-    private final int maxEpochs;
-    private double average = -1.0;
+  private long last = -1;
+  private final int maxEpochs;
+  private double average = -1.0;
 
-    public TrainingTimeEstimator(int maxEpochs) {
-        this.maxEpochs = maxEpochs;
-    }
+  public TrainingTimeEstimator(int maxEpochs) {
+    this.maxEpochs = maxEpochs;
+  }
 
-    @Override
-    public void tick() {
-        last = System.nanoTime();
-    }
+  @Override
+  public void tick() {
+    last = System.nanoTime();
+  }
 
-    @Override
-    public double estimated(Integer currentEpoch) {
-        if (last == -1) return 0.0;
+  @Override
+  public double estimated(Integer currentEpoch) {
+    if (last == -1) return 0.0;
 
-        long now = System.nanoTime();
-        long diff = now - last;
+    long now = System.nanoTime();
+    long diff = now - last;
 
-        double latest = (diff * (maxEpochs - currentEpoch)) / 1e9;
-        average = average == -1.0 ? latest : average * (5.0 / 6.0) + latest * (1.0 / 6.0);
+    double latest = (diff * (maxEpochs - currentEpoch)) / 1e9;
+    average = average == -1.0 ? latest : average * (5.0 / 6.0) + latest * (1.0 / 6.0);
 
-        return Math.round(average * 10.0) / 10.0;
-    }
+    return Math.round(average * 10.0) / 10.0;
+  }
 
   @Override
   public Pairs<Double, Time> estimateWith(Integer integer) {
