@@ -22,7 +22,7 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
 
   public NeuralNetworkModel(String s, double[][] weights_input_to_hidden, double[][] weights_hidden_to_output, double[] biases_hidden, double[] biases_output) {
     super(weights_input_to_hidden, weights_hidden_to_output, biases_hidden, biases_output);
-    super.model = s;
+    super.name = s;
   }
 
   public NeuralNetworkModel(double[][] weights_input_to_hidden, double[][] weights_hidden_to_output, double[] biases_hidden, double[] biases_output) {
@@ -39,7 +39,7 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
   }
 
   public NeuralNetworkModel setModel(String model) {
-    super.model = model;
+    super.name = model;
     return this;
   }
 
@@ -66,8 +66,9 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
   @Override
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public void save() {
+    long start = System.currentTimeMillis();
     String path = saveDirectory == null ? "" : saveDirectory + File.separator;
-    String name = path + (model == null || model.isEmpty() ? "model" : model) + ".json";
+    String name = path + (this.name == null || this.name.isEmpty() ? "model" : this.name) + ".json";
     File file = new File(name);
     if (!file.exists()) {
       try {
@@ -85,7 +86,7 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      System.out.println("Saved model to " + name);
+      System.out.println("Saved model to " + name + " in " + (System.currentTimeMillis() - start) + "ms");
     }
   }
 
