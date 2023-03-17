@@ -11,7 +11,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 
 /**
- * @author Bendik Brissach
+ * @author Clouke
  * @since 11.03.2023 22:37
  * © Aurora - All Rights Reserved
  */
