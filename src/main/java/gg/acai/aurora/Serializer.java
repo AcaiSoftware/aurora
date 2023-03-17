@@ -7,7 +7,5 @@ package gg.acai.aurora;
  */
 @FunctionalInterface
 public interface Serializer {
-
-    String serialize();
-
+  String serialize();
 }
