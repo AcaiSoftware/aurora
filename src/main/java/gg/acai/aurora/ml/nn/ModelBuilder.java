@@ -20,7 +20,7 @@ import java.net.URL;
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
-public class ModelBuilder {
+public class ModelBuilder { // TODO: Rename to factory
 
   private NeuralNetworkModel model;
   private boolean imported;
@@ -33,6 +33,7 @@ public class ModelBuilder {
   public ModelBuilder from(AbstractNeuralNetwork nn) {
     ensureImport();
     this.model = new NeuralNetworkModel(nn.wrap());
+    this.model.setActivationFunction(nn.getActivationFunction());
     mark();
     return this;
   }
