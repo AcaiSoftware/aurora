@@ -5,7 +5,7 @@ package gg.acai.aurora.ml.nn;
  * @since 02.03.2023 13:09
  * © Aurora - All Rights Reserved
  */
-public final class NetworkBuilder { // TODO: Rename to factory
+public final class NeuralNetworkFactory {
 
   public static TrainingBuilder training() {
     return new TrainingBuilder();

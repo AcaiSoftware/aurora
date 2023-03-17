@@ -2,7 +2,7 @@ package gg.acai.aurora.ml.nlp;
 
 import gg.acai.acava.collect.Mutability;
 import gg.acai.acava.commons.graph.Graph;
-import gg.acai.aurora.ml.nn.NetworkBuilder;
+import gg.acai.aurora.ml.nn.NeuralNetworkFactory;
 import gg.acai.aurora.ml.nn.NeuralNetworkTrainer;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class Chatbot {
     double learningRate = 0.1; // 0.1
     int epochs = 1000;
 
-    network = NetworkBuilder.training()
+    network = NeuralNetworkFactory.training()
             .inputLayerSize(inputSize)
             .hiddenLayerSize(hiddenSize)
             .outputLayerSize(outputSize)

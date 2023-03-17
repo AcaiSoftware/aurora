@@ -22,7 +22,7 @@ public final class HyperparameterTuning {
   public HyperparameterTuning(double[][] inputs, double[][] targets, List<Tune> tunes) {
     this.tunes = tunes;
     this.generate = tune -> {
-      NeuralNetworkTrainer trainer = NetworkBuilder.training()
+      NeuralNetworkTrainer trainer = NeuralNetworkFactory.training()
         .learningRate(tune.learningRate())
         .epochs(tune.epochs())
         .inputLayerSize(inputs[0].length)
