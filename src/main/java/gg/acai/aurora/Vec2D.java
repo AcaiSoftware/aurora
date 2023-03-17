@@ -16,143 +16,151 @@ import java.util.Collection;
  */
 public class Vec2D implements Display {
 
-    private final double[] x;
-    private final double[] y;
+  private final double[] x;
+  private final double[] y;
 
-    /**
-     * Factory method for creating instances of the class.
-     * @param x the x-coordinates of the vector
-     * @param y the y-coordinates of the vector
-     * @return an instance of Vec2D with the given x and y coordinates
-     */
-    public static Vec2D of(double[] x, double[] y) {
-        return new Vec2D(x, y);
+  /**
+   * Factory method for creating instances of the class.
+   *
+   * @param x the x-coordinates of the vector
+   * @param y the y-coordinates of the vector
+   * @return an instance of Vec2D with the given x and y coordinates
+   */
+  public static Vec2D of(double[] x, double[] y) {
+    return new Vec2D(x, y);
+  }
+
+  public static Vec2D of(Collection<Double> x, Collection<Double> y) {
+    return new Vec2D(x, y);
+  }
+
+  /**
+   * Constructor for creating an instance of the class with the given x and y coordinates.
+   *
+   * @param x the x-coordinates of the vector
+   * @param y the y-coordinates of the vector
+   */
+  public Vec2D(double[] x, double[] y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public Vec2D(Collection<Double> x, Collection<Double> y) {
+    this.x = x.stream().mapToDouble(Double::doubleValue).toArray();
+    this.y = y.stream().mapToDouble(Double::doubleValue).toArray();
+  }
+
+  /**
+   * Returns the x-coordinate at the specified row.
+   *
+   * @param row the row index
+   * @return the x-coordinate at the specified row
+   * @throws IllegalArgumentException if the row index is out of bounds
+   */
+  public double x_row(int row) {
+    if (row < 0 || row >= x.length)
+      throw new IllegalArgumentException("Row out of bounds, row: " + row + ", length: " + x.length);
+    return x[row];
+  }
+
+  /**
+   * Returns the y-coordinate at the specified row.
+   *
+   * @param row the row index
+   * @return the y-coordinate at the specified row
+   * @throws IllegalArgumentException if the row index is out of bounds
+   */
+  public double y_row(int row) {
+    if (row < 0 || row >= y.length)
+      throw new IllegalArgumentException("Row out of bounds, row: " + row + ", length: " + y.length);
+    return y[row];
+  }
+
+  /**
+   * Returns the x-coordinates array.
+   *
+   * @return the x-coordinates array
+   */
+  public double[] x() {
+    return x;
+  }
+
+  /**
+   * Returns the y-coordinates array.
+   *
+   * @return the y-coordinates array
+   */
+  public double[] y() {
+    return y;
+  }
+
+  /**
+   * Creates and returns a copy of the Vec2D object.
+   *
+   * @return a copy of the Vec2D object
+   */
+  @SuppressWarnings("all")
+  public Vec2D clone() {
+    return new Vec2D(x.clone(), y.clone());
+  }
+
+  /**
+   * Reverses the order of the elements in the x-coordinates array.
+   */
+  public void revertX() {
+    for (int i = 0; i < x.length / 2; i++) {
+      double temp = x[i];
+      x[i] = x[x.length - i - 1];
+      x[x.length - i - 1] = temp;
     }
+  }
 
-    public static Vec2D of(Collection<Double> x, Collection<Double> y) {
-        return new Vec2D(x, y);
+  /**
+   * Reverses the order of the elements in the y-coordinates array.
+   */
+  public void revertY() {
+    for (int i = 0; i < y.length / 2; i++) {
+      double temp = y[i];
+      y[i] = y[y.length - i - 1];
+      y[y.length - i - 1] = temp;
     }
+  }
 
-    /**
-     * Constructor for creating an instance of the class with the given x and y coordinates.
-     * @param x the x-coordinates of the vector
-     * @param y the y-coordinates of the vector
-     */
-    public Vec2D(double[] x, double[] y) {
-        this.x = x;
-        this.y = y;
+  public double dot(Vec2D other) {
+    if (x.length != other.x.length || y.length != other.y.length)
+      throw new IllegalArgumentException("Vectors must have the same length");
+    double sum = 0;
+    for (int i = 0; i < x.length; i++) {
+      sum += x[i] * other.x[i];
+      sum += y[i] * other.y[i];
     }
+    return sum;
+  }
 
-    public Vec2D(Collection<Double> x, Collection<Double> y) {
-        this.x = x.stream().mapToDouble(Double::doubleValue).toArray();
-        this.y = y.stream().mapToDouble(Double::doubleValue).toArray();
+  public double normalize() {
+    if (x.length != y.length)
+      throw new IllegalArgumentException("x and y arrays must be of equal length");
+
+    double max = 0;
+    for (int i = 0; i < x.length; i++) {
+      double length = Math.sqrt(x[i] * x[i] + y[i] * y[i]);
+      if (length > max) max = length;
     }
-
-    /**
-     * Returns the x-coordinate at the specified row.
-     * @param row the row index
-     * @return the x-coordinate at the specified row
-     * @throws IllegalArgumentException if the row index is out of bounds
-     */
-    public double x_row(int row) {
-        if (row < 0 || row >= x.length)
-            throw new IllegalArgumentException("Row out of bounds, row: " + row + ", length: " + x.length);
-        return x[row];
+    for (int i = 0; i < x.length; i++) {
+      x[i] /= max;
+      y[i] /= max;
     }
+    return max;
+  }
 
-    /**
-     * Returns the y-coordinate at the specified row.
-     * @param row the row index
-     * @return the y-coordinate at the specified row
-     * @throws IllegalArgumentException if the row index is out of bounds
-     */
-    public double y_row(int row) {
-        if (row < 0 || row >= y.length)
-            throw new IllegalArgumentException("Row out of bounds, row: " + row + ", length: " + y.length);
-        return y[row];
-    }
-
-    /**
-     * Returns the x-coordinates array.
-     * @return the x-coordinates array
-     */
-    public double[] x() {
-        return x;
-    }
-
-    /**
-     * Returns the y-coordinates array.
-     * @return the y-coordinates array
-     */
-    public double[] y() {
-        return y;
-    }
-
-    /**
-     * Creates and returns a copy of the Vec2D object.
-     * @return a copy of the Vec2D object
-     */
-    @SuppressWarnings("all")
-    public Vec2D clone() {
-        return new Vec2D(x.clone(), y.clone());
-    }
-
-    /**
-     * Reverses the order of the elements in the x-coordinates array.
-     */
-    public void revertX() {
-        for (int i = 0; i < x.length / 2; i++) {
-            double temp = x[i];
-            x[i] = x[x.length - i - 1];
-            x[x.length - i - 1] = temp;
-        }
-    }
-
-    /**
-     * Reverses the order of the elements in the y-coordinates array.
-     */
-    public void revertY() {
-        for (int i = 0; i < y.length / 2; i++) {
-            double temp = y[i];
-            y[i] = y[y.length - i - 1];
-            y[y.length - i - 1] = temp;
-        }
-    }
-
-    public double dot(Vec2D other) {
-        if (x.length != other.x.length || y.length != other.y.length)
-            throw new IllegalArgumentException("Vectors must have the same length");
-        double sum = 0;
-        for (int i = 0; i < x.length; i++) {
-            sum += x[i] * other.x[i];
-            sum += y[i] * other.y[i];
-        }
-        return sum;
-    }
-
-    public double normalize() {
-        if (x.length != y.length)
-            throw new IllegalArgumentException("x and y arrays must be of equal length");
-
-        double max = 0;
-        for (int i = 0; i < x.length; i++) {
-            double length = Math.sqrt(x[i] * x[i] + y[i] * y[i]);
-            if (length > max) max = length;
-        }
-        for (int i = 0; i < x.length; i++) {
-            x[i] /= max;
-            y[i] /= max;
-        }
-        return max;
-    }
-
-    /**
-     * Passes the x and y coordinates to the given image object.
-     * @return the image object
-     */
-    @Override
-    public Image toImage() {
-        return new DrawVectorImage(this);
-    }
+  /**
+   * Passes the x and y coordinates to the given image object.
+   *
+   * @return the image object
+   */
+  @Override
+  public Image toImage() {
+    return new DrawVectorImage(this);
+  }
 
 }
