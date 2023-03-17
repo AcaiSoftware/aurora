@@ -10,21 +10,21 @@ import gg.acai.aurora.Serializer;
  */
 public interface DataSet extends Serializer, Closeable {
 
-    static DataSetBuilder builder() {
-        return new DataSetBuilder();
-    }
+  static DataSetBuilder builder() {
+    return new DataSetBuilder();
+  }
 
-    double[][] inputs();
+  double[][] inputs();
 
-    double[][] targets();
+  double[][] targets();
 
-    void add(double[][] input, double[][] target);
+  void add(double[][] input, double[][] target);
 
-    void add(double[][] input, boolean[][] target);
+  void add(double[][] input, boolean[][] target);
 
-    @Override
-    void close();
+  @Override
+  void close();
 
-    int size();
+  int size();
 
 }
