@@ -29,12 +29,12 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
   private final TimeEstimator<Integer> estimator;
   private final boolean printTrainingProgress;
   private final boolean autoSave;
-  private final double[] accuracyTest;
   private final boolean shouldPrintStats;
   private final CycleBuffer cycle;
   private final int maxCycleBuffer;
   private final Graph<Double> graph;
   private Callback<NeuralNetworkTrainer> callback;
+  private double[] accuracyTest;
 
   private long start;
   private long tick;
@@ -46,6 +46,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
 
   public NeuralNetworkTrainer(@Nonnull TrainingBuilder builder) {
     super(builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
+    super.setActivationFunction(builder.activationFunction);
     this.epochs = builder.epochs;
     this.learningRate = builder.learningRate;
     this.thread = builder.thread;
@@ -61,8 +62,8 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
   }
 
   public void train(double[][] inputs, double[][] targets) {
-    if (inputs.length != targets.length)
-      throw new IllegalArgumentException("Inputs and targets must have the same length!");
+    if (inputs.length != targets.length) throw new IllegalArgumentException("Inputs and targets must have the same length!");
+    if (accuracyTest == null) accuracyTest = new double[]{targets[0][0]};
 
     Runnable task = () -> {
       start = System.currentTimeMillis();
@@ -77,7 +78,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
             for (int k = 0; k < inputs[i].length; k++) {
               hidden[j] += inputs[i][k] * weights_input_to_hidden[k][j];
             }
-            hidden[j] = QRMath.sigmoid(hidden[j]);
+            hidden[j] = activationFunction.apply(hidden[j]);
           }
           double[] output = new double[weights_hidden_to_output[0].length];
           for (int j = 0; j < output.length; j++) {
@@ -85,7 +86,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
             for (int k = 0; k < hidden.length; k++) {
               output[j] += hidden[k] * weights_hidden_to_output[k][j];
             }
-            output[j] = QRMath.sigmoid(output[j]);
+            output[j] = activationFunction.apply(output[j]);
           }
           // Compute error
           double[] error = new double[output.length];
@@ -95,7 +96,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
           // Perform backpropagation
           double[] delta2 = new double[output.length];
           for (int j = 0; j < output.length; j++) {
-            delta2[j] = error[j] * QRMath.sigmoidDerivative(output[j]);
+            delta2[j] = error[j] * activationFunction.derivative(output[j]);
           }
           double[] delta1 = new double[hidden.length];
           for (int j = 0; j < hidden.length; j++) {
@@ -103,7 +104,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
             for (int k = 0; k < output.length; k++) {
               sum += delta2[k] * weights_hidden_to_output[j][k];
             }
-            delta1[j] = sum * QRMath.sigmoidDerivative(hidden[j]);
+            delta1[j] = sum * activationFunction.derivative(hidden[j]);
           }
           // Update weights and biases
           for (int j = 0; j < weights_input_to_hidden[0].length; j++) {
