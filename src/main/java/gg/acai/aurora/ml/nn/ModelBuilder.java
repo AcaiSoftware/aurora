@@ -20,7 +20,7 @@ import java.net.URL;
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
-public class ModelBuilder { // TODO: Rename to factory
+public class ModelBuilder { // TODO: Rename to Loader
 
   private NeuralNetworkModel model;
   private boolean imported;
