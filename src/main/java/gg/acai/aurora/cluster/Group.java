@@ -2,9 +2,7 @@ package gg.acai.aurora.cluster;
 
 import gg.acai.aurora.ml.LevenshteinDistance;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -16,10 +14,12 @@ public class Group<T> implements Iterable<T>, Predicate<T> {
 
   private final T[] content;
   private final List<T> nodes;
+  private final Map<T, List<T>> intentNodes;
 
   public Group(T[] content) {
     this.content = content;
     this.nodes = new ArrayList<>();
+    this.intentNodes = new HashMap<>();
   }
 
   public T get(int index) {
@@ -48,6 +48,28 @@ public class Group<T> implements Iterable<T>, Predicate<T> {
     }
 
     return highest;
+  }
+
+  public List<T> getBestNodes(int amount, int distance) {
+    List<T> bestNodes = new ArrayList<>();
+    for (T t : nodes) {
+      if (bestNodes.size() >= amount) {
+        break;
+      }
+
+      boolean found = false;
+      for (T other : bestNodes) {
+        if (LevenshteinDistance.compute(t.toString(), other.toString()) <= distance) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        bestNodes.add(t);
+      }
+    }
+    return bestNodes;
   }
 
   public T getRandomNode() {
@@ -102,6 +124,43 @@ public class Group<T> implements Iterable<T>, Predicate<T> {
     return false;
   }
 
+  public void addIntentNode(T intent, T node) {
+    List<T> nodes = intentNodes.computeIfAbsent(intent, k -> new ArrayList<>());
+    nodes.add(node);
+  }
+
+  public T getHighestDegreeIntentNode(T intent) {
+    List<T> nodes = intentNodes.get(intent);
+    if (nodes == null) {
+      return null;
+    }
+
+    T highest = null;
+    int highestDegree = 0;
+    for (T t : nodes) {
+      int degree = 0;
+      for (T other : nodes) {
+        if (t.equals(other)) {
+          degree++;
+        }
+      }
+      if (degree > highestDegree) {
+        highest = t;
+        highestDegree = degree;
+      }
+    }
+
+    return highest;
+  }
+
+  public List<T> getIntentNodes(T intent) {
+    return intentNodes.get(intent);
+  }
+
+  public Map<T, List<T>> getIntentNodes() {
+    return intentNodes;
+  }
+
   public List<T> getNodes() {
     return nodes;
   }
@@ -142,6 +201,9 @@ public class Group<T> implements Iterable<T>, Predicate<T> {
     T highest = getHighestDegreeNode();
     if (highest != null) {
       builder.append("degreeNode=").append(highest).append(", ");
+    }
+    if (intentNodes.size() > 0) {
+      builder.append("intentNodes=").append(intentNodes).append(", ");
     }
     for (T t : content) {
       builder.append(t).append(", ");
