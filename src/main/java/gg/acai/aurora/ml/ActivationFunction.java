@@ -1,8 +1,5 @@
 package gg.acai.aurora.ml;
 
-import com.google.gson.*;
-
-import java.lang.reflect.Type;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -10,14 +7,14 @@ import java.util.function.DoubleUnaryOperator;
  * @since 08.03.2023 22:19
  * © Aurora - All Rights Reserved
  */
-public final class ActivationFunction implements JsonSerializer<ActivationFunction>, JsonDeserializer<ActivationFunction> {
+public final class ActivationFunction {
 
-  public static final ActivationFunction LINEAR = new ActivationFunction("Linear", x -> x, x -> 1);
-  public static final ActivationFunction SIGMOID = new ActivationFunction("Sigmoid", x -> 1 / (1 + Math.exp(-x)), x -> x * (1 - x));
-  public static final ActivationFunction TANH = new ActivationFunction("Tanh", Math::tanh, x -> 1 - Math.pow(x, 2));
-  public static final ActivationFunction RELU = new ActivationFunction("ReLU", x -> Math.max(0, x), x -> x > 0 ? 1 : 0);
-  public static final ActivationFunction SOFTMAX = new ActivationFunction("Softmax", x -> 1 / (1 + Math.exp(-x)), x -> x * (1 - x));
-  public static final ActivationFunction SOFTPLUS = new ActivationFunction("Softplus", x -> Math.log(1 + Math.exp(x)), x -> 1 / (1 + Math.exp(-x)));
+  public static final ActivationFunction LINEAR = new ActivationFunction("linear", x -> x, x -> 1);
+  public static final ActivationFunction SIGMOID = new ActivationFunction("sigmoid", x -> 1 / (1 + Math.exp(-x)), x -> x * (1 - x));
+  public static final ActivationFunction TANH = new ActivationFunction("tanh", Math::tanh, x -> 1 - Math.pow(x, 2));
+  public static final ActivationFunction RELU = new ActivationFunction("relu", x -> Math.max(0, x), x -> x > 0 ? 1 : 0);
+  public static final ActivationFunction SOFTMAX = new ActivationFunction("softmax", x -> 1 / (1 + Math.exp(-x)), x -> x * (1 - x));
+  public static final ActivationFunction SOFTPLUS = new ActivationFunction("softplus", x -> Math.log(1 + Math.exp(x)), x -> 1 / (1 + Math.exp(-x)));
 
   private final String name;
   private final DoubleUnaryOperator function;
@@ -61,13 +58,4 @@ public final class ActivationFunction implements JsonSerializer<ActivationFuncti
     }
   }
 
-  @Override
-  public JsonElement serialize(ActivationFunction activationFunction, Type type, JsonSerializationContext jsonSerializationContext) {
-    return jsonSerializationContext.serialize(activationFunction.name);
-  }
-
-  @Override
-  public ActivationFunction deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-    return of(jsonElement.getAsString());
-  }
 }
