@@ -2,10 +2,8 @@ package gg.acai.aurora;
 
 import gg.acai.acava.io.logging.Logger;
 import gg.acai.acava.io.logging.StandardLogger;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -30,14 +28,24 @@ public class Aurora {
 
   public static String version() {
     if (VERSION == null) {
-      MavenXpp3Reader reader = new MavenXpp3Reader();
-      Model model;
-      try {
-        model = reader.read(new FileReader("pom.xml"));
-      } catch (IOException | XmlPullParserException e) {
-        throw new RuntimeException(e);
+      String version = null;
+      try (BufferedReader reader = new BufferedReader(new FileReader("pom.xml"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          if (line.contains("<version>")) {
+            version = line
+              .replace("<version>", "")
+              .replace("</version>", "")
+              .trim();
+              break;
+          }
+        }
+      } catch (IOException e) {
+        log("Failed to read version from pom.xml: " + e.getMessage());
       }
-      VERSION = model::getVersion;
+
+      final String result = version;
+      VERSION = version == null ? () -> "N/A" : () -> result;
     }
 
     return VERSION.get();
