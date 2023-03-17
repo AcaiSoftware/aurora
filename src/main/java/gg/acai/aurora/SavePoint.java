@@ -7,5 +7,5 @@ package gg.acai.aurora;
  */
 @FunctionalInterface
 public interface SavePoint {
-    void save();
+  void save();
 }
