@@ -120,6 +120,7 @@ public abstract class AbstractNeuralNetwork implements ML {
   public String toString() {
     return "AbstractNeuralNetwork{" +
       "model='" + name + '\'' +
+      ", activationFunction=" + activationFunction +
       ", weights_input_to_hidden=" + Arrays.deepToString(weights_input_to_hidden) +
       ", weights_hidden_to_output=" + Arrays.deepToString(weights_hidden_to_output) +
       ", biases_hidden=" + Arrays.toString(biases_hidden) +
