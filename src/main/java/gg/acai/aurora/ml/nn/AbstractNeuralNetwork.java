@@ -1,9 +1,10 @@
 package gg.acai.aurora.ml.nn;
 
+import com.google.gson.annotations.SerializedName;
 import gg.acai.acava.annotated.Optionally;
 import gg.acai.acava.scheduler.AsyncPlaceholder;
 import gg.acai.acava.scheduler.Schedulers;
-import gg.acai.aurora.QRMath;
+import gg.acai.aurora.ml.ActivationFunction;
 import gg.acai.aurora.ml.ML;
 import gg.acai.aurora.ml.MLContext;
 
@@ -21,7 +22,9 @@ import java.util.stream.Stream;
 public abstract class AbstractNeuralNetwork implements ML {
 
   @Optionally
-  protected String model;
+  protected String name;
+  @SerializedName("activation")
+  protected ActivationFunction activationFunction;
 
   protected final double[][] weights_input_to_hidden;
   protected final double[][] weights_hidden_to_output;
@@ -59,12 +62,20 @@ public abstract class AbstractNeuralNetwork implements ML {
     this.biases_output = biases_output;
   }
 
-  public Optional<String> getModel() {
-    return Optional.ofNullable(model);
+  public Optional<String> getName() {
+    return Optional.ofNullable(name);
+  }
+
+  public void setActivationFunction(ActivationFunction activationFunction) {
+    this.activationFunction = activationFunction;
+  }
+
+  public ActivationFunction getActivationFunction() {
+    return activationFunction;
   }
 
   public void setModelName(String model) {
-    this.model = model;
+    this.name = model;
   }
 
   public double[] predict(double[] input) {
@@ -74,7 +85,7 @@ public abstract class AbstractNeuralNetwork implements ML {
       for (int j = 0; j < input.length; j++) {
         hidden[i] += input[j] * weights_input_to_hidden[j][i];
       }
-      hidden[i] = QRMath.sigmoid(hidden[i]);
+      hidden[i] = activationFunction.apply(hidden[i]);
     }
     double[] output = new double[weights_hidden_to_output[0].length];
     for (int i = 0; i < output.length; i++) {
@@ -82,7 +93,7 @@ public abstract class AbstractNeuralNetwork implements ML {
       for (int j = 0; j < hidden.length; j++) {
         output[i] += hidden[j] * weights_hidden_to_output[j][i];
       }
-      output[i] = QRMath.sigmoid(output[i]);
+      output[i] = activationFunction.apply(output[i]);
     }
 
     return output;
@@ -108,7 +119,7 @@ public abstract class AbstractNeuralNetwork implements ML {
   @Override
   public String toString() {
     return "AbstractNeuralNetwork{" +
-      "model='" + model + '\'' +
+      "model='" + name + '\'' +
       ", weights_input_to_hidden=" + Arrays.deepToString(weights_input_to_hidden) +
       ", weights_hidden_to_output=" + Arrays.deepToString(weights_hidden_to_output) +
       ", biases_hidden=" + Arrays.toString(biases_hidden) +
