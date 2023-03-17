@@ -28,7 +28,7 @@ public class Aurora {
 
   public static String version() {
     if (VERSION == null) {
-      String version = "N/A";
+      String version = "ignore";
       try (BufferedReader reader = new BufferedReader(new FileReader("pom.xml"))) {
         String line;
         while ((line = reader.readLine()) != null) {
