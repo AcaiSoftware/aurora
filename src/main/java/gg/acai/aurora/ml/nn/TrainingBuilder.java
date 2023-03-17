@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
-public class TrainingBuilder { // TODO: Rename to factory
+public class TrainingBuilder {
 
   protected boolean shouldPrintTrainingProgress = true;
   protected boolean shouldPrintStats = true;
