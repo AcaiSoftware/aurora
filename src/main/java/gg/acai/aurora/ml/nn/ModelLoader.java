@@ -20,7 +20,7 @@ import java.net.URL;
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
-public class ModelBuilder { // TODO: Rename to Loader
+public class ModelLoader {
 
   private NeuralNetworkModel model;
   private boolean imported;
@@ -30,7 +30,7 @@ public class ModelBuilder { // TODO: Rename to Loader
   private boolean ignoreVersionCheck;
   private Graph<Double> graph;
 
-  public ModelBuilder from(AbstractNeuralNetwork nn) {
+  public ModelLoader from(AbstractNeuralNetwork nn) {
     ensureImport();
     this.model = new NeuralNetworkModel(nn.wrap());
     this.model.setActivationFunction(nn.getActivationFunction());
@@ -38,7 +38,7 @@ public class ModelBuilder { // TODO: Rename to Loader
     return this;
   }
 
-  public ModelBuilder importWithJson(String json) {
+  public ModelLoader importWithJson(String json) {
     ensureImport();
     try {
       this.model = GsonSpec.standard().fromJson(json, NeuralNetworkModel.class);
@@ -49,11 +49,11 @@ public class ModelBuilder { // TODO: Rename to Loader
     return this;
   }
 
-  public ModelBuilder retrieveFromHttp(String url) {
+  public ModelLoader retrieveFromHttp(String url) {
     return retrieveFromHttp(url, null);
   }
 
-  public ModelBuilder retrieveFromHttp(String url, String auth) {
+  public ModelLoader retrieveFromHttp(String url, String auth) {
     ensureImport();
     HttpURLConnection connection = null;
     try {
@@ -78,14 +78,14 @@ public class ModelBuilder { // TODO: Rename to Loader
     return this;
   }
 
-  public ModelBuilder importFromFile(String path) {
+  public ModelLoader importFromFile(String path) {
     String fixedPath = path;
     if (!fixedPath.endsWith(".json"))
       fixedPath += ".json";
     return importFromFile(new File(fixedPath));
   }
 
-  public ModelBuilder importFromFile(File file) {
+  public ModelLoader importFromFile(File file) {
     ensureImport();
     Requisites.checkArgument(file.exists(), "Provided file does not exist: " + file.getName());
     FileReader reader;
@@ -99,32 +99,32 @@ public class ModelBuilder { // TODO: Rename to Loader
     return this;
   }
 
-  public ModelBuilder saveDirectoryPath(String saveDirectory) {
+  public ModelLoader saveDirectoryPath(String saveDirectory) {
     this.saveDirectory = saveDirectory;
     return this;
   }
 
-  public ModelBuilder ignoreVersionCheck() {
+  public ModelLoader ignoreVersionCheck() {
     this.ignoreVersionCheck = true;
     return this;
   }
 
-  public ModelBuilder name(String name) {
+  public ModelLoader name(String name) {
     this.name = name;
     return this;
   }
 
-  public ModelBuilder saveOnClose() {
+  public ModelLoader saveOnClose() {
     this.saveOnClose = true;
     return this;
   }
 
-  public ModelBuilder graph(Graph<Double> graph) {
+  public ModelLoader graph(Graph<Double> graph) {
     this.graph = graph;
     return this;
   }
 
-  public ModelBuilder createGraph() {
+  public ModelLoader createGraph() {
     this.graph = Graph.newBuilder()
       .setMutability(Mutability.MUTABLE)
       .setHeight(15)
