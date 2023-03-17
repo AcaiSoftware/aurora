@@ -28,7 +28,7 @@ public class Aurora {
 
   public static String version() {
     if (VERSION == null) {
-      String version = null;
+      String version = "N/A";
       try (BufferedReader reader = new BufferedReader(new FileReader("pom.xml"))) {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -45,7 +45,7 @@ public class Aurora {
       }
 
       final String result = version;
-      VERSION = version == null ? () -> "N/A" : () -> result;
+      VERSION = () -> result;
     }
 
     return VERSION.get();
