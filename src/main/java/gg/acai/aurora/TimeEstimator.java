@@ -9,17 +9,17 @@ import gg.acai.acava.collect.pairs.Pairs;
  */
 public interface TimeEstimator<T> {
 
-    void tick();
+  void tick();
 
-    double estimated(T t);
+  double estimated(T t);
 
-    Pairs<Double, Time> estimateWith(T t);
+  Pairs<Double, Time> estimateWith(T t);
 
-    enum Time {
-      HOURS, MINUTES, SECONDS;
+  enum Time {
+    HOURS, MINUTES, SECONDS;
 
-      public char plural() {
-        return name().toLowerCase().charAt(0);
-      }
+    public char plural() {
+      return name().toLowerCase().charAt(0);
     }
+  }
 }
