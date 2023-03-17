@@ -235,7 +235,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
 
   public NeuralNetworkModel saveAs(String name) {
     Requisites.checkArgument(completed, "The training process has not been completed yet!");
-    return NetworkBuilder.model()
+    return NetworkBuilder.loader()
       .from(this)
       .name(name)
       .ignoreVersionCheck()

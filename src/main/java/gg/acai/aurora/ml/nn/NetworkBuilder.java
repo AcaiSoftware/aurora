@@ -11,7 +11,7 @@ public final class NetworkBuilder { // TODO: Rename to factory
     return new TrainingBuilder();
   }
 
-  public static ModelLoader model() {
+  public static ModelLoader loader() {
     return new ModelLoader();
   }
 
