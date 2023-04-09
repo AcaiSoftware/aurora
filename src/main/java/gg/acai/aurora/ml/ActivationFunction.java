@@ -1,5 +1,6 @@
 package gg.acai.aurora.ml;
 
+import java.util.Optional;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -55,6 +56,14 @@ public final class ActivationFunction {
         return SOFTPLUS;
       default:
         throw new IllegalArgumentException("Unknown activation function: " + name);
+    }
+  }
+
+  public static Optional<ActivationFunction> optionalOf(String name) {
+    try {
+      return Optional.of(of(name));
+    } catch (IllegalArgumentException e) {
+      return Optional.empty();
     }
   }
 
