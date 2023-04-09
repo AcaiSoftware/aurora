@@ -1,6 +1,7 @@
 package gg.acai.aurora.cluster.hierarchy;
 
 import gg.acai.acava.Requisites;
+import gg.acai.aurora.Evaluator;
 import gg.acai.aurora.cluster.Clusterer;
 
 import javax.annotation.Nonnull;
@@ -95,6 +96,7 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
     return closest;
   }
 
+  @Nonnull
   public Set<HierarchyClusterFamily> families() {
     return Collections.unmodifiableSet(tree);
   }
@@ -102,6 +104,19 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
   @Override
   public Iterator<HierarchyClusterFamily> iterator() {
     return tree.iterator();
+  }
+
+  @Nonnull
+  public Evaluator evaluator() {
+    int[] labels = new int[tree.size()];
+    double[] data = new double[tree.size()];
+    int i = 0;
+    for (HierarchyClusterFamily family : tree) {
+      labels[i] = i;
+      data[i] = family.centroid();
+      i++;
+    }
+    return new HierarchyClusterEvaluator(this, data, labels);
   }
 
   @Nonnull
