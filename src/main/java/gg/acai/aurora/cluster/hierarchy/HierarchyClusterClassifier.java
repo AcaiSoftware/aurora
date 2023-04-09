@@ -1,6 +1,7 @@
 package gg.acai.aurora.cluster.hierarchy;
 
 import gg.acai.acava.Requisites;
+import gg.acai.aurora.cluster.Clusterer;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -17,7 +18,7 @@ import java.util.Set;
  * @since 09.04.2023 00:25
  * © Aurora - All Rights Reserved
  */
-public class HierarchyClusterClassifier implements Iterable<HierarchyClusterFamily> {
+public class HierarchyClusterClassifier implements Clusterer, Iterable<HierarchyClusterFamily> {
 
   private final Set<HierarchyClusterFamily> tree;
   private final int minDistance;
