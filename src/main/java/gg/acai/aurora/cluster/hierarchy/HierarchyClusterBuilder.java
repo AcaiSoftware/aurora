@@ -12,8 +12,8 @@ import java.util.Set;
 public class HierarchyClusterBuilder {
 
   private final Set<HierarchyClusterFamily> tree = new HashSet<>();
-  private int minDistance = 5;
-  private double threshold = -1.0;
+  private int reqLearnSamples = 5;
+  private double shield = -1.0;
 
   public HierarchyClusterBuilder tree(Set<HierarchyClusterFamily> families) {
     this.tree.addAll(families);
@@ -25,18 +25,18 @@ public class HierarchyClusterBuilder {
     return this;
   }
 
-  public HierarchyClusterBuilder minDistance(int minDistance) {
-    this.minDistance = minDistance;
+  public HierarchyClusterBuilder learnAfter(int samples) {
+    this.reqLearnSamples = samples;
     return this;
   }
 
-  public HierarchyClusterBuilder threshold(double threshold) {
-    this.threshold = threshold;
+  public HierarchyClusterBuilder shield(double shield) {
+    this.shield = shield;
     return this;
   }
 
   public HierarchyClusterClassifier build() {
-    return new HierarchyClusterClassifier(tree, minDistance, threshold);
+    return new HierarchyClusterClassifier(tree, reqLearnSamples, shield);
   }
 
 }
