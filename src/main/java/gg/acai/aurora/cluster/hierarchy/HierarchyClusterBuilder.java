@@ -12,8 +12,8 @@ import java.util.Set;
 public class HierarchyClusterBuilder {
 
   private final Set<HierarchyClusterFamily> tree = new HashSet<>();
-  private int minDistance;
-  private double threshold;
+  private int minDistance = 5;
+  private double threshold = -1.0;
 
   public HierarchyClusterBuilder tree(Set<HierarchyClusterFamily> families) {
     this.tree.addAll(families);
