@@ -75,11 +75,11 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
        *          Splitter
        */
       Map<Double, Double> distances = family.distances();
-      if (distances.size() >= minDistance) {
+      if (minDistance > 0.0 && distances.size() >= minDistance) {
         double closestNodeDistance = Double.MAX_VALUE;
         for (double node : distances.keySet()) {
           double nodeOffset = Math.abs(node - value);
-          if (threshold > 0 && nodeOffset > threshold)
+          if (threshold > 0.0D && nodeOffset > threshold)
             continue;
           if (nodeOffset < closestNodeDistance) {
             closestNodeDistance = nodeOffset;
