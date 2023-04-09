@@ -3,6 +3,7 @@ package gg.acai.aurora.cluster.hierarchy;
 import gg.acai.acava.Requisites;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Map;
  * @since 09.04.2023 00:25
  * © Aurora - All Rights Reserved
  */
-public class HierarchyClusterFamily {
+public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double>> {
 
   /**
    * The name of the cluster family
@@ -82,6 +83,11 @@ public class HierarchyClusterFamily {
 
   public int size() {
     return nodeDistances.size();
+  }
+
+  @Override
+  public Iterator<Map.Entry<Double, Double>> iterator() {
+    return nodeDistances.entrySet().iterator();
   }
 
   @Override
