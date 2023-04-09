@@ -1,39 +1,56 @@
-package gg.acai.aurora.cluster;
+package gg.acai.aurora.cluster.degree;
 
+import gg.acai.aurora.cluster.degree.DegreeCluster;
+import gg.acai.aurora.cluster.degree.DegreeGroup;
 import gg.acai.aurora.ml.LevenshteinDistance;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
+ * <p>The purpose of this class is to perform cluster classification on a set of inputs,
+ * which involves grouping similar inputs together and generating a classification for each group.
+ * The process of cluster classification can be broken down into three main steps:</p>
+ * <ol>
+ *   <li>Clustering inputs into groups</li>
+ *   <li>Grouping similar inputs together</li>
+ *   <li>Generating a classification for each group</li>
+ * </ol>
+ *
+ * <p>Commonly used for Natural Language Processing and other machine learning applications.
+ *
  * @author Clouke
  * @since 07.03.2023 04:03
  * © Aurora - All Rights Reserved
- *
- * Cluster Classification:
- * 1. Start with clustering inputs into groups
- * 2. Group similar inputs together
- * 3. Generate a classification for each group
  */
-public class ClusterClassification implements QRCluster<String> {
+public class SyntacticAggregator implements DegreeCluster<String> {
 
-  private final List<Group<String>> groups;
+  private final List<DegreeGroup<String>> groups;
+  private final double similarityThreshold;
+  private final double maxDistance;
 
-  public ClusterClassification() {
+  public SyntacticAggregator(double threshold, double maxDistance) {
     this.groups = new ArrayList<>();
+    this.similarityThreshold = threshold;
+    this.maxDistance = maxDistance;
+  }
+
+  public SyntacticAggregator() {
+    this(0.8, 2.0);
   }
 
   @Override
-  public Group<String> cluster(String input) {
-    Group<String> match = null;
-    int stringLength = input.length();
+  public DegreeGroup<String> cluster(String input) {
+    DegreeGroup<String> match = null;
+    int inputLength = input.length();
     int matchLength = 0;
-    for (Group<String> group : groups) {
+    for (DegreeGroup<String> group : groups) {
       for (String string : group.getContent()) {
         int length = string.length();
-        if (length > stringLength) {
-          length = stringLength;
+        if (length > inputLength) {
+          length = inputLength;
         }
 
         for (int i = 0; i < length; i++) {
@@ -42,7 +59,7 @@ public class ClusterClassification implements QRCluster<String> {
           }
 
           int distance = LevenshteinDistance.compute(string, input);
-          if (distance <= 2) {
+          if (distance <= maxDistance) {
             match = group;
             matchLength = i;
             break;
@@ -57,24 +74,24 @@ public class ClusterClassification implements QRCluster<String> {
     }
 
     if (match == null) {
-      match = new Group<>(new String[]{input});
+      match = new DegreeGroup<>(new String[]{input});
       groups.add(match);
     } else {
       String[] content = match.getContent();
       String[] newContent = new String[content.length + 1];
       System.arraycopy(content, 0, newContent, 0, content.length);
       newContent[content.length] = input;
-      match = new Group<>(newContent);
+      match = new DegreeGroup<>(newContent);
     }
     return match;
   }
 
   @Override
-  public Group<String> findClosestCluster(String s) {
+  public DegreeGroup<String> findClosestCluster(String s) {
     String[] matches = new String[groups.size()];
     int[] matchLengths = new int[groups.size()];
     int index = 0;
-    for (Group<String> group : groups) {
+    for (DegreeGroup<String> group : groups) {
       for (String string : group.getContent()) {
         int length = string.length();
         if (length > s.length()) {
@@ -87,7 +104,7 @@ public class ClusterClassification implements QRCluster<String> {
           }
 
           int distance = LevenshteinDistance.compute(string, s);
-          if (distance <= 2) {
+          if (distance <= maxDistance) {
             matches[index] = string;
             matchLengths[index] = i;
             index++;
@@ -102,7 +119,6 @@ public class ClusterClassification implements QRCluster<String> {
       }
     }
 
-    // find the absolute best match
     int bestMatch = 0;
     for (int i = 0; i < matchLengths.length; i++) {
       if (matchLengths[i] > matchLengths[bestMatch]) {
@@ -110,12 +126,11 @@ public class ClusterClassification implements QRCluster<String> {
       }
     }
 
-    // find the group that contains the best match
-    Group<String> newGroup = new Group<>(new String[]{matches[bestMatch]});
+    DegreeGroup<String> newGroup = new DegreeGroup<>(new String[]{matches[bestMatch]});
     for (String match : matches) {
-      for (Group<String> group : groups) {
+      for (DegreeGroup<String> group : groups) {
         double similarity = group.similarity(match);
-        if (similarity > 0.8) {
+        if (similarity > similarityThreshold) {
           newGroup.addNode(match);
           break;
         }
@@ -126,7 +141,7 @@ public class ClusterClassification implements QRCluster<String> {
   }
 
   @Override
-  public List<Group<String>> clusters() {
+  public List<DegreeGroup<String>> clusters() {
     return groups;
   }
 
@@ -143,7 +158,7 @@ public class ClusterClassification implements QRCluster<String> {
   @Override
   public String serialize() {
     StringBuilder serialized = new StringBuilder();
-    for (Group<String> group : groups) {
+    for (DegreeGroup<String> group : groups) {
       serialized.append(group).append("\n");
     }
     return serialized.toString();
@@ -157,7 +172,7 @@ public class ClusterClassification implements QRCluster<String> {
         return groups.iterator().hasNext();
       }
 
-      @Override
+      @Override @Nullable
       public String next() {
         return groups.iterator().next().getHighestDegreeNode();
       }
