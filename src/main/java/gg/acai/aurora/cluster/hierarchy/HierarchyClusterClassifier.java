@@ -22,17 +22,17 @@ import java.util.Set;
 public class HierarchyClusterClassifier implements Clusterer, Iterable<HierarchyClusterFamily> {
 
   private final Set<HierarchyClusterFamily> tree;
-  private final int minDistance;
-  private final double threshold;
+  private final int learn_req;
+  private final double low_shield;
 
-  public HierarchyClusterClassifier(Set<HierarchyClusterFamily> families, int minDistance, double threshold) {
+  public HierarchyClusterClassifier(Set<HierarchyClusterFamily> families, int learn_req, double low_shield) {
     this.tree = families;
-    this.minDistance = minDistance;
-    this.threshold = threshold;
+    this.learn_req = learn_req;
+    this.low_shield = low_shield;
   }
 
-  public HierarchyClusterClassifier(int minDistance) {
-    this(new HashSet<>(), minDistance, -1.0);
+  public HierarchyClusterClassifier(int learn_req) {
+    this(new HashSet<>(), learn_req, -1.0);
   }
 
   public HierarchyClusterClassifier() {
@@ -47,6 +47,7 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
 
   @Nonnull
   public HierarchyClusterFamily cluster(double value) {
+    long start = System.nanoTime();
     Requisites.checkArgument(!tree.isEmpty(), "Cannot add node to empty cluster");
     HierarchyClusterFamily closest = null;
     double closestCentroid = Double.MAX_VALUE;
@@ -75,11 +76,21 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
        *          Splitter
        */
       Map<Double, Double> distances = family.distances();
-      if (minDistance > 0.0 && distances.size() >= minDistance) {
+      if (learn_req > 0.0 && distances.size() >= learn_req) {
         double closestNodeDistance = Double.MAX_VALUE;
         for (double node : distances.keySet()) {
+          boolean aboveCentroid = false;
           double nodeOffset = Math.abs(node - value);
-          if (threshold > 0.0D && nodeOffset > threshold)
+          for (HierarchyClusterFamily other : tree) {
+            if (other == family)
+              continue;
+            if (Math.abs(node - other.centroid()) < nodeOffset) {
+              aboveCentroid = true; // cannot go above other centroids
+              //double offsetToCentroid = Math.abs((other.centroid() - value) - nodeOffset); TODO: possibly add a learning connection to other centroids using this
+              break;
+            }
+          }
+          if (aboveCentroid || (low_shield > 0.0D && nodeOffset > low_shield))
             continue;
           if (nodeOffset < closestNodeDistance) {
             closestNodeDistance = nodeOffset;
