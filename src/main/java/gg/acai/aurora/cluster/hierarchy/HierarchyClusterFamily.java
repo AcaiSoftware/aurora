@@ -98,4 +98,9 @@ public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double
       ", distances=" + nodeDistances +
       '}';
   }
+
+  @Override @SuppressWarnings({"MethodDoesntCallSuperMethod"})
+  public HierarchyClusterFamily clone() {
+    return new HierarchyClusterFamily(label, centroid, new HashMap<>(nodeDistances));
+  }
 }
