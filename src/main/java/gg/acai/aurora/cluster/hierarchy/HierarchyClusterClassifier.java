@@ -47,7 +47,6 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
 
   @Nonnull
   public HierarchyClusterFamily cluster(double value) {
-    long start = System.nanoTime();
     Requisites.checkArgument(!tree.isEmpty(), "Cannot add node to empty cluster");
     HierarchyClusterFamily closest = null;
     double closestCentroid = Double.MAX_VALUE;
