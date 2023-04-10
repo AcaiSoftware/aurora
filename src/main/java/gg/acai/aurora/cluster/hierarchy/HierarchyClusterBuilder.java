@@ -2,6 +2,7 @@ package gg.acai.aurora.cluster.hierarchy;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -11,17 +12,19 @@ import java.util.Set;
  */
 public class HierarchyClusterBuilder {
 
-  private final Set<HierarchyClusterFamily> tree = new HashSet<>();
+  private Set<HierarchyClusterFamily> tree;
   private int reqLearnSamples = 5;
   private double shield = -1.0;
 
-  public HierarchyClusterBuilder tree(Set<HierarchyClusterFamily> families) {
-    this.tree.addAll(families);
+  public HierarchyClusterBuilder tree(Set<HierarchyClusterFamily> tree) {
+    this.tree = tree;
     return this;
   }
 
   public HierarchyClusterBuilder addFamilies(HierarchyClusterFamily... families) {
-    tree.addAll(Arrays.asList(families));
+    Optional.ofNullable(tree)
+      .orElseGet(() -> tree = new HashSet<>())
+      .addAll(Arrays.asList(families));
     return this;
   }
 
