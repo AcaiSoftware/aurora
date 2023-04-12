@@ -1,8 +1,8 @@
-package gg.acai.aurora.cluster.hierarchy;
+package gg.acai.aurora.ml.cluster.hierarchy;
 
 import gg.acai.acava.Requisites;
 import gg.acai.aurora.Evaluator;
-import gg.acai.aurora.cluster.Clusterer;
+import gg.acai.aurora.ml.cluster.Clusterer;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -118,14 +118,21 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
 
   @Nonnull
   public Evaluator evaluator() {
-    int[] labels = new int[tree.size()];
-    double[] data = new double[tree.size()];
+    int nodes = 0;
+    for (HierarchyClusterFamily family : tree) {
+      nodes += family.distances().size();
+    }
+    double[] data = new double[nodes];
+    int[] labels = new int[nodes];
     int i = 0;
     for (HierarchyClusterFamily family : tree) {
-      labels[i] = i;
-      data[i] = family.centroid();
-      i++;
+      for (double node : family.distances().keySet()) {
+        labels[i] = i;
+        data[i] = node;
+        i++;
+      }
     }
+
     return new HierarchyClusterEvaluator(this, data, labels);
   }
 
