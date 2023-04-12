@@ -1,10 +1,11 @@
-package gg.acai.aurora.ml.lr;
+package gg.acai.aurora.ml.regression.linear;
 
 import gg.acai.aurora.Display;
 import gg.acai.aurora.image.Image;
 import gg.acai.aurora.image.LRImage;
 
 import java.util.function.Consumer;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * @author Clouke
@@ -100,6 +101,10 @@ public class LRResult implements Display {
 
     public double predict(double x) {
         return slope * x + intercept;
+    }
+
+    public DoubleUnaryOperator predict() {
+        return x -> slope * x + intercept;
     }
 
     /**
