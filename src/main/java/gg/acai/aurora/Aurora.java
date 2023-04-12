@@ -44,7 +44,7 @@ public class Aurora {
         log("Failed to read version from pom.xml: " + e.getMessage());
       }
 
-      final String result = version;
+      String result = version;
       VERSION = () -> result;
     }
 
