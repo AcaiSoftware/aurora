@@ -14,6 +14,11 @@ import java.util.Map;
 public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double>> {
 
   /**
+   * An index holder for the cluster families to keep track of their index
+   */
+  private static int INDEX_HOLDER = 0;
+
+  /**
    * The name of the cluster family
    */
   private final String label;
@@ -28,17 +33,23 @@ public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double
    */
   private final Map<Double, Double> nodeDistances;
 
-  public HierarchyClusterFamily(String label, double centroid, Map<Double, Double> distances) {
+  /**
+   * The index of this cluster family
+   */
+  private final int index;
+
+  public HierarchyClusterFamily(String label, double centroid, Map<Double, Double> distances, int index) {
     Requisites.requireNonNull(label, "label name cannot be null");
     Requisites.checkArgument(centroid >= 0, "centroid cannot be negative");
     Requisites.requireNonNull(distances, "distances cannot be null");
     this.label = label;
     this.centroid = centroid;
     this.nodeDistances = distances;
+    this.index = index;
   }
 
   public HierarchyClusterFamily(String label, double centroid) {
-    this(label, centroid, new HashMap<>());
+    this(label, centroid, new HashMap<>(), INDEX_HOLDER++);
   }
 
   public void addNode(double value) {
@@ -47,6 +58,10 @@ public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double
 
   public String label() {
     return label;
+  }
+
+  public int index() {
+    return index;
   }
 
   public double centroid() {
@@ -101,6 +116,6 @@ public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double
 
   @Override @SuppressWarnings({"MethodDoesntCallSuperMethod"})
   public HierarchyClusterFamily clone() {
-    return new HierarchyClusterFamily(label, centroid, new HashMap<>(nodeDistances));
+    return new HierarchyClusterFamily(label, centroid, new HashMap<>(nodeDistances), index);
   }
 }
