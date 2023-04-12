@@ -1,4 +1,7 @@
-package gg.acai.aurora;
+package gg.acai.aurora.universal;
+
+import gg.acai.aurora.Aurora;
+import gg.acai.aurora.universal.Compat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +22,10 @@ public final class Compatibility {
       return true;
 
     List<String> compatible = Arrays.asList(compat.value());
-    boolean ignored = Arrays.stream(IGNORED).anyMatch(compatible::contains);
+    boolean ignored = Arrays
+      .stream(IGNORED)
+      .anyMatch(compatible::contains);
+
     return ignored || compatible.contains(version);
   }
 
