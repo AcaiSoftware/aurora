@@ -51,14 +51,10 @@ public class DataSetBuilder {
   public DataSet build() {
     int r = buildProcedureResult();
     switch (r) {
-      case 1:
-        return imported;
-      case 2:
-        return new ImmutableDataSet(immutableInputs, immutableTargets);
-      case 3:
-        return new FixedSizeDataSet(maxSize);
-      default:
-        return new LocalDataSet();
+      case 1: return imported;
+      case 2: return new ImmutableDataSet(immutableInputs, immutableTargets);
+      case 3: return new FixedSizeDataSet(maxSize);
+      default: return new LocalDataSet();
     }
   }
 
