@@ -8,9 +8,11 @@ import gg.acai.aurora.Aurora;
 import gg.acai.aurora.QRMath;
 import gg.acai.aurora.CycleBuffer;
 import gg.acai.aurora.TimeEstimator;
+import gg.acai.aurora.ml.Trainable;
 import gg.acai.aurora.ml.TrainingTimeEstimator;
 import gg.acai.aurora.ml.nn.extension.ModelTrainEvent;
 import gg.acai.aurora.ml.nn.extension.TrainingTickEvent;
+import gg.acai.aurora.sets.DataSet;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +22,7 @@ import java.util.concurrent.ExecutorService;
  * @since 11.02.2023 16:18
  * © Acava - All Rights Reserved
  */
-public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
+public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Trainable {
 
   private final int epochs;
   private final double learningRate;
@@ -33,6 +35,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
   private final CycleBuffer cycle;
   private final int maxCycleBuffer;
   private final Graph<Double> graph;
+  private final DataSet set;
   private Callback<NeuralNetworkTrainer> callback;
   private double[] accuracyTest;
 
@@ -59,8 +62,15 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
     this.graph = builder.graph;
     this.cycle = new CycleBuffer(maxCycleBuffer);
     this.estimator = new TrainingTimeEstimator(epochs);
+    this.set = builder.set;
   }
 
+  public void train() {
+    if (set == null || set.inputs() == null || set.targets() == null) throw new IllegalArgumentException("You must provide a dataset to train on!");
+    train(set.inputs(), set.targets());
+  }
+
+  @Override
   public void train(double[][] inputs, double[][] targets) {
     if (inputs.length != targets.length) throw new IllegalArgumentException("Inputs and targets must have the same length!");
     if (accuracyTest == null) accuracyTest = new double[]{targets[0][0]};
@@ -159,7 +169,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
       return false; // No need to proceed if there is no listener and no need to print progress
     }
 
-    double percent = (double) currentEpoch / epochs * 100;
+    double percent = (double) currentEpoch / epochs * 100.0;
     int pct = (int) percent;
     boolean toReturn = false;
     String progress = null;
@@ -216,8 +226,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
     start = System.currentTimeMillis() - start;
     completed = true;
     if (autoSave) {
-      NeuralNetworkModel model = save();
-      model.setSaveOnClose(true);
+      NeuralNetworkModel model = (NeuralNetworkModel) save().setSaveOnClose(true);
       model.close();
     }
     if (callback != null)
@@ -238,7 +247,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
     return NeuralNetworkFactory.loader()
       .from(this)
       .name(name)
-      .ignoreVersionCheck()
+      .ignoreVersions()
       .saveOnClose()
       .build();
   }
@@ -252,18 +261,16 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork {
     String r = Aurora.RESET;
     String bullet = Aurora.BULLET;
 
-    System.out.println(b + "WARNING: The training process has been stopped due to training stagnation" + r + " (The model got stuck and is not improving).\n" +
+    System.out.println(b + "\nWARNING: The training process has been stopped due to training stagnation" + r + " (The model got stuck and is not improving).\n" +
       b + "Options:" + r + "\n" +
       bullet + "Try re-training the model\n" +
       bullet + "Change the learning rate (current: " + learningRate + ")\n" +
       bullet + "Change the model architecture" + "\n" +
       bullet + "Change the training data" + "\n" +
-      bullet + "Change the training parameters (epochs, etc.)" + "\n"
-    );
-
-    System.out.println(
+      bullet + "Change the training parameters (epochs, etc.)\n" +
+      bullet + "Try using" + b + " HyperparameterTuning" + r + " to find the best parameters for your model." + "\n" +
       "Buffered for " + cycle.current() + "/" + maxCycleBuffer + " cycles. If you wish to disable this feature, " +
-      "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1"
+      "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1\n"
     );
   }
 
