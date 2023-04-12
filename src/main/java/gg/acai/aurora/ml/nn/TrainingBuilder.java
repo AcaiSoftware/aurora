@@ -4,6 +4,7 @@ import gg.acai.acava.Requisites;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.aurora.ml.ActivationFunction;
 import gg.acai.aurora.ml.nn.extension.ModelTrainEvent;
+import gg.acai.aurora.sets.DataSet;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,7 +23,6 @@ public class TrainingBuilder {
   protected int epochs = -1;
   protected double learningRate = -1.0;
 
-
   protected int inputLayerSize;
   protected int outputLayerSize;
   protected int hiddenLayerSize;
@@ -32,6 +32,7 @@ public class TrainingBuilder {
   protected int maxCycleBuffer = 30;
   protected Graph<Double> graph;
   protected ActivationFunction activationFunction = ActivationFunction.SIGMOID;
+  protected DataSet set;
 
   public TrainingBuilder inputLayerSize(int inputLayerSize) {
     this.inputLayerSize = inputLayerSize;
@@ -103,6 +104,11 @@ public class TrainingBuilder {
       .setMaxDisplayValue(maxDisplayValue)
       .setFixedSize(maxSize)
       .build();
+    return this;
+  }
+
+  public TrainingBuilder withDataSet(DataSet set) {
+    this.set = set;
     return this;
   }
 
