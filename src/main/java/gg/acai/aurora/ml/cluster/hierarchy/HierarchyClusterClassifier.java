@@ -118,20 +118,21 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
 
   @Nonnull
   public Evaluator evaluator() {
-    int nodes = 0;
-    for (HierarchyClusterFamily family : tree) {
-      nodes += family.distances().size();
-    }
-    double[] data = new double[nodes];
-    int[] labels = new int[nodes];
-    int i = 0;
-    for (HierarchyClusterFamily family : tree) {
-      for (double node : family.distances().keySet()) {
-        labels[i] = i;
-        data[i] = node;
-        i++;
-      }
-    }
+    double[] data = tree.stream()
+      .flatMapToDouble(family ->
+        family.distances()
+          .keySet()
+          .stream()
+          .mapToDouble(Double::doubleValue))
+      .toArray();
+
+    int[] labels = tree.stream()
+      .flatMapToInt(family ->
+        family.distances()
+          .keySet()
+          .stream()
+          .mapToInt(node -> family.index()))
+      .toArray();
 
     return new HierarchyClusterEvaluator(this, data, labels);
   }
@@ -143,6 +144,7 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
     String centroidSymbol = "o";
     tree.forEach(family -> {
       builder.append(family.label())
+        .append("(").append(family.index()).append(")")
         .append(": ")
         .append("\n");
 
