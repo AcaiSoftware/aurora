@@ -1,4 +1,4 @@
-package gg.acai.aurora.cluster.degree;
+package gg.acai.aurora.ml.cluster.degree;
 
 import gg.acai.aurora.Serializer;
 
