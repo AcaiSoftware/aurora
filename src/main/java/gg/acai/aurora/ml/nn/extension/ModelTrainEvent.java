@@ -7,5 +7,5 @@ package gg.acai.aurora.ml.nn.extension;
  */
 @FunctionalInterface
 public interface ModelTrainEvent {
-    void onTrain(TrainingTickEvent event);
+  void onTrain(TrainingTickEvent event);
 }
