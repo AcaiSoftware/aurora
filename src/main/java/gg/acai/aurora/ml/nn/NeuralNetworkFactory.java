@@ -12,7 +12,7 @@ public final class NeuralNetworkFactory {
   }
 
   public static ModelLoader loader() {
-    return new ModelLoader();
+    return new ModelLoader(() -> NeuralNetworkModel.class);
   }
 
 }
