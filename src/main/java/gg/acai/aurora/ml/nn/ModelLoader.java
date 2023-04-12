@@ -4,7 +4,8 @@ import gg.acai.acava.Requisites;
 import gg.acai.acava.collect.Mutability;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.aurora.Aurora;
-import gg.acai.aurora.Compatibility;
+import gg.acai.aurora.ml.Model;
+import gg.acai.aurora.universal.Compatibility;
 import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.exception.IncompatibleModelException;
 import gg.acai.aurora.exception.InvalidModelException;
@@ -14,26 +15,39 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.function.Supplier;
 
 /**
+ * A flexible model loader for machine learning models.
+ *
  * @author Clouke
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
 public class ModelLoader {
 
-  private NeuralNetworkModel model;
+  private Model model;
+  private final Class<? extends Model> modelClass;
   private boolean imported;
   private String saveDirectory;
   private String name;
   private boolean saveOnClose;
-  private boolean ignoreVersionCheck;
+  private boolean ignoreVersions;
   private Graph<Double> graph;
+
+  public ModelLoader(Class<? extends Model> modelClass) {
+    this.modelClass = modelClass;
+  }
+
+  public ModelLoader(Supplier<Class<? extends Model>> modelClass) {
+    this(modelClass.get());
+  }
 
   public ModelLoader from(AbstractNeuralNetwork nn) {
     ensureImport();
-    this.model = new NeuralNetworkModel(nn.wrap());
-    this.model.setActivationFunction(nn.getActivationFunction());
+    NeuralNetworkModel model = new NeuralNetworkModel(nn.wrap());
+    model.setActivationFunction(nn.getActivationFunction());
+    this.model = model;
     mark();
     return this;
   }
@@ -41,10 +55,10 @@ public class ModelLoader {
   public ModelLoader importWithJson(String json) {
     ensureImport();
     try {
-      this.model = GsonSpec.standard().fromJson(json, NeuralNetworkModel.class);
+      this.model = GsonSpec.standard().fromJson(json, modelClass);
       mark();
     } catch (Exception e) {
-      throw new InvalidModelException("Could not import model with json!", e);
+      throw new InvalidModelException("Could not import model with json", e);
     }
     return this;
   }
@@ -88,13 +102,11 @@ public class ModelLoader {
   public ModelLoader importFromFile(File file) {
     ensureImport();
     Requisites.checkArgument(file.exists(), "Provided file does not exist: " + file.getName());
-    FileReader reader;
-    try {
-      reader = new FileReader(file);
+    try (FileReader reader = new FileReader(file)) {
       this.model = GsonSpec.standard().fromJson(reader, NeuralNetworkModel.class);
       mark();
     } catch (Exception e) {
-      throw new InvalidModelException("Could not import model from file " + file.getName() + "!", e);
+      throw new InvalidModelException("Could not import model from file " + file.getName(), e);
     }
     return this;
   }
@@ -104,8 +116,8 @@ public class ModelLoader {
     return this;
   }
 
-  public ModelLoader ignoreVersionCheck() {
-    this.ignoreVersionCheck = true;
+  public ModelLoader ignoreVersions() {
+    this.ignoreVersions = true;
     return this;
   }
 
@@ -133,32 +145,35 @@ public class ModelLoader {
     return this;
   }
 
-  public NeuralNetworkModel build() {
-    Requisites.checkArgument(imported, "Model has not been imported!");
-    if (model == null)
-      throw new IllegalStateException();
+  @SuppressWarnings("unchecked")
+  public <M extends Model> M build() {
+    Requisites.checkArgument(imported, "model has not been imported!");
 
-    if (name != null) model.setModel(name);
-    if (saveDirectory != null) model.setSaveDirectory(saveDirectory);
-    model.setSaveOnClose(saveOnClose);
+    model.setModel(name)
+      .setSaveDirectory(saveDirectory)
+      .setSaveOnClose(saveOnClose);
 
-    String currentVersion = ignoreVersionCheck ? null : Aurora.version();
+    String currentVersion = ignoreVersions ? null : Aurora.version();
     if (currentVersion != null) {
       boolean compat = Compatibility.isCompatible(model.getClass());
       if (!compat) {
         throw new IncompatibleModelException(
           "Incompatible model version, Current version: " + currentVersion + ", Model version: " + model.getVersion() +
           ", Compatible versions: " + Compatibility.getCompatibleVersions(model.getClass()) +
-          ". \nUse ModelBuilder#ignoreVersionCheck() to ignore this check."
+          ". \nUse ModelLoader#ignoreVersionCheck() to ignore this check."
         );
       }
     }
 
-    return model;
+    try {
+      return (M) model;
+    } catch (Exception e) {
+      throw new InvalidModelException("Could not cast model to " + modelClass.getSimpleName(), e);
+    }
   }
 
   private void ensureImport() {
-    if (imported) throw new IllegalStateException("Model has already been imported!");
+    if (imported) throw new IllegalStateException("Model has already been imported");
   }
 
   private void mark() {
