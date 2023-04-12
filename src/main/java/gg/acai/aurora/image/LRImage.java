@@ -1,7 +1,7 @@
 package gg.acai.aurora.image;
 
 import com.mitchtalmadge.asciigraph.ASCIIGraph;
-import gg.acai.aurora.ml.lr.LRResult;
+import gg.acai.aurora.ml.regression.linear.LRResult;
 
 /**
  * @author Clouke
