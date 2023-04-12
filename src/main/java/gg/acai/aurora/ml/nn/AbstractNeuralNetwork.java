@@ -5,8 +5,9 @@ import gg.acai.acava.annotated.Optionally;
 import gg.acai.acava.scheduler.AsyncPlaceholder;
 import gg.acai.acava.scheduler.Schedulers;
 import gg.acai.aurora.ml.ActivationFunction;
-import gg.acai.aurora.ml.ML;
+import gg.acai.aurora.ml.MLContextProvider;
 import gg.acai.aurora.ml.MLContext;
+import gg.acai.aurora.ml.Predictable;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -19,15 +20,15 @@ import java.util.stream.Stream;
  * @since 15.02.2023 06:38
  * © Acava - All Rights Reserved
  */
-public abstract class AbstractNeuralNetwork implements ML {
+public abstract class AbstractNeuralNetwork implements MLContextProvider, Predictable {
 
   @Optionally
   protected String name;
   @SerializedName("activation")
   protected ActivationFunction activationFunction;
 
-  protected final double[][] weights_input_to_hidden;
-  protected final double[][] weights_hidden_to_output;
+  protected double[][] weights_input_to_hidden;
+  protected double[][] weights_hidden_to_output;
   protected final double[] biases_hidden;
   protected final double[] biases_output;
 
@@ -78,6 +79,7 @@ public abstract class AbstractNeuralNetwork implements ML {
     this.name = model;
   }
 
+  @Override
   public double[] predict(double[] input) {
     double[] hidden = new double[weights_input_to_hidden[0].length];
     for (int i = 0; i < hidden.length; i++) {
@@ -112,7 +114,7 @@ public abstract class AbstractNeuralNetwork implements ML {
   }
 
   @Override
-  public MLContext getContext() {
+  public MLContext context() {
     return MLContext.NEURAL_NETWORK;
   }
 
