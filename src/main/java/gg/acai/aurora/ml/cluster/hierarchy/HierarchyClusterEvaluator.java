@@ -1,4 +1,4 @@
-package gg.acai.aurora.cluster.hierarchy;
+package gg.acai.aurora.ml.cluster.hierarchy;
 
 import gg.acai.aurora.Evaluator;
 
