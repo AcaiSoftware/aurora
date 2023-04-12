@@ -1,6 +1,7 @@
 package gg.acai.aurora.ml.nn;
 
 import gg.acai.acava.Requisites;
+import gg.acai.aurora.ml.Trainable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +35,6 @@ public final class HyperparameterTuning {
         .build();
 
       trainer.train(inputs, targets);
-
       return trainer;
     };
   }
