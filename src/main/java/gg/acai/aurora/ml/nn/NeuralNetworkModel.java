@@ -1,10 +1,8 @@
 package gg.acai.aurora.ml.nn;
 
-import gg.acai.acava.io.Closeable;
 import gg.acai.aurora.Aurora;
 import gg.acai.aurora.GsonSpec;
-import gg.acai.aurora.SavePoint;
-import gg.acai.aurora.Serializer;
+import gg.acai.aurora.ml.Model;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,7 +12,7 @@ import java.io.FileWriter;
  * @since 27.02.2023 12:24
  * © Aurora - All Rights Reserved
  */
-public class NeuralNetworkModel extends AbstractNeuralNetwork implements Serializer, SavePoint, Closeable {
+public class NeuralNetworkModel extends AbstractNeuralNetwork implements Model {
 
   protected String version = Aurora.version();
   private transient String saveDirectory;
@@ -33,17 +31,20 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
     super(wrapper.weights_input_to_hidden(), wrapper.weights_hidden_to_output(), wrapper.biases_hidden(), wrapper.biases_output());
   }
 
-  public NeuralNetworkModel setSaveDirectory(String saveDirectory) {
+  @Override
+  public Model setSaveDirectory(String saveDirectory) {
     this.saveDirectory = saveDirectory;
     return this;
   }
 
-  public NeuralNetworkModel setModel(String model) {
+  @Override
+  public Model setModel(String model) {
     super.name = model;
     return this;
   }
 
-  public NeuralNetworkModel setSaveOnClose(boolean saveOnClose) {
+  @Override
+  public Model setSaveOnClose(boolean saveOnClose) {
     this.saveOnClose = saveOnClose;
     return this;
   }
@@ -59,6 +60,7 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
     return serialize();
   }
 
+  @Override
   public String getVersion() {
     return version;
   }
@@ -68,7 +70,9 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Seriali
   public void save() {
     long start = System.currentTimeMillis();
     String path = saveDirectory == null ? "" : saveDirectory + File.separator;
-    String name = path + (this.name == null || this.name.isEmpty() ? "model" : this.name) + ".json";
+    String name = path + (this.name == null || this.name.isEmpty()
+      ? "model-" + System.currentTimeMillis()
+      : this.name) + ".json";
     File file = new File(name);
     if (!file.exists()) {
       try {
