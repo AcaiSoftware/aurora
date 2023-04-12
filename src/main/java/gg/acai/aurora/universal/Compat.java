@@ -1,4 +1,4 @@
-package gg.acai.aurora;
+package gg.acai.aurora.universal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
