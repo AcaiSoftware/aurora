@@ -1,4 +1,4 @@
-package gg.acai.aurora.cluster;
+package gg.acai.aurora.ml.cluster;
 
 /**
  * @author Clouke
