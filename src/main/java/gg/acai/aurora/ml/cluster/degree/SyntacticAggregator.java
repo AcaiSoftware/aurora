@@ -1,7 +1,5 @@
-package gg.acai.aurora.cluster.degree;
+package gg.acai.aurora.ml.cluster.degree;
 
-import gg.acai.aurora.cluster.degree.DegreeCluster;
-import gg.acai.aurora.cluster.degree.DegreeGroup;
 import gg.acai.aurora.ml.LevenshteinDistance;
 
 import javax.annotation.Nullable;
