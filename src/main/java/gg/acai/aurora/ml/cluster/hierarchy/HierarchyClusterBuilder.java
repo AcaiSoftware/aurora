@@ -1,4 +1,4 @@
-package gg.acai.aurora.cluster.hierarchy;
+package gg.acai.aurora.ml.cluster.hierarchy;
 
 import java.util.Arrays;
 import java.util.HashSet;
