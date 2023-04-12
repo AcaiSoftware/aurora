@@ -9,45 +9,45 @@ import javax.annotation.Nullable;
  */
 public final class TrainingTickEvent {
 
-    private final int epoch;
-    private final double max;
-    private final double percentageComplete;
-    private final String progress;
-    private final double secondsLeft;
-    private final boolean finished;
+  private final int epoch;
+  private final double max;
+  private final double percentageComplete;
+  private final String progress;
+  private final double secondsLeft;
+  private final boolean finished;
 
-    public TrainingTickEvent(int epoch, double max, double percentageComplete, String progress, double secondsLeft) {
-        this.epoch = epoch;
-        this.max = max;
-        this.finished = epoch == max;
-        this.percentageComplete = percentageComplete;
-        this.progress = progress;
-        this.secondsLeft = secondsLeft;
-    }
+  public TrainingTickEvent(int epoch, double max, double percentageComplete, String progress, double secondsLeft) {
+    this.epoch = epoch;
+    this.max = max;
+    this.finished = epoch == max;
+    this.percentageComplete = percentageComplete;
+    this.progress = progress;
+    this.secondsLeft = secondsLeft;
+  }
 
-    public int getEpoch() {
-        return epoch;
-    }
+  public int getEpoch() {
+    return epoch;
+  }
 
-    public double getMax() {
-        return max;
-    }
+  public double getMax() {
+    return max;
+  }
 
-    public boolean isFinished() {
-        return finished;
-    }
+  public boolean isFinished() {
+    return finished;
+  }
 
-    public double getPercentageComplete() {
-        return percentageComplete;
-    }
+  public double getPercentageComplete() {
+    return percentageComplete;
+  }
 
-    @Nullable
-    public String getProgress() {
-        return progress;
-    }
+  @Nullable
+  public String getProgress() {
+    return progress;
+  }
 
-    public double getEstimatedTimeLeft() {
-        return secondsLeft;
-    }
+  public double getEstimatedTimeLeft() {
+    return secondsLeft;
+  }
 
 }
