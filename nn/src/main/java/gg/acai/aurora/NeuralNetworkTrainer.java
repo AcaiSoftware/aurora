@@ -239,13 +239,11 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
   }
 
   public NeuralNetworkModel saveAs(String name) {
-    Requisites.checkArgument(completed, "The training process has not been completed yet!");
-    return NeuralNetworkFactory.loader()
-      .from(this)
-      .name(name)
-      .ignoreVersions()
-      .saveOnClose()
-      .build();
+    WrappedNeuralNetwork wrapper = wrap();
+    NeuralNetworkModel model = new NeuralNetworkModel(wrapper);
+    model.setActivationFunction(activationFunction);
+    model.setModel(name).setSaveOnClose(true);
+    return model;
   }
 
   public boolean isCompleted() {
