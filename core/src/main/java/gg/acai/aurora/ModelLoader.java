@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -51,15 +52,15 @@ public class ModelLoader {
     return retrieveFromHttp(url, null);
   }
 
-  public ModelLoader retrieveFromHttp(String url, String auth) {
+  public ModelLoader retrieveFromHttp(String url, Map<String, String> headers) {
     ensureImport();
     HttpURLConnection connection = null;
     try {
       connection = (HttpURLConnection) new URL(url).openConnection();
       connection.setRequestMethod("GET");
       connection.setRequestProperty("Content-Type", "application/json");
-      if (auth != null) {
-        connection.setRequestProperty("Authorization", auth);
+      if (headers != null) {
+        headers.forEach(connection::setRequestProperty);
       }
       connection.setDoOutput(true);
       connection.setDoInput(true);
