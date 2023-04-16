@@ -1,8 +1,6 @@
 package gg.acai.aurora;
 
 import gg.acai.acava.Requisites;
-import gg.acai.acava.collect.Mutability;
-import gg.acai.acava.commons.graph.Graph;
 import gg.acai.aurora.ml.Model;
 import gg.acai.aurora.universal.Compatibility;
 import gg.acai.aurora.exception.IncompatibleModelException;
@@ -13,6 +11,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -26,12 +25,8 @@ public class ModelLoader {
 
   private Model model;
   private final Class<? extends Model> modelClass;
+  private ModelLoaderOptions options;
   private boolean imported;
-  private String saveDirectory;
-  private String name;
-  private boolean saveOnClose;
-  private boolean ignoreVersions;
-  private Graph<Double> graph;
 
   public ModelLoader(Class<? extends Model> modelClass) {
     this.modelClass = modelClass;
@@ -39,15 +34,6 @@ public class ModelLoader {
 
   public ModelLoader(Supplier<Class<? extends Model>> modelClass) {
     this(modelClass.get());
-  }
-
-  public ModelLoader from(AbstractNeuralNetwork nn) {
-    ensureImport();
-    NeuralNetworkModel model = new NeuralNetworkModel(nn.wrap());
-    model.setActivationFunction(nn.getActivationFunction());
-    this.model = model;
-    mark();
-    return this;
   }
 
   public ModelLoader importWithJson(String json) {
@@ -78,7 +64,7 @@ public class ModelLoader {
       connection.setDoOutput(true);
       connection.setDoInput(true);
       connection.connect();
-      this.model = GsonSpec.standard().fromJson(new InputStreamReader(connection.getInputStream()), NeuralNetworkModel.class);
+      this.model = GsonSpec.standard().fromJson(new InputStreamReader(connection.getInputStream()), modelClass);
       mark();
     } catch (Exception e) {
       throw new InvalidModelException("Could not retrieve model from url " + url + "!", e);
@@ -87,6 +73,13 @@ public class ModelLoader {
         connection.disconnect();
       }
     }
+    return this;
+  }
+
+  public ModelLoader options(Consumer<ModelLoaderOptionsBuilder> options) {
+    ModelLoaderOptionsBuilder builder = new ModelLoaderOptionsBuilder();
+    options.accept(builder);
+    this.options = builder.build();
     return this;
   }
 
@@ -101,7 +94,7 @@ public class ModelLoader {
     ensureImport();
     Requisites.checkArgument(file.exists(), "Provided file does not exist: " + file.getName());
     try (FileReader reader = new FileReader(file)) {
-      this.model = GsonSpec.standard().fromJson(reader, NeuralNetworkModel.class);
+      this.model = GsonSpec.standard().fromJson(reader, modelClass);
       mark();
     } catch (Exception e) {
       throw new InvalidModelException("Could not import model from file " + file.getName(), e);
@@ -109,47 +102,17 @@ public class ModelLoader {
     return this;
   }
 
-  public ModelLoader saveDirectoryPath(String saveDirectory) {
-    this.saveDirectory = saveDirectory;
-    return this;
-  }
-
-  public ModelLoader ignoreVersions() {
-    this.ignoreVersions = true;
-    return this;
-  }
-
-  public ModelLoader name(String name) {
-    this.name = name;
-    return this;
-  }
-
-  public ModelLoader saveOnClose() {
-    this.saveOnClose = true;
-    return this;
-  }
-
-  public ModelLoader graph(Graph<Double> graph) {
-    this.graph = graph;
-    return this;
-  }
-
-  public ModelLoader createGraph() {
-    this.graph = Graph.newBuilder()
-      .setMutability(Mutability.MUTABLE)
-      .setHeight(15)
-      .setMaxDisplayValue(40)
-      .build();
-    return this;
-  }
-
   @SuppressWarnings("unchecked")
   public <M extends Model> M build() {
     Requisites.checkArgument(imported, "model has not been imported!");
 
-    model.setModel(name)
-      .setSaveDirectory(saveDirectory)
-      .setSaveOnClose(saveOnClose);
+    boolean ignoreVersions = false;
+    if (options != null) {
+      model.setModel(options.name())
+        .setSaveDirectory(options.saveDirectory())
+        .setSaveOnClose(options.saving());
+      ignoreVersions = options.ignored();
+    }
 
     String currentVersion = ignoreVersions ? null : Aurora.version();
     if (currentVersion != null) {
