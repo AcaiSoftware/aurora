@@ -1,6 +1,5 @@
 package gg.acai.aurora.logistic;
 
-import com.google.gson.annotations.SerializedName;
 import gg.acai.acava.annotated.Optionally;
 import gg.acai.aurora.ml.ActivationFunction;
 import gg.acai.aurora.ml.MLContext;
@@ -8,6 +7,7 @@ import gg.acai.aurora.ml.MLContextProvider;
 import gg.acai.aurora.ml.Predictable;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author Clouke
@@ -18,7 +18,6 @@ public abstract class AbstractLogisticRegression implements MLContextProvider, P
 
   @Optionally
   protected String name;
-  @SerializedName("activation")
   protected ActivationFunction activation;
 
   protected final double[] weights;
@@ -31,6 +30,10 @@ public abstract class AbstractLogisticRegression implements MLContextProvider, P
 
   public AbstractLogisticRegression(int inputSize, int outputSize) {
     this(new double[inputSize], new double[outputSize]);
+  }
+
+  public Optional<String> name() {
+    return Optional.ofNullable(name);
   }
 
   public void setActivationFunction(ActivationFunction activation) {
