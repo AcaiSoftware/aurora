@@ -13,6 +13,7 @@ public class LogisticRegression extends AbstractLogisticRegression implements ML
 
   private final double learningRate;
   private final int epochs;
+  private double accuracy;
 
   public LogisticRegression(int inputSize, int outputSize, double learningRate, int epochs, ActivationFunction activation) {
     super(inputSize, outputSize);
@@ -43,12 +44,8 @@ public class LogisticRegression extends AbstractLogisticRegression implements ML
     }
   }
 
-  public double[] weights() {
-    return weights;
+  @Override
+  public double accuracy() {
+    return 0.0;
   }
-
-  public double[] biases() {
-    return biases;
-  }
-
 }
