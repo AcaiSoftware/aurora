@@ -42,26 +42,21 @@ public final class ActivationFunction {
 
   public static ActivationFunction of(String name) {
     switch (name.toLowerCase()) {
-      case "sigmoid":
-        return SIGMOID;
-      case "tanh":
-        return TANH;
-      case "relu":
-        return RELU;
-      case "linear":
-        return LINEAR;
-      case "softmax":
-        return SOFTMAX;
-      case "softplus":
-        return SOFTPLUS;
+      case "sigmoid": return SIGMOID;
+      case "tanh": return TANH;
+      case "relu": return RELU;
+      case "linear": return LINEAR;
+      case "softmax": return SOFTMAX;
+      case "softplus": return SOFTPLUS;
       default:
         throw new IllegalArgumentException("Unknown activation function: " + name);
     }
   }
 
-  public static Optional<ActivationFunction> optionalOf(String name) {
+  public static Optional<ActivationFunction> optionally(String name) {
     try {
-      return Optional.of(of(name));
+      ActivationFunction activation = of(name);
+      return Optional.of(activation);
     } catch (IllegalArgumentException e) {
       return Optional.empty();
     }
