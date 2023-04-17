@@ -1,6 +1,5 @@
 package gg.acai.aurora;
 
-import gg.acai.acava.Requisites;
 import gg.acai.acava.collect.pairs.Pairs;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.acava.io.Callback;
@@ -268,4 +267,8 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     );
   }
 
+  @Override
+  public double accuracy() {
+    return accuracy;
+  }
 }
