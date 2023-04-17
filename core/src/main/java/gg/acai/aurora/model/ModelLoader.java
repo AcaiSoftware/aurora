@@ -1,6 +1,8 @@
-package gg.acai.aurora;
+package gg.acai.aurora.model;
 
 import gg.acai.acava.Requisites;
+import gg.acai.aurora.Aurora;
+import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.ml.Model;
 import gg.acai.aurora.universal.Compatibility;
 import gg.acai.aurora.exception.IncompatibleModelException;
