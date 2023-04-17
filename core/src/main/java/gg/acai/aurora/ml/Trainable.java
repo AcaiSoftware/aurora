@@ -1,5 +1,6 @@
 package gg.acai.aurora.ml;
 
+import gg.acai.aurora.Accuracy;
 import gg.acai.aurora.sets.DataSet;
 
 /**
@@ -7,8 +8,7 @@ import gg.acai.aurora.sets.DataSet;
  * @since 02.04.2023 22:39
  * © Aurora - All Rights Reserved
  */
-@FunctionalInterface
-public interface Trainable {
+public interface Trainable extends Accuracy {
 
   void train(double[][] inputs, double[][] outputs);
 
