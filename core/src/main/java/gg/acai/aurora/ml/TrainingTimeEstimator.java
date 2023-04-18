@@ -8,7 +8,7 @@ import gg.acai.aurora.TimeEstimator;
  * @author Clouke
  * @author Jonathan
  * @since 09.02.2023 17:10
- * © Acava - All Rights Reserved
+ * © Aurora - All Rights Reserved
  */
 public final class TrainingTimeEstimator implements TimeEstimator<Integer> {
 
