@@ -1,13 +1,12 @@
 package gg.acai.aurora.logistic;
 
 import gg.acai.acava.annotated.Optionally;
-import gg.acai.aurora.ml.ActivationFunction;
+import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.ml.MLContext;
 import gg.acai.aurora.ml.MLContextProvider;
 import gg.acai.aurora.ml.Predictable;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * @author Clouke
@@ -30,10 +29,6 @@ public abstract class AbstractLogisticRegression implements MLContextProvider, P
 
   public AbstractLogisticRegression(int inputSize, int outputSize) {
     this(new double[inputSize], new double[outputSize]);
-  }
-
-  public Optional<String> name() {
-    return Optional.ofNullable(name);
   }
 
   public void setActivationFunction(ActivationFunction activation) {
