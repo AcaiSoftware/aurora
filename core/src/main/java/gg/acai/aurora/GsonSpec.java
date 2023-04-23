@@ -2,8 +2,8 @@ package gg.acai.aurora;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import gg.acai.aurora.ml.ActivationFunction;
-import gg.acai.aurora.ml.ActivationFunctionSerializer;
+import gg.acai.aurora.model.ActivationFunction;
+import gg.acai.aurora.model.ActivationFunctionSerializer;
 
 /**
  * @author Clouke
