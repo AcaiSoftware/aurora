@@ -65,62 +65,62 @@ class Edge implements Comparable<Edge> {
 
 
 public class ClusterGenerator {
-    static ArrayList<ArrayList<double[]>> generateCluster(double[][] input, int numClusters) {
-        DisjointSet ds = new DisjointSet(input.length);
+  static ArrayList<ArrayList<double[]>> generateCluster(double[][] input, int numClusters) {
+    DisjointSet ds = new DisjointSet(input.length);
 
-        int edgeIdx = 0;
-        Edge[] edges = new Edge[input.length * (input.length - 1) / 2];
+    int edgeIdx = 0;
+    Edge[] edges = new Edge[input.length * (input.length - 1) / 2];
 
-        for (int i = 0; i < input.length; ++i) {
-            for (int j = i + 1; j < input.length; ++j) {
-                double sum_squared_diffs = 0;
+    for (int i = 0; i < input.length; ++i) {
+      for (int j = i + 1; j < input.length; ++j) {
+        double sum_squared_diffs = 0;
 
-                // not needed
-                assert input[i].length == input[j].length;
+        // not needed
+        assert input[i].length == input[j].length;
 
-                for (int k = 0; k < input[i].length; ++k) {
-                    sum_squared_diffs += (input[i][k] - input[j][k]) * (input[i][k] - input[j][k]);
-                }
-
-                edges[edgeIdx++] = new Edge(sum_squared_diffs, i, j);
-            }
+        for (int k = 0; k < input[i].length; ++k) {
+          sum_squared_diffs += (input[i][k] - input[j][k]) * (input[i][k] - input[j][k]);
         }
 
-        Arrays.sort(edges);
-
-        int currNumClusters = input.length;
-
-        while (currNumClusters > numClusters) {
-            Edge curr = edges[--edgeIdx];
-
-            if (ds.sameSet(curr.i, curr.j)) continue;
-
-            ds.join(curr.i, curr.j);
-            currNumClusters--;
-        }
-
-
-        boolean[] visited = new boolean[input.length];
-        int[] index = new int[input.length];
-
-        Arrays.fill(visited, false);
-
-        ArrayList<ArrayList<double[]>> result = new ArrayList<>(numClusters);
-        for (int i = 0; i < numClusters; i++) {
-            result.add(new ArrayList<>(ds.size(i)));
-        }
-
-        for (int i = 0, j = 0; i < input.length; i++) {
-            int u = ds.find(i);
-            if (visited[u]) continue;
-            visited[u] = true;
-            index[u] = j++;
-        }
-
-        for (int i = 0; i < input.length; i++) {
-            result.get(index[ds.find(i)]).add(input[i].clone());
-        }
-
-        return result;
+        edges[edgeIdx++] = new Edge(sum_squared_diffs, i, j);
+      }
     }
+
+    Arrays.sort(edges);
+
+    int currNumClusters = input.length;
+
+    while (currNumClusters > numClusters) {
+      Edge curr = edges[--edgeIdx];
+
+      if (ds.sameSet(curr.i, curr.j)) continue;
+
+      ds.join(curr.i, curr.j);
+      currNumClusters--;
+    }
+
+
+    boolean[] visited = new boolean[input.length];
+    int[] index = new int[input.length];
+
+    Arrays.fill(visited, false);
+
+    ArrayList<ArrayList<double[]>> result = new ArrayList<>(numClusters);
+    for (int i = 0; i < numClusters; i++) {
+      result.add(new ArrayList<>(ds.size(i)));
+    }
+
+    for (int i = 0, j = 0; i < input.length; i++) {
+      int u = ds.find(i);
+      if (visited[u]) continue;
+      visited[u] = true;
+      index[u] = j++;
+    }
+
+    for (int i = 0; i < input.length; i++) {
+      result.get(index[ds.find(i)]).add(input[i].clone());
+    }
+
+    return result;
+  }
 }
