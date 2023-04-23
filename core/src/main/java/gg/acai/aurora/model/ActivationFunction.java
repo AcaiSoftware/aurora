@@ -1,4 +1,4 @@
-package gg.acai.aurora.ml;
+package gg.acai.aurora.model;
 
 import java.util.Optional;
 import java.util.function.DoubleUnaryOperator;
@@ -38,6 +38,19 @@ public final class ActivationFunction {
   @Override
   public String toString() {
     return name;
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    ActivationFunction other = (ActivationFunction) obj;
+    return name.hashCode() == other.name.hashCode();
   }
 
   public static ActivationFunction of(String name) {
