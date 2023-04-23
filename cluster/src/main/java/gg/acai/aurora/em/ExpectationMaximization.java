@@ -1,4 +1,4 @@
-package gg.acai.aurora.kmeans.em;
+package gg.acai.aurora.em;
 
 import gg.acai.aurora.Clusterer;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * © Aurora - All Rights Reserved
  */
 @FunctionalInterface
-public interface EM extends Clusterer {
+public interface ExpectationMaximization extends Clusterer {
   /**
    * Gets the cluster of the data points in this EM model.
    *
