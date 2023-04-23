@@ -86,10 +86,10 @@ public class MinMaxParameters {
     private int minLayers = 1;
     private int maxLayers = 3;
 
-    public Builder learningRate(double minLearningRate, double maxLearningRate, double learningRateStep) {
+    public Builder learningRate(double minLearningRate, double maxLearningRate, double step) {
       this.minLearningRate = minLearningRate;
       this.maxLearningRate = maxLearningRate;
-      this.learningRateStep = learningRateStep;
+      this.learningRateStep = step;
       return this;
     }
 
