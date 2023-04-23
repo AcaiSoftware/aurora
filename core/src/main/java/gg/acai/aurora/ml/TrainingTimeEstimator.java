@@ -12,7 +12,7 @@ import gg.acai.aurora.TimeEstimator;
  */
 public final class TrainingTimeEstimator implements TimeEstimator<Integer> {
 
-  private long last = -1;
+  private long ticker = -1;
   private final int maxEpochs;
   private double average = -1.0;
 
@@ -22,15 +22,15 @@ public final class TrainingTimeEstimator implements TimeEstimator<Integer> {
 
   @Override
   public void tick() {
-    last = System.nanoTime();
+    ticker = System.nanoTime();
   }
 
   @Override
   public double estimated(Integer currentEpoch) {
-    if (last == -1) return 0.0;
+    if (ticker == -1) return 0.0;
 
     long now = System.nanoTime();
-    long diff = now - last;
+    long diff = now - ticker;
 
     double latest = (diff * (maxEpochs - currentEpoch)) / 1e9;
     average = average == -1.0 ? latest : average * (5.0 / 6.0) + latest * (1.0 / 6.0);
