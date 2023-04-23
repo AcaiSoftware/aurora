@@ -172,7 +172,9 @@ public class SyntacticAggregator implements DegreeCluster<String> {
 
       @Override @Nullable
       public String next() {
-        return groups.iterator().next().getHighestDegreeNode();
+        return groups.iterator()
+          .next()
+          .getHighestDegreeNode();
       }
     };
   }
