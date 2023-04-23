@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import gg.acai.acava.annotated.Optionally;
 import gg.acai.acava.scheduler.AsyncPlaceholder;
 import gg.acai.acava.scheduler.Schedulers;
-import gg.acai.aurora.ml.ActivationFunction;
+import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.ml.MLContextProvider;
 import gg.acai.aurora.ml.MLContext;
 import gg.acai.aurora.ml.Predictable;
