@@ -33,7 +33,7 @@ public class ParallelModelTrainers implements ParallelModelTrainer {
   }
 
   @Override
-  public void begin(Consumer<ParallelModelTrainer> completion) {
+  public void begin(Consumer<ParallelModelTrainer> completion) throws RuntimeException {
     try {
       lock.lock();
       if (running) {
