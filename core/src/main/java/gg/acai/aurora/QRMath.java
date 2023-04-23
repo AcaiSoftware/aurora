@@ -43,77 +43,7 @@ public final class QRMath {
   }
 
   /**
-   * Calculates the sigmoid function of a double value.
-   *
-   * @param x double value
-   * @return Returns the sigmoid function of the double value
-   */
-  public static double sigmoid(double x) {
-    return 1.0 / (1.0 + Math.exp(-x));
-  }
-
-  /**
-   * Calculates the sigmoid derivative of a double value.
-   *
-   * @param x double value
-   * @return Returns the sigmoid derivative of the double value
-   */
-  public static double sigmoidDerivative(double x) {
-    return x * (1 - x);
-  }
-
-  /**
-   * Calculates the tanh derivative of a double value.
-   *
-   * @param x double value
-   * @return Returns the tanh function of the double value
-   */
-  public static double tanhDerivative(double x) {
-    return 1 - Math.pow(x, 2);
-  }
-
-  /**
-   * Calculates the relu function of a double value.
-   *
-   * @param x double value
-   * @return Returns the relu function of the double value
-   */
-  public static double relu(double x) {
-    return Math.max(0, x);
-  }
-
-  /**
-   * Calculates the relu derivative of a double value.
-   *
-   * @param x double value
-   * @return Returns the relu derivative of the double value
-   */
-  public static double reluDerivative(double x) {
-    return x > 0 ? 1 : 0;
-  }
-
-  /**
-   * Calculates the leaky relu function of a double value.
-   *
-   * @param x double value
-   * @return Returns the leaky relu function of the double value
-   */
-  public static double leakyRelu(double x) {
-    return x > 0 ? x : 0.01 * x;
-  }
-
-  /**
-   * Calculates the leaky relu derivative of a double value.
-   *
-   * @param x double value
-   * @return Returns the leaky relu derivative of the double value
-   */
-  public static double leakyReluDerivative(double x) {
-    return x > 0 ? 1 : 0.01;
-  }
-
-  /**
-   * Calculates the euclidean distance between two double arrays.
+   * Calculates the Euclidean distance between two double arrays.
    *
    * @param a - first double array
    * @param b - second double array
@@ -127,7 +57,7 @@ public final class QRMath {
   }
 
   /**
-   * Calculates the euclidean distance between two double arrays, with weights applied to each element.
+   * Calculates the Euclidean distance between two double arrays, with weights applied to each element.
    *
    * @param a       - first double array
    * @param b       - second double array
@@ -142,7 +72,7 @@ public final class QRMath {
   }
 
   /**
-   * Calculates the euclidean distance between two double arrays, with weights and biases applied to each element.
+   * Calculates the Euclidean distance between two double arrays, with weights and biases applied to each element.
    *
    * @param a       - first double array
    * @param b       - second double array
