@@ -6,6 +6,12 @@ package gg.acai.aurora;
  * © Aurora - All Rights Reserved
  */
 @FunctionalInterface
-public interface SavePoint {
+public interface SavePoint extends Runnable {
+
   void save();
+
+  @Override
+  default void run() {
+    save();
+  }
 }
