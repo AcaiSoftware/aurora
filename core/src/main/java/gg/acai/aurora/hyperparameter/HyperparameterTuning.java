@@ -42,9 +42,7 @@ public class HyperparameterTuning {
       scores.put(tune, score);
     });
 
-    return evaluator
-      .context()
-      .findBest(scores);
+    return evaluator.context().findBest(scores);
   }
 
 }
