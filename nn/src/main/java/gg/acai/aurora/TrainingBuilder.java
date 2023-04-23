@@ -2,7 +2,9 @@ package gg.acai.aurora;
 
 import gg.acai.acava.Requisites;
 import gg.acai.acava.commons.graph.Graph;
-import gg.acai.aurora.ml.ActivationFunction;
+import gg.acai.aurora.earlystop.EarlyStop;
+import gg.acai.aurora.earlystop.EarlyStoppers;
+import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.extension.ModelTrainEvent;
 import gg.acai.aurora.sets.DataSet;
 
@@ -33,6 +35,7 @@ public class TrainingBuilder {
   protected Graph<Double> graph;
   protected ActivationFunction activationFunction = ActivationFunction.SIGMOID;
   protected DataSet set;
+  protected EarlyStoppers earlyStoppers = new EarlyStoppers();
 
   public TrainingBuilder inputLayerSize(int inputLayerSize) {
     this.inputLayerSize = inputLayerSize;
@@ -86,6 +89,11 @@ public class TrainingBuilder {
 
   public TrainingBuilder autoSave() {
     this.autoSave = true;
+    return this;
+  }
+
+  public TrainingBuilder earlyStops(EarlyStop... earlyStops) {
+    this.earlyStoppers.add(earlyStops);
     return this;
   }
 
