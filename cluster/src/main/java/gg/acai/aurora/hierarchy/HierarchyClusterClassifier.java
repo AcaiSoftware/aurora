@@ -3,12 +3,15 @@ package gg.acai.aurora.hierarchy;
 import gg.acai.acava.Requisites;
 import gg.acai.aurora.Evaluator;
 import gg.acai.aurora.Clusterer;
+import gg.acai.aurora.ml.Predictable;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -19,7 +22,7 @@ import java.util.Set;
  * @since 09.04.2023 00:25
  * © Aurora - All Rights Reserved
  */
-public class HierarchyClusterClassifier implements Clusterer, Iterable<HierarchyClusterFamily> {
+public class HierarchyClusterClassifier implements Clusterer, Iterable<HierarchyClusterFamily>, Predictable {
 
   private final Set<HierarchyClusterFamily> tree;
   private final int learn_req;
@@ -43,6 +46,35 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
     HierarchyClusterFamily family = new HierarchyClusterFamily(name, centroid);
     tree.add(family);
     return family;
+  }
+
+  /**
+   * Predicts the cluster indexes for the given input values
+   * and returns them as a double array.
+   *
+   * @param input The input values to predict
+   * @return Returns the predicted cluster indexes
+   */
+  @Override
+  public double[] predict(double[] input) {
+    int len = input.length;
+    double[] output = new double[len];
+    for (int i = 0; i < len; i++) {
+      output[i] = cluster(input[i]).index();
+    }
+    return output;
+  }
+
+  /**
+   * Gets the cluster family from the given index.
+   *
+   * @param index The index to get the cluster family from
+   * @return Returns the cluster family from the given index, or null if not found
+   */
+  public Optional<HierarchyClusterFamily> fromIndex(double index) {
+    return tree.stream()
+      .filter(family -> family.index() == index)
+      .findFirst();
   }
 
   @Nonnull
@@ -179,4 +211,35 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
       .append("\n"));
     return builder.toString();
   }
+
+  public static void main(String[] args) {
+    HierarchyClusterClassifier classifier = new HierarchyClusterBuilder()
+      .tree(new HashSet<>())
+      .build();
+
+    Random random = new Random();
+    char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+    int idx = 0;
+    for (char c : chars) {
+      classifier.createFamily(String.valueOf(c), random.nextInt(++idx));
+    }
+
+    for (int it = 0; it < 30_000; it++) {
+      for (double i = 0.0; i < idx; i += 0.1) {
+        classifier.cluster(random.nextInt(idx + (int) i));
+      }
+
+      //System.out.println(classifier.draw());
+      System.out.println("Eval:" + classifier.evaluator().evaluate());
+    }
+
+    try {
+      Thread.sleep(5000L);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+
+    System.out.println(classifier.draw());
+  }
+
 }
