@@ -11,6 +11,6 @@ public interface TuningEvaluator {
 
   double evaluate(Trainable trainable, double[][] inputs, double[][] outputs);
 
-  EvaluatorContext context();
+  EvaluatorScoreContext context();
 
 }
