@@ -7,9 +7,14 @@ import gg.acai.acava.collect.pairs.Pairs;
  * @since 10.02.2023 21:20
  * © Acava - All Rights Reserved
  */
-public interface TimeEstimator<T> {
+public interface TimeEstimator<T> extends Runnable {
 
   void tick();
+
+  @Override
+  default void run() {
+    tick();
+  }
 
   double estimated(T t);
 
