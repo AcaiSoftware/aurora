@@ -1,6 +1,7 @@
 package gg.acai.aurora.hierarchy;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +26,13 @@ public class HierarchyClusterBuilder {
     Optional.ofNullable(tree)
       .orElseGet(() -> tree = new HashSet<>())
       .addAll(Arrays.asList(families));
+    return this;
+  }
+
+  public HierarchyClusterBuilder addFamilies(Collection<? extends HierarchyClusterFamily> families) {
+    Optional.ofNullable(tree)
+      .orElseGet(() -> tree = new HashSet<>())
+      .addAll(families);
     return this;
   }
 
