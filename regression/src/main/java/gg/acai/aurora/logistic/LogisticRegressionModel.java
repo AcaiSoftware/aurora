@@ -1,7 +1,8 @@
 package gg.acai.aurora.logistic;
 
 import gg.acai.aurora.Aurora;
-import gg.acai.aurora.ml.Model;
+import gg.acai.aurora.GsonSpec;
+import gg.acai.aurora.model.Model;
 
 /**
  * @author Clouke
@@ -11,8 +12,8 @@ import gg.acai.aurora.ml.Model;
 public class LogisticRegressionModel extends AbstractLogisticRegression implements Model {
 
   private final String version;
-  private boolean saveOnClose;
-  private String saveDirectory;
+  private transient boolean saveOnClose;
+  private transient String saveDirectory;
 
   public LogisticRegressionModel(double[] weights, double[] biases) {
     super(weights, biases);
@@ -20,26 +21,36 @@ public class LogisticRegressionModel extends AbstractLogisticRegression implemen
   }
 
   @Override
-  public Model setModel(String name) {
+  public Model name(String name) {
     this.name = name;
     return this;
   }
 
   @Override
-  public Model setSaveDirectory(String saveDirectory) {
+  public Model saveDirectoryPath(String saveDirectory) {
     this.saveDirectory = saveDirectory;
     return this;
   }
 
   @Override
-  public Model setSaveOnClose(boolean saveOnClose) {
+  public Model saveOnClose(boolean saveOnClose) {
     this.saveOnClose = saveOnClose;
     return this;
   }
 
   @Override
-  public String getVersion() {
+  public String version() {
     return version;
+  }
+
+  @Override
+  public String saveDirectoryPath() {
+    return saveDirectory;
+  }
+
+  @Override
+  public String name() {
+    return name;
   }
 
   @Override
@@ -50,11 +61,7 @@ public class LogisticRegressionModel extends AbstractLogisticRegression implemen
   }
 
   @Override
-  public void save() {
-  }
-
-  @Override
   public String serialize() {
-    return null;
+    return GsonSpec.standard().toJson(this);
   }
 }
