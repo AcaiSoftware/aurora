@@ -6,6 +6,12 @@ package gg.acai.aurora;
  * © Aurora - All Rights Reserved
  */
 @FunctionalInterface
-public interface Evaluator {
+public interface Evaluator extends Runnable {
+
   double evaluate();
+
+  @Override
+  default void run() {
+    evaluate();
+  }
 }
