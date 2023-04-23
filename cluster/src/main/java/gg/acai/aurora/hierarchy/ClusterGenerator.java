@@ -2,7 +2,6 @@ package gg.acai.aurora.hierarchy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.PriorityQueue;
 
 /**
  * Application of Kruskal's MST algorithm to clustering data
@@ -17,8 +16,7 @@ class DisjointSet {
 
     DisjointSet(int size) {
         e = new int[size];
-        for (int i = 0; i < size; ++i)
-            e[i] = -1;
+        Arrays.fill(e, -1);
     }
 
     boolean sameSet(int a, int b) {
@@ -49,18 +47,18 @@ class DisjointSet {
 
 }
 
-class ComparablePair implements Comparable<ComparablePair> {
+class Edge implements Comparable<Edge> {
     double distance;
     int i, j;
 
-    ComparablePair(double distance, int i, int j) {
+    Edge(double distance, int i, int j) {
         this.distance = distance;
         this.i = i;
         this.j = j;
     }
 
     @Override
-    public int compareTo(ComparablePair o) {
+    public int compareTo(Edge o) {
         return (distance > o.distance ? 1 : 0) - (o.distance > distance ? 1 : 0);
     }
 }
@@ -70,27 +68,28 @@ public class ClusterGenerator {
     static ArrayList<ArrayList<double[]>> generateCluster(double[][] input, int numClusters) {
         DisjointSet ds = new DisjointSet(input.length);
 
-        PriorityQueue<ComparablePair> pq = new PriorityQueue<>();
+        int edgeIdx = 0;
+        Edge[] edges = new Edge[input.length * (input.length - 1) / 2];
 
         for (int i = 0; i < input.length; ++i) {
             for (int j = i + 1; j < input.length; ++j) {
                 double sum_squared_diffs = 0;
+
+                // not needed
                 assert input[i].length == input[j].length;
 
                 for (int k = 0; k < input[i].length; ++k) {
                     sum_squared_diffs += (input[i][k] - input[j][k]) * (input[i][k] - input[j][k]);
                 }
 
-                double distance = Math.sqrt(sum_squared_diffs);
-
-                pq.add(new ComparablePair(distance, i, j));
+                edges[edgeIdx++] = new Edge(sum_squared_diffs, i, j);
             }
         }
 
         int currNumClusters = input.length;
 
         while (currNumClusters > numClusters) {
-            ComparablePair curr = pq.poll();
+            Edge curr = edges[--edgeIdx];
 
             if (ds.sameSet(curr.i, curr.j)) continue;
 
@@ -106,7 +105,7 @@ public class ClusterGenerator {
 
         ArrayList<ArrayList<double[]>> result = new ArrayList<>(numClusters);
         for (int i = 0; i < numClusters; i++) {
-            result.add(new ArrayList<>());
+            result.add(new ArrayList<>(ds.size(i)));
         }
 
         for (int i = 0, j = 0; i < input.length; i++) {
