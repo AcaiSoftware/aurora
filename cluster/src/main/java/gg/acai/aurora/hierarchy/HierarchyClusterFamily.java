@@ -5,6 +5,7 @@ import gg.acai.acava.Requisites;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Clouke
@@ -118,4 +119,17 @@ public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double
   public HierarchyClusterFamily clone() {
     return new HierarchyClusterFamily(label, centroid, new HashMap<>(nodeDistances), index);
   }
+
+  public static Supplier<Integer> globalIndexes() {
+    return () -> INDEX_HOLDER;
+  }
+
+  public static void resetIndexes() {
+    INDEX_HOLDER = 0;
+  }
+
+  public static void setIndexes(int index) {
+    INDEX_HOLDER = index;
+  }
+
 }
