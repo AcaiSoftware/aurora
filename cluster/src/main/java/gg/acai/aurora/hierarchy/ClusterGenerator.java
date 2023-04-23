@@ -85,9 +85,7 @@ public class ClusterGenerator {
     }
 
     Arrays.sort(edges);
-
     int currNumClusters = input.length;
-
     while (currNumClusters > numClusters) {
       Edge curr = edges[--edgeIdx];
 
@@ -97,12 +95,10 @@ public class ClusterGenerator {
       currNumClusters--;
     }
 
-
     boolean[] visited = new boolean[input.length];
     int[] index = new int[input.length];
 
     Arrays.fill(visited, false);
-
     ArrayList<ArrayList<double[]>> result = new ArrayList<>(numClusters);
     for (int i = 0; i < numClusters; i++) {
       result.add(new ArrayList<>(ds.size(i)));
