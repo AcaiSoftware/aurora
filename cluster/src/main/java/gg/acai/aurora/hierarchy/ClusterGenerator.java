@@ -11,55 +11,54 @@ import java.util.Arrays;
  * © Aurora - All Rights Reserved
  */
 class DisjointSet {
-    int[] e;
+  int[] e;
 
-    DisjointSet(int size) {
-        e = new int[size];
-        Arrays.fill(e, -1);
+  DisjointSet(int size) {
+    e = new int[size];
+    Arrays.fill(e, -1);
+  }
+
+  boolean sameSet(int a, int b) {
+    return find(a) == find(b);
+  }
+
+  int size(int x) {
+    return -e[find(x)];
+  }
+
+  int find(int x) {
+    return (e[x] < 0) ? x : (e[x] = find(e[x]));
+  }
+
+  boolean join(int a, int b) {
+    a = find(a);
+    b = find(b);
+    if (a == b) return false;
+    if (e[a] > e[b]) {
+      int temp = a;
+      a = b;
+      b = temp;
     }
-
-    boolean sameSet(int a, int b) {
-        return find(a) == find(b);
-    }
-
-    int size(int x) {
-        return -e[find(x)];
-    }
-
-    int find(int x) {
-        return (e[x] < 0) ? x : (e[x] = find(e[x]));
-    }
-
-    boolean join(int a, int b) {
-        a = find(a);
-        b = find(b);
-        if (a == b) return false;
-        if (e[a] > e[b]) {
-            int temp = a;
-            a = b;
-            b = temp;
-        }
-        e[a] += e[b];
-        e[b] = a;
-        return true;
-    }
-
+    e[a] += e[b];
+    e[b] = a;
+    return true;
+  }
 }
 
 class Edge implements Comparable<Edge> {
-    double distance;
-    int i, j;
+  double distance;
+  int i, j;
 
-    Edge(double distance, int i, int j) {
-        this.distance = distance;
-        this.i = i;
-        this.j = j;
-    }
+  Edge(double distance, int i, int j) {
+    this.distance = distance;
+    this.i = i;
+    this.j = j;
+  }
 
-    @Override
-    public int compareTo(Edge o) {
-        return (distance < o.distance ? 1 : 0) - (o.distance < distance ? 1 : 0);
-    }
+  @Override
+  public int compareTo(Edge o) {
+    return (distance < o.distance ? 1 : 0) - (o.distance < distance ? 1 : 0);
+  }
 }
 
 
