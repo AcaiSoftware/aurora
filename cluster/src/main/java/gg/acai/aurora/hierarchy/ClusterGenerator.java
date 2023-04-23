@@ -10,7 +10,6 @@ import java.util.Arrays;
  * @since 23.04.2023 20:45
  * © Aurora - All Rights Reserved
  */
-
 class DisjointSet {
     int[] e;
 
