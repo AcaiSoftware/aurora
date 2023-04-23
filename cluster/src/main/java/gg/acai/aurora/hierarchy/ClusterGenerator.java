@@ -59,7 +59,7 @@ class Edge implements Comparable<Edge> {
 
     @Override
     public int compareTo(Edge o) {
-        return (distance > o.distance ? 1 : 0) - (o.distance > distance ? 1 : 0);
+        return (distance < o.distance ? 1 : 0) - (o.distance < distance ? 1 : 0);
     }
 }
 
@@ -85,6 +85,8 @@ public class ClusterGenerator {
                 edges[edgeIdx++] = new Edge(sum_squared_diffs, i, j);
             }
         }
+
+        Arrays.sort(edges);
 
         int currNumClusters = input.length;
 
