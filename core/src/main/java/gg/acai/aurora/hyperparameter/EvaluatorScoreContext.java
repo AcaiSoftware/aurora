@@ -7,7 +7,7 @@ import java.util.Map;
  * @since 16.04.2023 21:12
  * © Aurora - All Rights Reserved
  */
-public enum EvaluatorContext {
+public enum EvaluatorScoreContext {
   HIGHEST,
   LOWEST;
 
