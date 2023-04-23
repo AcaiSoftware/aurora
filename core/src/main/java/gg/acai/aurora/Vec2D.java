@@ -6,7 +6,7 @@ import gg.acai.aurora.image.Image;
 import java.util.Collection;
 
 /**
- * Vec2D is a 2 dimensional Vector, holding two arrays of doubles, x and y.
+ * Vec2D is a 2-dimensional Vector, holding two arrays of doubles, x and y.
  * The class provides methods for accessing individual elements of the arrays, as well as methods for reversing the order of the elements in the arrays.
  * It also provides a static factory method for creating instances of the class and a method for creating an image representation of the data.
  *
