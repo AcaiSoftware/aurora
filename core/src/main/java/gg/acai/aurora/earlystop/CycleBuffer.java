@@ -1,21 +1,17 @@
-package gg.acai.aurora;
+package gg.acai.aurora.earlystop;
 
 /**
  * @author Clouke
  * @since 03.03.2023 16:02
  * © Aurora - All Rights Reserved
  */
-public final class CycleBuffer {
+public class CycleBuffer {
 
   private int buffers;
   private final int max;
 
   public CycleBuffer(int max) {
     this.max = max;
-  }
-
-  public CycleBuffer(int epochs, int divider) {
-    this.max = Math.max(20, epochs / divider);
   }
 
   public void set(int buffers) {
