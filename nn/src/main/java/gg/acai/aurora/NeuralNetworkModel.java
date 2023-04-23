@@ -1,9 +1,6 @@
 package gg.acai.aurora;
 
-import gg.acai.aurora.ml.Model;
-
-import java.io.File;
-import java.io.FileWriter;
+import gg.acai.aurora.model.Model;
 
 /**
  * @author Clouke
@@ -30,19 +27,19 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Model {
   }
 
   @Override
-  public Model setSaveDirectory(String saveDirectory) {
+  public Model saveDirectoryPath(String saveDirectory) {
     this.saveDirectory = saveDirectory;
     return this;
   }
 
   @Override
-  public Model setModel(String model) {
+  public Model name(String model) {
     super.name = model;
     return this;
   }
 
   @Override
-  public Model setSaveOnClose(boolean saveOnClose) {
+  public Model saveOnClose(boolean saveOnClose) {
     this.saveOnClose = saveOnClose;
     return this;
   }
@@ -59,42 +56,22 @@ public class NeuralNetworkModel extends AbstractNeuralNetwork implements Model {
   }
 
   @Override
-  public String getVersion() {
+  public String version() {
     return version;
   }
 
   @Override
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  public void save() {
-    long start = System.currentTimeMillis();
-    String path = saveDirectory == null ? "" : saveDirectory + File.separator;
-    String name = path + (this.name == null || this.name.isEmpty()
-      ? "model-" + System.currentTimeMillis()
-      : this.name) + ".json";
-    File file = new File(name);
-    if (!file.exists()) {
-      try {
-        file.createNewFile();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    try {
-      FileWriter writer = new FileWriter(file);
-      String json = serialize();
-      writer.write(json);
-      writer.flush();
-      writer.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      System.out.println("Saved model to " + name + " in " + (System.currentTimeMillis() - start) + "ms");
-    }
+  public String saveDirectoryPath() {
+    return saveDirectory;
+  }
+
+  @Override
+  public String name() {
+    return name;
   }
 
   @Override
   public void close() {
-    if (saveOnClose)
-      save();
+    if (saveOnClose) save();
   }
 }
