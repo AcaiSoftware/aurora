@@ -21,34 +21,19 @@ public class HierarchyClusterEvaluator implements Evaluator {
 
   @Override
   public double evaluate() {
-    int n = data.length;
-    double[] silhouettes = new double[n];
-    for (int i = 0; i < n; i++) {
-      double a = 0, b = Double.MAX_VALUE;
-      int cluster = labels[i];
-      HierarchyClusterFamily family = classifier.cluster(data[i]).clone();
-      for (int j = 0; j < n; j++) {
-        if (labels[j] == cluster) {
-          double dist = Math.abs(data[i] - data[j]);
-          if (i != j) {
-            a += dist;
-          }
-        } else {
-          classifier.cluster(data[j]);
-          double dist = Math.abs(data[i] - data[j]);
-          if (dist < b) {
-            b = dist;
-          }
+    int correctCount = 0;
+    int length = data.length;
+    for (int i = 0; i < length; i++) {
+      double[] prediction = classifier.predict(new double[]{data[i]});
+      for (double datum : prediction) {
+        if (datum == labels[i]) {
+          correctCount++;
+          break;
         }
       }
-      a /= Math.max(1, family.size() - 1);
-      silhouettes[i] = (b - a) / Math.max(a, b);
     }
-    double sum = 0;
-    for (double s : silhouettes) {
-      sum += s;
-    }
-    return sum / n;
+
+    return (double) correctCount / length;
   }
 
 }
