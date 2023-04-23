@@ -42,36 +42,6 @@ public class HierarchyClusterClassifier implements Clusterer, Iterable<Hierarchy
     return family;
   }
 
-  public static void main(String[] args) {
-
-    ArrayList<ArrayList<double[]>> a = ClusterGenerator.generateCluster(new double[][]{{0}, {1}, {10}, {12}}, 3);
-
-    for (ArrayList<double[]> cluster : a) {
-      for (double[] arr : cluster) {
-        System.out.println(arr[0]);
-      }
-      System.out.println();
-    }
-
-//    HierarchyClusterClassifier classifier = new HierarchyClusterBuilder()
-//            .tree(new HashSet<>())
-//            .addFamilies(
-//                    new HierarchyClusterFamily("a", 0.1),
-//                    new HierarchyClusterFamily("b", 0.25),
-//                    new HierarchyClusterFamily("c", 0.51),
-//                    new HierarchyClusterFamily("d", 0.77),
-//                    new HierarchyClusterFamily("e", 0.99)
-//            ).build();
-//
-//    for (double d = 0.0; d < 1.0; d += 0.01) {
-//      double prediction = classifier.predict(new double[]{d})[0];
-//      HierarchyClusterFamily node = classifier.fromIndex(prediction).orElse(null);
-//      if (node == null)
-//        throw new NullPointerException("Node is null");
-//      System.out.println(d + " -> " + node.label());
-//    }
-  }
-
   /**
    * Predicts the cluster indexes for the given input values
    * and returns them as a double array.
