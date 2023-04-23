@@ -3,7 +3,6 @@ package gg.acai.aurora.model;
 import gg.acai.acava.Requisites;
 import gg.acai.aurora.Aurora;
 import gg.acai.aurora.GsonSpec;
-import gg.acai.aurora.ml.Model;
 import gg.acai.aurora.universal.Compatibility;
 import gg.acai.aurora.exception.IncompatibleModelException;
 import gg.acai.aurora.exception.InvalidModelException;
@@ -111,9 +110,9 @@ public class ModelLoader {
 
     boolean ignoreVersions = false;
     if (options != null) {
-      model.setModel(options.name())
-        .setSaveDirectory(options.saveDirectory())
-        .setSaveOnClose(options.saving());
+      model.name(options.name())
+        .saveDirectoryPath(options.saveDirectory())
+        .saveOnClose(options.saving());
       ignoreVersions = options.ignored();
     }
 
@@ -122,7 +121,7 @@ public class ModelLoader {
       boolean compat = Compatibility.isCompatible(model.getClass());
       if (!compat) {
         throw new IncompatibleModelException(
-          "Incompatible model version, Current version: " + currentVersion + ", Model version: " + model.getVersion() +
+          "Incompatible model version, Current version: " + currentVersion + ", Model version: " + model.version() +
           ", Compatible versions: " + Compatibility.getCompatibleVersions(model.getClass()) +
           ". \nUse ModelLoader#ignoreVersionCheck() to ignore this check."
         );
