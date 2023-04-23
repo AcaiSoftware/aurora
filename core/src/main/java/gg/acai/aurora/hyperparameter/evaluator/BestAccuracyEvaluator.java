@@ -1,6 +1,6 @@
 package gg.acai.aurora.hyperparameter.evaluator;
 
-import gg.acai.aurora.hyperparameter.EvaluatorContext;
+import gg.acai.aurora.hyperparameter.EvaluatorScoreContext;
 import gg.acai.aurora.hyperparameter.TuningEvaluator;
 import gg.acai.aurora.ml.Trainable;
 
@@ -18,7 +18,7 @@ public class BestAccuracyEvaluator implements TuningEvaluator {
   }
 
   @Override
-  public EvaluatorContext context() {
-    return EvaluatorContext.HIGHEST;
+  public EvaluatorScoreContext context() {
+    return EvaluatorScoreContext.HIGHEST;
   }
 }
