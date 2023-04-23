@@ -1,4 +1,4 @@
-package gg.acai.aurora.ml;
+package gg.acai.aurora.model;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
