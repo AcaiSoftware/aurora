@@ -3,6 +3,8 @@ package gg.acai.aurora;
 import gg.acai.acava.collect.pairs.Pairs;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.acava.io.Callback;
+import gg.acai.aurora.earlystop.CycleBuffer;
+import gg.acai.aurora.earlystop.EarlyStoppers;
 import gg.acai.aurora.ml.Trainable;
 import gg.acai.aurora.ml.TrainingTimeEstimator;
 import gg.acai.aurora.extension.ModelTrainEvent;
@@ -31,6 +33,8 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
   private final int maxCycleBuffer;
   private final Graph<Double> graph;
   private final DataSet set;
+  private final EarlyStoppers earlyStoppers;
+  private final Attribute attribute = new Attribute();
   private Callback<NeuralNetworkTrainer> callback;
   private double[] accuracyTest;
 
@@ -58,6 +62,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     this.cycle = new CycleBuffer(maxCycleBuffer);
     this.estimator = new TrainingTimeEstimator(epochs);
     this.set = builder.set;
+    this.earlyStoppers = builder.earlyStoppers;
   }
 
   public void train() {
@@ -198,9 +203,13 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
         accuracy = QRMath.round(Math.pow(output[0] - 1, 2) * 100.0);
       }
 
+      attribute.set("epoch", currentEpoch);
+      attribute.set("accuracy", accuracy);
       if (maxCycleBuffer != -1) {
         if (accuracy != -1.0 && (accuracy == lastAccuracy) && accuracy < 80.0) {
-          toReturn = cycle.reached();
+          //toReturn = cycle.reached();
+          earlyStoppers.tick(attribute);
+          toReturn = earlyStoppers.shouldStop();
         } else {
           cycle.reset();
         }
@@ -221,7 +230,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     start = System.currentTimeMillis() - start;
     completed = true;
     if (autoSave) {
-      NeuralNetworkModel model = (NeuralNetworkModel) save().setSaveOnClose(true);
+      NeuralNetworkModel model = (NeuralNetworkModel) save().saveOnClose(true);
       model.close();
     }
     if (callback != null)
@@ -241,7 +250,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     WrappedNeuralNetwork wrapper = wrap();
     NeuralNetworkModel model = new NeuralNetworkModel(wrapper);
     model.setActivationFunction(activationFunction);
-    model.setModel(name).setSaveOnClose(true);
+    model.name(name).saveOnClose(true);
     return model;
   }
 
