@@ -1,7 +1,10 @@
-package gg.acai.aurora.hierarchy;
+package gg.acai.aurora.hierarchy.mst;
+
+import gg.acai.aurora.Clusterer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Application of Kruskal's MST algorithm to clustering data
@@ -62,8 +65,9 @@ class Edge implements Comparable<Edge> {
 }
 
 
-public class ClusterGenerator {
-  static ArrayList<ArrayList<double[]>> generateCluster(double[][] input, int numClusters) {
+public class MSTClusterer implements Clusterer {
+
+  public List<List<double[]>> cluster(double[][] input, int numClusters) {
     DisjointSet ds = new DisjointSet(input.length);
 
     int edgeIdx = 0;
@@ -99,7 +103,7 @@ public class ClusterGenerator {
     int[] index = new int[input.length];
 
     Arrays.fill(visited, false);
-    ArrayList<ArrayList<double[]>> result = new ArrayList<>(numClusters);
+    List<List<double[]>> result = new ArrayList<>(numClusters);
     for (int i = 0; i < numClusters; i++) {
       result.add(new ArrayList<>(ds.size(i)));
     }
