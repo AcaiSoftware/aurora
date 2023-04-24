@@ -92,11 +92,7 @@ public class MSTClusterer implements Clusterer {
     int currNumClusters = input.length;
     while (currNumClusters > numClusters) {
       Edge curr = edges[--edgeIdx];
-
-      if (ds.sameSet(curr.i, curr.j)) continue;
-
-      ds.join(curr.i, curr.j);
-      currNumClusters--;
+      currNumClusters -= ds.join(curr.i, curr.j) ? 1 : 0;
     }
 
     boolean[] visited = new boolean[input.length];
