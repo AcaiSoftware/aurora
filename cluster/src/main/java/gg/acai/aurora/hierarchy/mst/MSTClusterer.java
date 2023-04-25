@@ -64,7 +64,6 @@ final class Edge implements Comparable<Edge> {
   }
 }
 
-
 public class MSTClusterer implements Clusterer {
 
   public List<List<double[]>> cluster(double[][] input, int desiredClusterCount) {
