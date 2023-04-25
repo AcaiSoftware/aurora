@@ -1,6 +1,6 @@
 package gg.acai.aurora.earlystop;
 
-import gg.acai.aurora.Attribute;
+import gg.acai.aurora.Attributes;
 
 /**
  * @author Clouke
@@ -23,10 +23,10 @@ public class PrecisionHalt extends AbstractEarlyStop {
   }
 
   @Override
-  public void tick(Attribute attribute) {
-    double accuracy = attribute.get("accuracy");
+  public void tick(Attributes attributes) {
+    double accuracy = attributes.get("accuracy");
     if (minEpochs > 0) {
-      int epoch = attribute.get("epoch");
+      int epoch = attributes.get("epoch");
       reached = epoch >= minEpochs && accuracy >= target;
     }
     else reached = accuracy >= target;
