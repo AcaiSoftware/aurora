@@ -6,6 +6,6 @@ package gg.acai.aurora.extension;
  * © Acava - All Rights Reserved
  */
 @FunctionalInterface
-public interface ModelTrainEvent {
+public interface ModelTrainListener {
   void onTrain(TrainingTickEvent event);
 }
