@@ -56,7 +56,7 @@ public class ModelLoader implements AutoCloseable {
   }
 
   @SuppressWarnings("unchecked")
-  public <M extends Model> M load(Class<? extends Model> modelClass, Consumer<ModelLoaderOptionsBuilder> options) {
+  public <M extends Model> M load(Class<? extends Model> modelClass, Consumer<ModelRemapperBuilder> remapper) {
     Requisites.requireNonNull(modelClass, "modelClass cannot be null");
     Model model = GsonSpec
       .standard()
@@ -66,10 +66,10 @@ public class ModelLoader implements AutoCloseable {
       throw new InvalidModelException("Could not import model with json");
     }
 
-    if (options != null) {
-      ModelLoaderOptionsBuilder builder = new ModelLoaderOptionsBuilder();
-      options.accept(builder);
-      ModelLoaderOptions opts = builder.build();
+    if (remapper != null) {
+      ModelRemapperBuilder builder = new ModelRemapperBuilder();
+      remapper.accept(builder);
+      ModelRemapper opts = builder.build();
       model.name(opts.name())
         .saveOnClose(opts.saving())
         .saveDirectoryPath(opts.saveDirectory());
