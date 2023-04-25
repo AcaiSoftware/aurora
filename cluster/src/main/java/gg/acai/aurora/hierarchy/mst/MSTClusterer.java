@@ -13,7 +13,7 @@ import java.util.List;
  * @since 23.04.2023 20:45
  * © Aurora - All Rights Reserved
  */
-class DisjointSet {
+final class DisjointSet {
   int[] e;
 
   DisjointSet(int size) {
@@ -48,26 +48,29 @@ class DisjointSet {
   }
 }
 
-class Edge implements Comparable<Edge> {
-  double distance;
+final class Edge implements Comparable<Edge> {
+  double comp_value;
   int i, j;
 
-  Edge(double distance, int i, int j) {
-    this.distance = distance;
+  Edge(double comp_value, int i, int j) {
+    this.comp_value = comp_value;
     this.i = i;
     this.j = j;
   }
 
   @Override
   public int compareTo(Edge o) {
-    return (distance < o.distance ? 1 : 0) - (o.distance < distance ? 1 : 0);
+    return (comp_value < o.comp_value ? 1 : 0) - (o.comp_value < comp_value ? 1 : 0);
   }
 }
 
 
 public class MSTClusterer implements Clusterer {
 
-  public List<List<double[]>> cluster(double[][] input, int numClusters) {
+  public List<List<double[]>> cluster(double[][] input, int desiredClusterCount) {
+    if (input.length < desiredClusterCount) {
+      throw new IllegalArgumentException("Not enough data points in input to create desired number of clusters");
+    }
     DisjointSet ds = new DisjointSet(input.length);
 
     int edgeIdx = 0;
@@ -80,6 +83,10 @@ public class MSTClusterer implements Clusterer {
         // not needed
         assert input[i].length == input[j].length;
 
+        if (input[i].length == input[j].length) {
+          throw new IllegalArgumentException("Mismatching data point degrees");
+        }
+
         for (int k = 0; k < input[i].length; ++k) {
           sum_squared_diffs += (input[i][k] - input[j][k]) * (input[i][k] - input[j][k]);
         }
@@ -90,7 +97,7 @@ public class MSTClusterer implements Clusterer {
 
     Arrays.sort(edges);
     int currNumClusters = input.length;
-    while (currNumClusters > numClusters) {
+    while (currNumClusters > desiredClusterCount) {
       Edge curr = edges[--edgeIdx];
       currNumClusters -= ds.join(curr.i, curr.j) ? 1 : 0;
     }
@@ -99,8 +106,8 @@ public class MSTClusterer implements Clusterer {
     int[] index = new int[input.length];
 
     Arrays.fill(visited, false);
-    List<List<double[]>> result = new ArrayList<>(numClusters);
-    for (int i = 0; i < numClusters; i++) {
+    List<List<double[]>> result = new ArrayList<>(desiredClusterCount);
+    for (int i = 0; i < desiredClusterCount; i++) {
       result.add(new ArrayList<>(ds.size(i)));
     }
 
