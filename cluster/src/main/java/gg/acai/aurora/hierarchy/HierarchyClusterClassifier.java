@@ -16,7 +16,7 @@ import java.util.*;
  * @since 09.04.2023 00:25
  * © Aurora - All Rights Reserved
  */
-public class HierarchyClusterClassifier implements Clusterer, Iterable<HierarchyClusterFamily>, Predictable {
+public class HierarchyClusterClassifier implements Clusterer, Iterable<HierarchyClusterFamily> {
 
   private final Set<HierarchyClusterFamily> tree;
   private final int learn_req;
