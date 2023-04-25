@@ -1,6 +1,6 @@
 package gg.acai.aurora.earlystop;
 
-import gg.acai.aurora.Attribute;
+import gg.acai.aurora.Attributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,8 +43,9 @@ public final class EarlyStoppers {
     return this;
   }
 
-  public void tick(Attribute attribute) {
-    earlyStops.forEach(earlyStop -> earlyStop.tick(attribute));
+  public boolean tick(Attributes attributes) {
+    earlyStops.forEach(earlyStop -> earlyStop.tick(attributes));
+    return earlyStops.stream().anyMatch(EarlyStop::shouldStop);
   }
 
   public boolean shouldStop() {
