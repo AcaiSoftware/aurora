@@ -1,6 +1,6 @@
 package gg.acai.aurora.earlystop;
 
-import gg.acai.aurora.Attribute;
+import gg.acai.aurora.Attributes;
 
 /**
  * @author Clouke
@@ -24,12 +24,12 @@ public class Stagnation extends AbstractEarlyStop {
   }
 
   @Override
-  public void tick(Attribute attribute) {
-    double accuracy = attribute.get("accuracy");
+  public void tick(Attributes attributes) {
+    double accuracy = attributes.get("accuracy");
     if (accuracy == lastAccuracy && accuracy < maxAccuracy)
       stagnated = buffer.reached();
     else
-      buffer.reset();
+      buffer.wipe();
     lastAccuracy = accuracy;
   }
 
