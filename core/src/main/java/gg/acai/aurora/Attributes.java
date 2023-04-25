@@ -11,19 +11,19 @@ import java.util.Map;
  * © Aurora - All Rights Reserved
  */
 @SuppressWarnings("unchecked")
-public class Attribute implements Closeable {
+public class Attributes implements Closeable {
 
   private final Map<String, Object> attributes;
 
-  public Attribute(Map<String, Object> attributes) {
+  public Attributes(Map<String, Object> attributes) {
     this.attributes = attributes;
   }
 
-  public Attribute() {
+  public Attributes() {
     this(new HashMap<>());
   }
 
-  public Attribute set(String key, Object value) {
+  public Attributes set(String key, Object value) {
     attributes.put(key, value);
     return this;
   }
