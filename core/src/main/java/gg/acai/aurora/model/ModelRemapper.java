@@ -5,14 +5,14 @@ package gg.acai.aurora.model;
  * @since 16.04.2023 15:37
  * © Aurora - All Rights Reserved
  */
-public class ModelLoaderOptions {
+public class ModelRemapper {
 
   private final String name;
   private final String saveDirectory;
   private final boolean saveOnClose;
   private final boolean ignoreVersion;
 
-  public ModelLoaderOptions(String name, String saveDirectory, boolean saveOnClose, boolean ignoreVersion) {
+  public ModelRemapper(String name, String saveDirectory, boolean saveOnClose, boolean ignoreVersion) {
     this.name = name;
     this.saveDirectory = saveDirectory;
     this.saveOnClose = saveOnClose;
