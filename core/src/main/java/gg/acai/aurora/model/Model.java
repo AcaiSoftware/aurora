@@ -37,4 +37,9 @@ public interface Model extends Serializer, SavePoint, Closeable {
     });
   }
 
+  default void save(String saveDirectory) throws ModelStorageException {
+    saveDirectoryPath(saveDirectory);
+    save();
+  }
+
 }
