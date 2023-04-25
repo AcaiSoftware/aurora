@@ -117,4 +117,8 @@ public class MSTClusterer implements Clusterer {
 
     return result;
   }
+
+  public double[] predict(double[] input) {
+    throw new UnsupportedOperationException();
+  }
 }
