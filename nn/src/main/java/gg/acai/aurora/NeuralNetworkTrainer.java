@@ -1,14 +1,15 @@
 package gg.acai.aurora;
 
+import com.google.common.base.Preconditions;
 import gg.acai.acava.collect.pairs.Pairs;
 import gg.acai.acava.commons.graph.Graph;
 import gg.acai.acava.io.Callback;
-import gg.acai.aurora.earlystop.CycleBuffer;
 import gg.acai.aurora.earlystop.EarlyStoppers;
 import gg.acai.aurora.ml.Trainable;
 import gg.acai.aurora.ml.TrainingTimeEstimator;
-import gg.acai.aurora.extension.ModelTrainEvent;
+import gg.acai.aurora.extension.ModelTrainListener;
 import gg.acai.aurora.extension.TrainingTickEvent;
+import gg.acai.aurora.optimizers.Optimizer;
 import gg.acai.aurora.sets.DataSet;
 
 import javax.annotation.Nonnull;
@@ -24,19 +25,19 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
   private final int epochs;
   private final double learningRate;
   private final ExecutorService thread;
-  private final ModelTrainEvent listener;
+  private final ModelTrainListener listener;
   private final TimeEstimator<Integer> estimator;
   private final boolean printTrainingProgress;
   private final boolean autoSave;
   private final boolean shouldPrintStats;
-  private final CycleBuffer cycle;
   private final int maxCycleBuffer;
   private final Graph<Double> graph;
   private final DataSet set;
   private final EarlyStoppers earlyStoppers;
-  private final Attribute attribute = new Attribute();
+  private final Attributes attributes = new Attributes();
   private Callback<NeuralNetworkTrainer> callback;
   private double[] accuracyTest;
+  private final Optimizer optimizer;
 
   private long start;
   private long tick;
@@ -59,10 +60,10 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     this.shouldPrintStats = builder.shouldPrintStats;
     this.maxCycleBuffer = builder.maxCycleBuffer;
     this.graph = builder.graph;
-    this.cycle = new CycleBuffer(maxCycleBuffer);
     this.estimator = new TrainingTimeEstimator(epochs);
     this.set = builder.set;
     this.earlyStoppers = builder.earlyStoppers;
+    this.optimizer = builder.optimizer.apply(learningRate);
   }
 
   public void train() {
@@ -104,31 +105,21 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
             error[j] = targets[i][j] - output[j];
           }
           // Perform backpropagation
-          double[] delta2 = new double[output.length];
+          double[] delta_output = new double[output.length];
           for (int j = 0; j < output.length; j++) {
-            delta2[j] = error[j] * activationFunction.derivative(output[j]);
+            delta_output[j] = error[j] * activationFunction.derivative(output[j]);
           }
-          double[] delta1 = new double[hidden.length];
+          double[] delta_hidden = new double[hidden.length];
           for (int j = 0; j < hidden.length; j++) {
             double sum = 0;
             for (int k = 0; k < output.length; k++) {
-              sum += delta2[k] * weights_hidden_to_output[j][k];
+              sum += delta_output[k] * weights_hidden_to_output[j][k];
             }
-            delta1[j] = sum * activationFunction.derivative(hidden[j]);
+            delta_hidden[j] = sum * activationFunction.derivative(hidden[j]);
           }
+
           // Update weights and biases
-          for (int j = 0; j < weights_input_to_hidden[0].length; j++) {
-            for (int k = 0; k < weights_input_to_hidden.length; k++) {
-              weights_input_to_hidden[k][j] += learningRate * delta1[j] * inputs[i][k];
-            }
-            biases_hidden[j] += learningRate * delta1[j];
-          }
-          for (int j = 0; j < weights_hidden_to_output[0].length; j++) {
-            for (int k = 0; k < weights_hidden_to_output.length; k++) {
-              weights_hidden_to_output[k][j] += learningRate * delta2[j] * hidden[k];
-            }
-            biases_output[j] += learningRate * delta2[j];
-          }
+          optimizer.update(i, weights_input_to_hidden, weights_hidden_to_output, delta_hidden, delta_output, biases_hidden, biases_output, inputs, hidden);
         }
         boolean stagnation = proceedTick(e);
         if (stagnation) {
@@ -152,15 +143,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
   }
 
   public TrainingStats stats() {
-    if (!completed) {
-      throw new IllegalStateException("Training is not completed yet!");
-    }
-
-    double accuracy = -1.0;
-    if (accuracyTest != null) {
-      double[] output = predict(accuracyTest);
-      accuracy = QRMath.round(Math.pow(output[0] - 1, 2) * 100.0);
-    }
+    Preconditions.checkArgument(completed, "Training is not completed yet!");
     return new TrainingStats(epochs, learningRate, accuracy, start, accurateEstimation, graph);
   }
 
@@ -203,17 +186,9 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
         accuracy = QRMath.round(Math.pow(output[0] - 1, 2) * 100.0);
       }
 
-      attribute.set("epoch", currentEpoch);
-      attribute.set("accuracy", accuracy);
-      if (maxCycleBuffer != -1) {
-        if (accuracy != -1.0 && (accuracy == lastAccuracy) && accuracy < 80.0) {
-          //toReturn = cycle.reached();
-          earlyStoppers.tick(attribute);
-          toReturn = earlyStoppers.shouldStop();
-        } else {
-          cycle.reset();
-        }
-      }
+      attributes.set("epoch", currentEpoch);
+      attributes.set("accuracy", accuracy);
+      toReturn = earlyStoppers.tick(attributes);
 
       lastAccuracy = accuracy;
       String b = Aurora.ANSI_BOLD;
@@ -230,7 +205,8 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     start = System.currentTimeMillis() - start;
     completed = true;
     if (autoSave) {
-      NeuralNetworkModel model = (NeuralNetworkModel) save().saveOnClose(true);
+      NeuralNetworkModel model = save();
+      model.saveOnClose(true);
       model.close();
     }
     if (callback != null)
@@ -271,7 +247,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
       bullet + "Change the training data" + "\n" +
       bullet + "Change the training parameters (epochs, etc.)\n" +
       bullet + "Try using" + b + " HyperparameterTuning" + r + " to find the best parameters for your model." + "\n" +
-      "Buffered for " + cycle.current() + "/" + maxCycleBuffer + " cycles. If you wish to disable this feature, " +
+      "Buffered for " + /* cycle.current() */ -1 + "/" + maxCycleBuffer + " cycles. If you wish to disable this feature, " +
       "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1\n"
     );
   }
