@@ -9,7 +9,6 @@ import java.util.List;
  * @since 18.04.2023 04:07
  * © Aurora - All Rights Reserved
  */
-@FunctionalInterface
 public interface ExpectationMaximization extends Clusterer {
   /**
    * Gets the cluster of the data points in this EM model.
