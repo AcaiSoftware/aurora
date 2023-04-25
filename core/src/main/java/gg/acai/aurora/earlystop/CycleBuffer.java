@@ -8,10 +8,10 @@ package gg.acai.aurora.earlystop;
 public class CycleBuffer {
 
   private int buffers;
-  private final int max;
+  private final int maxCycles;
 
-  public CycleBuffer(int max) {
-    this.max = max;
+  public CycleBuffer(int maxCycles) {
+    this.maxCycles = maxCycles;
   }
 
   public void set(int buffers) {
@@ -19,7 +19,7 @@ public class CycleBuffer {
   }
 
   public boolean reached() {
-    return add() >= max;
+    return add() >= maxCycles;
   }
 
   public int current() {
@@ -30,7 +30,7 @@ public class CycleBuffer {
     return ++buffers;
   }
 
-  public void reset() {
+  public void wipe() {
     buffers = 0;
   }
 
