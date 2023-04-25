@@ -5,11 +5,14 @@ import gg.acai.acava.commons.graph.Graph;
 import gg.acai.aurora.earlystop.EarlyStop;
 import gg.acai.aurora.earlystop.EarlyStoppers;
 import gg.acai.aurora.model.ActivationFunction;
-import gg.acai.aurora.extension.ModelTrainEvent;
+import gg.acai.aurora.extension.ModelTrainListener;
+import gg.acai.aurora.optimizers.Optimizer;
+import gg.acai.aurora.optimizers.StochasticGradientDescent;
 import gg.acai.aurora.sets.DataSet;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 /**
  * @author Clouke
@@ -29,26 +32,21 @@ public class TrainingBuilder {
   protected int outputLayerSize;
   protected int hiddenLayerSize;
   protected ExecutorService thread;
-  protected ModelTrainEvent listener;
+  protected ModelTrainListener listener;
   protected double[] accuracyTest;
   protected int maxCycleBuffer = 30;
   protected Graph<Double> graph;
   protected ActivationFunction activationFunction = ActivationFunction.SIGMOID;
   protected DataSet set;
   protected EarlyStoppers earlyStoppers = new EarlyStoppers();
+  protected Optimizer optimizer = new StochasticGradientDescent();
 
-  public TrainingBuilder inputLayerSize(int inputLayerSize) {
-    this.inputLayerSize = inputLayerSize;
-    return this;
-  }
-
-  public TrainingBuilder outputLayerSize(int outputLayerSize) {
-    this.outputLayerSize = outputLayerSize;
-    return this;
-  }
-
-  public TrainingBuilder hiddenLayerSize(int hiddenLayerSize) {
-    this.hiddenLayerSize = hiddenLayerSize;
+  public TrainingBuilder layers(Consumer<LayerOptions> options) {
+    LayerOptions layerOptions = new LayerOptions();
+    options.accept(layerOptions);
+    inputLayerSize = layerOptions.inputLayerSize;
+    outputLayerSize = layerOptions.outputLayerSize;
+    hiddenLayerSize = layerOptions.hiddenLayerSize;
     return this;
   }
 
@@ -69,6 +67,11 @@ public class TrainingBuilder {
 
   public TrainingBuilder maxCycleBuffer(int maxCycleBuffer) {
     this.maxCycleBuffer = maxCycleBuffer;
+    return this;
+  }
+
+  public TrainingBuilder optimizer(Optimizer optimizer) {
+    this.optimizer = optimizer;
     return this;
   }
 
@@ -107,28 +110,16 @@ public class TrainingBuilder {
     return this;
   }
 
-  public TrainingBuilder useGraph(int maxDisplayValue, int maxSize) {
-    this.graph = Graph.newBuilder()
-      .setMaxDisplayValue(maxDisplayValue)
-      .setFixedSize(maxSize)
-      .build();
-    return this;
-  }
-
   public TrainingBuilder withDataSet(DataSet set) {
     this.set = set;
     return this;
-  }
-
-  public TrainingBuilder useGraph() {
-    return useGraph(10, 120);
   }
 
   public TrainingBuilder async() {
     return thread(Executors.newSingleThreadExecutor());
   }
 
-  public TrainingBuilder listener(ModelTrainEvent listener) {
+  public TrainingBuilder listener(ModelTrainListener listener) {
     this.listener = listener;
     return this;
   }
@@ -140,6 +131,41 @@ public class TrainingBuilder {
     Requisites.checkArgument(epochs > 0, "Epochs must be greater than 0");
     Requisites.checkArgument(learningRate > 0.0, "Learning rate must be greater than 0.0");
     return new NeuralNetworkTrainer(this);
+  }
+
+  public static class LayerOptions {
+
+    private int inputLayerSize;
+    private int hiddenLayerSize;
+    private int outputLayerSize;
+
+    public LayerOptions inputLayers(int inputLayerSize) {
+      this.inputLayerSize = inputLayerSize;
+      return this;
+    }
+
+    public LayerOptions hiddenLayers(int hiddenLayerSize) {
+      this.hiddenLayerSize = hiddenLayerSize;
+      return this;
+    }
+
+    public LayerOptions outputLayers(int outputLayerSize) {
+      this.outputLayerSize = outputLayerSize;
+      return this;
+    }
+
+    int inputLayerSize() {
+      return inputLayerSize;
+    }
+
+    int hiddenLayerSize() {
+      return hiddenLayerSize;
+    }
+
+    int outputLayerSize() {
+      return outputLayerSize;
+    }
+
   }
 
 }
