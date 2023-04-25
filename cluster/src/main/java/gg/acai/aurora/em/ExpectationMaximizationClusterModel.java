@@ -79,4 +79,9 @@ public class ExpectationMaximizationClusterModel implements Model, ExpectationMa
   public boolean test(Integer integer) {
     return cluster.contains(integer);
   }
+
+  @Override
+  public double[] predict(double[] input) {
+    return null;
+  }
 }
