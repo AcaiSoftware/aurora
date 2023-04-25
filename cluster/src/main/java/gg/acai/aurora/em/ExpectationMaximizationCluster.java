@@ -37,6 +37,15 @@ public class ExpectationMaximizationCluster implements ExpectationMaximization {
     initialize();
   }
 
+  @Override
+  public double[] predict(double[] input) {
+    double[] probabilities = new double[k];
+    for (int i = 0; i < k; i++) {
+      probabilities[i] = weights[i] * gaussian(input, means[i], variances[i]);
+    }
+    return probabilities;
+  }
+
   /**
    * Initialize the means, variances, and weights
    */
