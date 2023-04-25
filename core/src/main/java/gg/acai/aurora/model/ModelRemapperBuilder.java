@@ -5,34 +5,34 @@ package gg.acai.aurora.model;
  * @since 16.04.2023 15:44
  * © Aurora - All Rights Reserved
  */
-public class ModelLoaderOptionsBuilder {
+public class ModelRemapperBuilder {
 
   private String name;
   private String saveDirectory;
   private boolean saveOnClose = true;
   private boolean ignoreVersion = false;
 
-  public ModelLoaderOptionsBuilder name(String name) {
+  public ModelRemapperBuilder name(String name) {
     this.name = name;
     return this;
   }
 
-  public ModelLoaderOptionsBuilder saveDirectory(String saveDirectory) {
+  public ModelRemapperBuilder saveDirectory(String saveDirectory) {
     this.saveDirectory = saveDirectory;
     return this;
   }
 
-  public ModelLoaderOptionsBuilder enableAutoSave() {
+  public ModelRemapperBuilder enableAutoSave() {
     this.saveOnClose = false;
     return this;
   }
 
-  public ModelLoaderOptionsBuilder ignoreVersion() {
+  public ModelRemapperBuilder ignoreVersion() {
     this.ignoreVersion = true;
     return this;
   }
 
-  public ModelLoaderOptions build() {
-    return new ModelLoaderOptions(name, saveDirectory, saveOnClose, ignoreVersion);
+  public ModelRemapper build() {
+    return new ModelRemapper(name, saveDirectory, saveOnClose, ignoreVersion);
   }
 }
