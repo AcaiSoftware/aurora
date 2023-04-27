@@ -2,9 +2,9 @@ package gg.acai.aurora.logistic;
 
 import gg.acai.acava.annotated.Optionally;
 import gg.acai.aurora.model.ActivationFunction;
-import gg.acai.aurora.ml.MLContext;
-import gg.acai.aurora.ml.MLContextProvider;
-import gg.acai.aurora.ml.Predictable;
+import gg.acai.aurora.model.MLContext;
+import gg.acai.aurora.model.MLContextProvider;
+import gg.acai.aurora.model.Predictable;
 
 import java.util.Arrays;
 
