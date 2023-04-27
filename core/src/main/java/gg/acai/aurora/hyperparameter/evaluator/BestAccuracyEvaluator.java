@@ -2,7 +2,7 @@ package gg.acai.aurora.hyperparameter.evaluator;
 
 import gg.acai.aurora.hyperparameter.EvaluatorScoreContext;
 import gg.acai.aurora.hyperparameter.TuningEvaluator;
-import gg.acai.aurora.ml.Trainable;
+import gg.acai.aurora.model.Trainable;
 
 /**
  * @author Clouke
