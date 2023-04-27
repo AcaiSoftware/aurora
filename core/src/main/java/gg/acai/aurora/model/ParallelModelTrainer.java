@@ -1,7 +1,6 @@
 package gg.acai.aurora.model;
 
 import gg.acai.acava.collect.maps.BiMap;
-import gg.acai.aurora.ml.Trainable;
 
 import java.util.List;
 import java.util.function.Consumer;
