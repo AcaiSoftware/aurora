@@ -14,6 +14,10 @@ public class CycleBuffer {
     this.maxCycles = maxCycles;
   }
 
+  public int max() {
+    return maxCycles;
+  }
+
   public void set(int buffers) {
     this.buffers = buffers;
   }
