@@ -1,7 +1,5 @@
 package gg.acai.aurora.degree;
 
-import gg.acai.aurora.ml.LevenshteinDistance;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
