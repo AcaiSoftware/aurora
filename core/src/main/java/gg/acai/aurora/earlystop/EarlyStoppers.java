@@ -1,6 +1,6 @@
 package gg.acai.aurora.earlystop;
 
-import gg.acai.aurora.Attributes;
+import gg.acai.acava.commons.Attributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,8 +48,12 @@ public final class EarlyStoppers {
     return earlyStops.stream().anyMatch(EarlyStop::shouldStop);
   }
 
-  public boolean shouldStop() {
-    return earlyStops.stream().anyMatch(EarlyStop::shouldStop);
+  public String terminationMessage() {
+    return earlyStops.stream()
+      .filter(EarlyStop::shouldStop)
+      .findFirst()
+      .map(EarlyStop::terminationMessage)
+      .orElse("");
   }
 
   public List<EarlyStop> getEarlyStops() {
