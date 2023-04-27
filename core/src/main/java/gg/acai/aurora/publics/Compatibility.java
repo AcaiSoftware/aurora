@@ -1,4 +1,4 @@
-package gg.acai.aurora.universal;
+package gg.acai.aurora.publics;
 
 import gg.acai.aurora.Aurora;
 
