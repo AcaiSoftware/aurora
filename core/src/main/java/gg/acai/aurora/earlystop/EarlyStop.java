@@ -1,6 +1,6 @@
 package gg.acai.aurora.earlystop;
 
-import gg.acai.aurora.Attributes;
+import gg.acai.acava.commons.Attributes;
 
 /**
  * @author Clouke
@@ -12,5 +12,7 @@ public interface EarlyStop {
   void tick(Attributes attributes);
 
   boolean shouldStop();
+
+  String terminationMessage();
 
 }
