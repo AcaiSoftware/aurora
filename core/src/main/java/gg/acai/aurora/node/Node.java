@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A tree node that holds a value and a map of its children.
+ * An attributed tree node that holds a value and a map of its children.
  *
  * @author Clouke
  * @since 02.05.2023 15:31
