@@ -10,6 +10,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 /**
+ * A parallel model trainer which provides multithreaded training for models.
+ *
  * @author Clouke
  * @since 17.04.2023 01:26
  * © Aurora - All Rights Reserved

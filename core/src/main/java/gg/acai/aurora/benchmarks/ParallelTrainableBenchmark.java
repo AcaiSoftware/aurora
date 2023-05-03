@@ -5,6 +5,8 @@ import gg.acai.aurora.model.Trainable;
 import java.util.stream.IntStream;
 
 /**
+ * A parallel implementation of {@link TrainableBenchmark}.
+ *
  * @author Clouke
  * @since 18.04.2023 01:52
  * © Aurora - All Rights Reserved
