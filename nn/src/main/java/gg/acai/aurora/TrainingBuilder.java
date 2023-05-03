@@ -1,17 +1,20 @@
 package gg.acai.aurora;
 
 import gg.acai.acava.Requisites;
-import gg.acai.acava.commons.graph.Graph;
 import gg.acai.aurora.earlystop.EarlyStop;
 import gg.acai.aurora.earlystop.EarlyStoppers;
+import gg.acai.aurora.hyperparameter.Tune;
+import gg.acai.aurora.model.EpochAction;
+import gg.acai.aurora.publics.io.Bar;
 import gg.acai.aurora.model.ActivationFunction;
-import gg.acai.aurora.extension.ModelTrainListener;
 import gg.acai.aurora.optimizers.Optimizer;
 import gg.acai.aurora.optimizers.StochasticGradientDescent;
 import gg.acai.aurora.sets.DataSet;
+import gg.acai.aurora.sets.TestSet;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -21,32 +24,41 @@ import java.util.function.Consumer;
  */
 public class TrainingBuilder {
 
-  protected boolean shouldPrintTrainingProgress = true;
   protected boolean shouldPrintStats = true;
   protected boolean autoSave = false;
 
   protected int epochs = -1;
   protected double learningRate = -1.0;
 
+  protected String name;
   protected int inputLayerSize;
   protected int outputLayerSize;
   protected int hiddenLayerSize;
-  protected ExecutorService thread;
-  protected ModelTrainListener listener;
-  protected double[] accuracyTest;
-  protected int maxCycleBuffer = 30;
-  protected Graph<Double> graph;
   protected ActivationFunction activationFunction = ActivationFunction.SIGMOID;
   protected DataSet set;
   protected EarlyStoppers earlyStoppers = new EarlyStoppers();
   protected Optimizer optimizer = new StochasticGradientDescent();
+  protected Set<EpochAction<NeuralNetwork>> epochActions = new HashSet<>();
+  protected Bar progressBar = Bar.CLASSIC;
+  protected TestSet evaluationSet;
+  protected AccuracySupplier accuracySupplier;
 
-  public TrainingBuilder layers(Consumer<LayerOptions> options) {
-    LayerOptions layerOptions = new LayerOptions();
-    options.accept(layerOptions);
-    inputLayerSize = layerOptions.inputLayerSize;
-    outputLayerSize = layerOptions.outputLayerSize;
-    hiddenLayerSize = layerOptions.hiddenLayerSize;
+  public TrainingBuilder name(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public TrainingBuilder layers(Consumer<LayerMapper> mapper) {
+    LayerMapper layerMapper = new LayerMapper();
+    mapper.accept(layerMapper);
+    inputLayerSize = layerMapper.inputLayerSize;
+    outputLayerSize = layerMapper.outputLayerSize;
+    hiddenLayerSize = layerMapper.hiddenLayerSize;
+    return this;
+  }
+
+  public TrainingBuilder printing(Bar progressBar) {
+    this.progressBar = progressBar;
     return this;
   }
 
@@ -60,13 +72,20 @@ public class TrainingBuilder {
     return this;
   }
 
-  public TrainingBuilder activationFunction(ActivationFunction activationFunction) {
-    this.activationFunction = activationFunction;
+  public TrainingBuilder accuracySupplier(AccuracySupplier accuracySupplier) {
+    this.accuracySupplier = accuracySupplier;
     return this;
   }
 
-  public TrainingBuilder maxCycleBuffer(int maxCycleBuffer) {
-    this.maxCycleBuffer = maxCycleBuffer;
+  public TrainingBuilder fromTune(Tune tune) {
+    this.learningRate = tune.learningRate();
+    this.epochs = tune.epochs();
+    this.hiddenLayerSize = tune.layers();
+    return this;
+  }
+
+  public TrainingBuilder activationFunction(ActivationFunction activationFunction) {
+    this.activationFunction = activationFunction;
     return this;
   }
 
@@ -75,13 +94,8 @@ public class TrainingBuilder {
     return this;
   }
 
-  public TrainingBuilder disableCycleBuffer() {
-    this.maxCycleBuffer = -1;
-    return this;
-  }
-
-  public TrainingBuilder disableProgressPrint() {
-    this.shouldPrintTrainingProgress = false;
+  public TrainingBuilder evaluationSet(TestSet set) {
+    this.evaluationSet = set;
     return this;
   }
 
@@ -100,27 +114,14 @@ public class TrainingBuilder {
     return this;
   }
 
-  public TrainingBuilder thread(ExecutorService thread) {
-    this.thread = thread;
-    return this;
-  }
-
-  public TrainingBuilder accuracyTest(double[] accuracyTest) {
-    this.accuracyTest = accuracyTest;
+  @SafeVarargs
+  public final TrainingBuilder epochActions(EpochAction<NeuralNetwork>... epochActions) {
+    this.epochActions.addAll(Arrays.asList(epochActions));
     return this;
   }
 
   public TrainingBuilder withDataSet(DataSet set) {
     this.set = set;
-    return this;
-  }
-
-  public TrainingBuilder async() {
-    return thread(Executors.newSingleThreadExecutor());
-  }
-
-  public TrainingBuilder listener(ModelTrainListener listener) {
-    this.listener = listener;
     return this;
   }
 
@@ -133,23 +134,23 @@ public class TrainingBuilder {
     return new NeuralNetworkTrainer(this);
   }
 
-  public static class LayerOptions {
+  public static class LayerMapper {
 
     private int inputLayerSize;
     private int hiddenLayerSize;
     private int outputLayerSize;
 
-    public LayerOptions inputLayers(int inputLayerSize) {
+    public LayerMapper inputLayers(int inputLayerSize) {
       this.inputLayerSize = inputLayerSize;
       return this;
     }
 
-    public LayerOptions hiddenLayers(int hiddenLayerSize) {
+    public LayerMapper hiddenLayers(int hiddenLayerSize) {
       this.hiddenLayerSize = hiddenLayerSize;
       return this;
     }
 
-    public LayerOptions outputLayers(int outputLayerSize) {
+    public LayerMapper outputLayers(int outputLayerSize) {
       this.outputLayerSize = outputLayerSize;
       return this;
     }
