@@ -1,12 +1,16 @@
 package gg.acai.aurora.hierarchy;
 
 import gg.acai.acava.Requisites;
-import gg.acai.aurora.Evaluator;
+import gg.acai.aurora.model.Evaluator;
 import gg.acai.aurora.Clusterer;
-import gg.acai.aurora.ml.Predictable;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * A recursive hierarchical cluster classifier, classifying nodes
