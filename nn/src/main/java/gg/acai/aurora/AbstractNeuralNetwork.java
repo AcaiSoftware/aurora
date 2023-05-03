@@ -2,18 +2,14 @@ package gg.acai.aurora;
 
 import com.google.gson.annotations.SerializedName;
 import gg.acai.acava.annotated.Optionally;
-import gg.acai.acava.scheduler.AsyncPlaceholder;
-import gg.acai.acava.scheduler.Schedulers;
 import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.model.MLContextProvider;
 import gg.acai.aurora.model.MLContext;
 import gg.acai.aurora.model.Predictable;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
 
 /**
  * @author Clouke
@@ -63,20 +59,8 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
     this.biases_output = biases_output;
   }
 
-  public Optional<String> getName() {
-    return Optional.ofNullable(name);
-  }
-
   public void setActivationFunction(ActivationFunction activationFunction) {
     this.activationFunction = activationFunction;
-  }
-
-  public ActivationFunction getActivationFunction() {
-    return activationFunction;
-  }
-
-  public void setModelName(String model) {
-    this.name = model;
   }
 
   @Override
@@ -101,16 +85,12 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
     return output;
   }
 
+  public ActivationFunction activation() {
+    return activationFunction;
+  }
+
   public WrappedNeuralNetwork wrap() {
     return new WrappedNeuralNetwork(weights_input_to_hidden, weights_hidden_to_output, biases_hidden, biases_output);
-  }
-
-  public AsyncPlaceholder<double[]> predictAsync(double[] input) {
-    return Schedulers.supplyAsync(() -> predict(input));
-  }
-
-  public Stream<double[]> map(double[] inputs) {
-    return Stream.of(inputs).map(this::predict);
   }
 
   @Override
