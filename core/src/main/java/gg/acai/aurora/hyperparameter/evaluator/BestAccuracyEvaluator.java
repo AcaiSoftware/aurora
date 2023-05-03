@@ -5,6 +5,8 @@ import gg.acai.aurora.hyperparameter.TuningEvaluator;
 import gg.acai.aurora.model.Trainable;
 
 /**
+ * A simple evaluator which returns the best accuracy.
+ *
  * @author Clouke
  * @since 16.04.2023 21:22
  * © Aurora - All Rights Reserved

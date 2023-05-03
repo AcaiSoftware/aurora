@@ -1,6 +1,8 @@
 package gg.acai.aurora.publics.io;
 
 /**
+ * Bar symbols for the progress bar.
+ *
  * @author Clouke
  * @since 25.04.2023 07:29
  * © Aurora - All Rights Reserved

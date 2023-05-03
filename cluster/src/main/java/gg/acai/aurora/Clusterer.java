@@ -5,6 +5,8 @@ import gg.acai.aurora.model.MLContextProvider;
 import gg.acai.aurora.model.Predictable;
 
 /**
+ * A clusterer marker interface.
+ *
  * @author Clouke
  * @since 09.04.2023 20:05
  * © Aurora - All Rights Reserved
