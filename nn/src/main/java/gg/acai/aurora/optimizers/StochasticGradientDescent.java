@@ -1,6 +1,8 @@
 package gg.acai.aurora.optimizers;
 
 /**
+ * A Stochastic Gradient Descent (SGD) optimizer implementation.
+ *
  * @author Clouke
  * @since 25.04.2023 04:16
  * © Aurora - All Rights Reserved

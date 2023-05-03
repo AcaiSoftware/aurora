@@ -1,6 +1,7 @@
 package gg.acai.aurora.hyperparameter;
 
 /**
+ * A standard tune wrapper containing the learning rate, epochs and layers.
  * @author Clouke
  * @since 16.04.2023 21:10
  * © Aurora - All Rights Reserved

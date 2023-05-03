@@ -4,6 +4,11 @@ import gg.acai.acava.commons.Attributes;
 import gg.acai.aurora.QRMath;
 
 /**
+ * A stagnation early stopper terminating the epoch iteration when the model stagnates (accuracy does not improve).
+ * <p>
+ * Checks whether the accuracy has not improved for a given number of cycles
+ * and terminates the epoch iteration if so.
+ *
  * @author Clouke
  * @since 23.04.2023 03:49
  * © Aurora - All Rights Reserved
@@ -16,6 +21,12 @@ public class Stagnation implements EarlyStop {
   private boolean stagnated;
   private int lastStage = -1;
 
+  /**
+   * Constructs a new Stagnation early stopper with the given maximum cycles and maximum accuracy.
+   *
+   * @param maxCycles The max number of cycles to buffer for before terminating the epoch iteration.
+   * @param maxAccuracy If the accuracy is less than this value, the model is considered to have stagnated.
+   */
   public Stagnation(int maxCycles, double maxAccuracy) {
     this.buffer = new CycleBuffer(maxCycles);
     this.maxAccuracy = maxAccuracy;
