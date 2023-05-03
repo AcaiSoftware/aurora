@@ -5,6 +5,23 @@ import gg.acai.aurora.sets.TestSet;
 import java.util.Map;
 
 /**
+ * <p>A common model evaluation metric provider, providing the following metrics:
+ * <ul>
+ *   <li>Accuracy</li>
+ *   <li>Precision</li>
+ *   <li>Recall</li>
+ *   <li>F1 Score</li>
+ * </ul>
+ *
+ * Call {@link #evaluate()} to calculate the metrics.
+ *
+ * <p>Example Usage:
+ * <pre>{@code
+ *  ModelMetrics metrics = new ModelMetrics(model, testSet);
+ *  metrics.evaluate();
+ *  System.out.println(metrics.summary());
+ * }</pre>
+ *
  * @author Clouke
  * @since 27.04.2023 21:05
  * © Aurora - All Rights Reserved

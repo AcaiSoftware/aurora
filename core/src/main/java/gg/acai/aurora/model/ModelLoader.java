@@ -13,6 +13,48 @@ import java.util.function.Consumer;
 
 /**
  * A flexible model loader for machine learning models.
+ * <p> Example Usage:
+ * In this example we will load a neural network model.
+ * <pre>{@code
+ *  NeuralNetworkModel model = null;
+ *  try (ModelLoader loader = new ModelLoader(new File("model.json"))) { // your model file
+ *    model = loader.load(NeuralNetworkModel.class);
+ *  }
+ * }</pre>
+ *
+ * <p>Loading a model with a remapper from a URL:
+ * <pre>{@code
+ *  NeuralNetworkModel model = null;
+ *  try (ModelLoader loader = new ModelLoader(new URL("my_model_url"))) { // https://my_model_url.com/model.json
+ *    model = loader.load(NeuralNetworkModel.class, remapper -> remapper
+ *     .name("renamed_model")
+ *     .enableAutoSave());
+ *  } catch (MalformedURLException e) {
+ *    throw new RuntimeException(e);
+ *  }
+ * }</pre>
+ * <strong>Note:</strong> Remapping is optional - and will not be applied if the model is already saved
+ * <p>Loading a model from a json string:
+ * <pre>{@code
+ *   NeuralNetworkModel model = null;
+ *   try (ModelLoader loader = new ModelLoader("serialized_json_here")) {
+ *     model = loader.load(NeuralNetworkModel.class);
+ *   }
+ * }</pre>
+ * </p>
+ *
+ * <p>This model loader can be used for any {@link Model} implementation
+ * such as
+ * <ul>
+ *   <li>NeuralNetworkModel</li>
+ *   <li>LinearRegressionModel</li>
+ *   <li>LogisticRegressionModel</li>
+ *   <li>Cluster Models</li>
+ *   <li>Custom Models</li>
+ *   <li>And more...</li>
+ * </ul>
+ *
+ * <p><strong>Note:</strong> Closing this model loader is not necessary, but is <strong>recommended</strong> for large model imports.
  *
  * @author Clouke
  * @since 02.03.2023 13:13

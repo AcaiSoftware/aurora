@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.function.Consumer;
 
 /**
+ * A shared tool for saving models to a directory.
+ *
  * @author Clouke
  * @since 18.04.2023 17:57
  * © Aurora - All Rights Reserved
@@ -16,6 +18,12 @@ public class ModelArchive {
   private static final String MODEL_ARCHIVE = "model-archive";
   private static final String DATE_FORMAT = "yyyy-MM-dd_HH-mm";
 
+  /**
+   * Saves the model to the model directory.
+   *
+   * @param model The model to save.
+   * @param failure The failure consumer to accept exceptions.
+   */
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public static void saveModel(Model model, Consumer<? super Exception> failure) {
     String directory = model.saveDirectoryPath();

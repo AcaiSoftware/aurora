@@ -8,6 +8,14 @@ import gg.acai.aurora.exception.ModelStorageException;
 import java.util.Optional;
 
 /**
+ * <p><b>Model - A model that can be saved, loaded, deployed, and evaluated.</b></p>
+ *
+ * <p> The model interface is the base interface for all models,
+ * providing the basic functionality of saving, loading, deploying, and evaluating models.
+ *
+ * @see ModelLoader Loading models
+ * @see ModelArchive Saving models
+ *
  * @author Clouke
  * @since 02.04.2023 22:43
  * © Aurora - All Rights Reserved
