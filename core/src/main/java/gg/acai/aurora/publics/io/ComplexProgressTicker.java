@@ -4,6 +4,8 @@ import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.io.Closeable;
 
 /**
+ * A progress ticker with more complex functionality.
+ *
  * @author Clouke
  * @since 27.04.2023 15:35
  * © Aurora - All Rights Reserved

@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.Vector;
 
 /**
+ * A machine learning decision tree which can be used to predict the result of a given set of data.
+ *
  * @author Clouke
  * @since 21.04.2023 08:51
  * © Aurora - All Rights Reserved
@@ -22,10 +24,25 @@ public class DecisionTree<T> {
     root = null;
   }
 
+  /**
+   * Constructs a new decision tree from the given data and target attribute.
+   *
+   * @param data the data to train on
+   * @param targetAttribute the target attribute
+   */
   public DecisionTree(List<Map<String, T>> data, String targetAttribute) {
     train(data, targetAttribute);
   }
 
+  /**
+   * Gets a vector of the default options returned by this decision tree.
+   * <ul>
+   *   <li>result</li>
+   *   <li>unknown</li>
+   * </ul>
+   *
+   * @return a vector of the default options returned by this decision tree
+   */
   public Vector<String> defaults() {
     Vector<String> options = new Vector<>();
     options.add("result");
@@ -33,6 +50,12 @@ public class DecisionTree<T> {
     return options;
   }
 
+  /**
+   * Predicts the result of the given data.
+   *
+   * @param data the data to predict from
+   * @return the predicted result
+   */
   public T predict(Map<String, T> data) {
     Node<T> node = root;
     while (node.attribute().hashCode() != RESULT) {
@@ -42,16 +65,66 @@ public class DecisionTree<T> {
     return node.result();
   }
 
+  /**
+   * Classifies the given instance and the root node.
+   *
+   * @param instance the instance to classify
+   * @return Returns the classification
+   */
+  public T classify(Map<String, T> instance) {
+    return classify(instance, root);
+  }
+
+  /**
+   * Classifies the given instance with the given node.
+   *
+   * @param instance the instance to classify
+   * @param node the node to classify with
+   * @return Returns the classification
+   */
+  public T classify(Map<String, T> instance, Node<T> node) {
+    T result = node.result();
+    if (result != null) {
+      return result;
+    }
+
+    T attributeValue = instance.get(node.attribute());
+    if (node.children().containsKey(attributeValue)) {
+      return classify(instance, node.children().get(attributeValue));
+    }
+
+    return null;
+  }
+
+  /**
+   * Trains this decision tree on the given data and target attribute.
+   *
+   * @param data the data to train on
+   * @param targetAttribute the target attribute
+   */
   public void train(List<Map<String, T>> data, String targetAttribute) {
     List<String> attributes = new ArrayList<>(data.get(0).keySet());
     attributes.remove(targetAttribute);
     root = buildTree(data, targetAttribute, attributes);
   }
 
+  /**
+   * Trains this decision tree on the given data.
+   *
+   * @param data the data to train on
+   */
   public void train(List<Map<String, T>> data) {
     train(data, "result");
   }
 
+  /**
+   * Builds a decision tree from the given data, target attribute and attributes.
+   *
+   * @param data the data to build the tree from
+   * @param targetAttribute the target attribute
+   * @param attributes the attributes
+   * @return Returns the built decision tree
+   */
   private Node<T> buildTree(List<Map<String, T>> data, String targetAttribute, List<String> attributes) {
     if (data.isEmpty()) {
       return new Node<>("unknown");
@@ -77,24 +150,13 @@ public class DecisionTree<T> {
     return node;
   }
 
-  public T classify(Map<String, T> instance) {
-    return classify(instance, root);
-  }
-
-  public T classify(Map<String, T> instance, Node<T> node) {
-    T result = node.result();
-    if (result != null) {
-      return result;
-    }
-
-    T attributeValue = instance.get(node.attribute());
-    if (node.children().containsKey(attributeValue)) {
-      return classify(instance, node.children().get(attributeValue));
-    }
-
-    return null;
-  }
-
+  /**
+   * Gets the majority result from the given data and target attribute.
+   *
+   * @param data the data to get the majority result from
+   * @param targetAttribute the target attribute
+   * @return Returns the majority result
+   */
   private T majority(List<Map<String, T>> data, String targetAttribute) {
     Map<T, Integer> countMap = new HashMap<>();
     for (Map<String, T> instance : data) {
@@ -113,6 +175,13 @@ public class DecisionTree<T> {
     return majorityResult;
   }
 
+  /**
+   * Checks whether all the given data has the same value for the given attribute.
+   *
+   * @param data the data to check
+   * @param attribute the attribute to check
+   * @return Returns whether all the given data has the same value for the given attribute
+   */
   private boolean sameValues(List<Map<String, T>> data, String attribute) {
     T value = null;
     for (Map<String, T> instance : data) {
@@ -126,9 +195,6 @@ public class DecisionTree<T> {
     return true;
   }
 
-  /**
-   * Returns the attribute with the highest information gain.
-   */
   private String bestAttribute(List<Map<String, T>> data, List<String> attributes, String targetAttribute) {
     double maxGain = -1;
     String bestAttribute = null;

@@ -5,6 +5,8 @@ import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.Serializer;
 
 /**
+ * A data set for training.
+ *
  * @author Clouke
  * @since 28.02.2023 13:54
  * © Aurora - All Rights Reserved
@@ -23,10 +25,20 @@ public class DataSet implements Serializer, Closeable {
     this.targets = new double[0][];
   }
 
+  /**
+   * Gets the inputs of this data set.
+   *
+   * @return Returns the inputs
+   */
   public double[][] inputs() {
     return inputs;
   }
 
+  /**
+   * Gets the targets of this data set.
+   *
+   * @return Returns the targets
+   */
   public double[][] targets() {
     return targets;
   }
@@ -42,6 +54,12 @@ public class DataSet implements Serializer, Closeable {
     targets = newTargets;
   }
 
+  /**
+   * Adds a new input and target to this data set.
+   *
+   * @param input The input to add
+   * @param target The target to add
+   */
   public void add(double[][] input, double[][] target) {
     if (input.length != target.length)
       throw new IllegalArgumentException("Inputs and targets must be the same size");
@@ -57,6 +75,12 @@ public class DataSet implements Serializer, Closeable {
     System.arraycopy(target, 0, targets, size, target.length);
   }
 
+  /**
+   * Adds a new input and target to this data set.
+   *
+   * @param input The input to add
+   * @param target The target converted to a double array
+   */
   public void add(double[][] input, boolean[][] target) {
     if (input.length != target.length)
       throw new IllegalArgumentException("Inputs and targets must be the same size");
