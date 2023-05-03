@@ -1,6 +1,6 @@
 package gg.acai.aurora;
 
-import gg.acai.aurora.image.Image;
+import gg.acai.aurora.publics.image.Image;
 
 /**
  * @author Clouke
