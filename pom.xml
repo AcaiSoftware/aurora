@@ -12,6 +12,7 @@
     <module>nn</module>
     <module>regression</module>
     <module>cluster</module>
+    <module>nlp-tools</module>
   </modules>
 
   <properties>
