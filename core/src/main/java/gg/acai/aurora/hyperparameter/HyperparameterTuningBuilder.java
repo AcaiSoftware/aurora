@@ -1,7 +1,7 @@
 package gg.acai.aurora.hyperparameter;
 
 import gg.acai.acava.Requisites;
-import gg.acai.aurora.ml.Trainable;
+import gg.acai.aurora.model.Trainable;
 
 import java.util.ArrayList;
 import java.util.List;
