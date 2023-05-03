@@ -3,6 +3,8 @@ package gg.acai.aurora.model;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * A machine learning context for a model.
+ *
  * @author Clouke
  * @since 24.01.2023 12:57
  * © Acai - All Rights Reserved
@@ -15,6 +17,11 @@ public enum MLContext {
   NATURAL_LANGUAGE_PROCESSING,
   CLUSTERING;
 
+  /**
+   * Gets the string representation of this MLContext.
+   *
+   * @return Returns the string representation of this MLContext.
+   */
   public String toString() {
     String name = name();
     String[] words = name.contains("_") ? name.split("_") : new String[]{name};
@@ -24,6 +31,11 @@ public enum MLContext {
     return StringUtils.join(words, " ");
   }
 
+  /**
+   * Gets the short string representation of this MLContext.
+   *
+   * @return Returns the short string representation of this MLContext.
+   */
   public String toShort() {
     switch(this) {
       case LINEAR_REGRESSION: return "LINREG";

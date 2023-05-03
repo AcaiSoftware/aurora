@@ -1,6 +1,8 @@
 package gg.acai.aurora.hyperparameter;
 
 /**
+ * Min and max parameters for hyperparameter tuning.
+ *
  * @author Clouke
  * @since 17.04.2023 01:57
  * © Aurora - All Rights Reserved
@@ -23,6 +25,17 @@ public class MinMaxParameters {
   private final int minLayers;
   private final int maxLayers;
 
+  /**
+   * Constructs a new min and max parameters.
+   *
+   * @param minLearningRate The minimum learning rate.
+   * @param maxLearningRate The maximum learning rate.
+   * @param learningRateStep The learning rate step.
+   * @param minEpochs The minimum epochs.
+   * @param maxEpochs The maximum epochs.
+   * @param minLayers The minimum layers.
+   * @param maxLayers The maximum layers.
+   */
   public MinMaxParameters(double minLearningRate, double maxLearningRate, double learningRateStep, int minEpochs, int maxEpochs, int minLayers, int maxLayers) {
     this.minLearningRate = minLearningRate;
     this.maxLearningRate = maxLearningRate;
@@ -33,30 +46,65 @@ public class MinMaxParameters {
     this.maxLayers = maxLayers;
   }
 
+  /**
+   * Gets the minimum learning rate.
+   *
+   * @return Returns the minimum learning rate.
+   */
   public double minLearningRate() {
     return minLearningRate;
   }
 
+  /**
+   * Gets the maximum learning rate.
+   *
+   * @return Returns the maximum learning rate.
+   */
   public double maxLearningRate() {
     return maxLearningRate;
   }
 
+  /**
+   * Gets the learning rate step.
+   *
+   * @return Returns the learning rate step.
+   */
   public double learningRateStep() {
     return learningRateStep;
   }
 
+  /**
+   * Gets the minimum epochs.
+   *
+   * @return Returns the minimum epochs.
+   */
   public int minEpochs() {
     return minEpochs;
   }
 
+  /**
+   * Gets the maximum epochs.
+   *
+   * @return Returns the maximum epochs.
+   */
   public int maxEpochs() {
     return maxEpochs;
   }
 
+  /**
+   * Gets the minimum layers.
+   *
+   * @return Returns the minimum layers.
+   */
   public int minLayers() {
     return minLayers;
   }
 
+  /**
+   * Gets the maximum layers.
+   *
+   * @return Returns the maximum layers.
+   */
   public int maxLayers() {
     return maxLayers;
   }

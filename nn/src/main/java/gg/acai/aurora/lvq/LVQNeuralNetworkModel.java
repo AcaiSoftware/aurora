@@ -6,6 +6,8 @@ import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.model.Model;
 
 /**
+ * A storable model implementation of an LVQ neural network.
+ *
  * @author Clouke
  * @since 28.04.2023 20:09
  * © Aurora - All Rights Reserved
