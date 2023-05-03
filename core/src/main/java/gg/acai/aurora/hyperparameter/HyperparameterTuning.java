@@ -1,6 +1,6 @@
 package gg.acai.aurora.hyperparameter;
 
-import gg.acai.aurora.ml.Trainable;
+import gg.acai.aurora.model.Trainable;
 
 import java.util.HashMap;
 import java.util.List;
