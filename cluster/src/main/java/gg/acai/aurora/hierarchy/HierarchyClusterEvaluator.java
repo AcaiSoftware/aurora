@@ -1,6 +1,6 @@
 package gg.acai.aurora.hierarchy;
 
-import gg.acai.aurora.Evaluator;
+import gg.acai.aurora.model.Evaluator;
 
 /**
  * @author Clouke
