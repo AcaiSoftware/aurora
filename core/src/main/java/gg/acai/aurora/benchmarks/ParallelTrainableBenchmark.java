@@ -1,6 +1,6 @@
 package gg.acai.aurora.benchmarks;
 
-import gg.acai.aurora.ml.Trainable;
+import gg.acai.aurora.model.Trainable;
 
 import java.util.stream.IntStream;
 
