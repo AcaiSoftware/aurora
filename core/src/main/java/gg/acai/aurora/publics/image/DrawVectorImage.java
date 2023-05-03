@@ -3,6 +3,10 @@ package gg.acai.aurora.publics.image;
 import gg.acai.aurora.Vec2D;
 
 /**
+ * A graph visualizer for a vector image.
+ * @see Vec2D
+ * @see Image
+ *
  * @author Clouke
  * @since 24.01.2023 13:28
  * © Acai - All Rights Reserved
