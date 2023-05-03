@@ -56,6 +56,10 @@ public final class QRMath {
     return Math.sqrt(sum);
   }
 
+  public static double clamp(double value, double min, double max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
   /**
    * Calculates the Euclidean distance between two double arrays, with weights applied to each element.
    *
