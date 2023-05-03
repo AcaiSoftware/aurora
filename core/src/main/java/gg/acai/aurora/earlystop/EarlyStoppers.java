@@ -45,15 +45,19 @@ public final class EarlyStoppers {
 
   public boolean tick(Attributes attributes) {
     earlyStops.forEach(earlyStop -> earlyStop.tick(attributes));
-    return earlyStops.stream().anyMatch(EarlyStop::shouldStop);
+    return earlyStops.stream().anyMatch(EarlyStop::terminable);
   }
 
   public String terminationMessage() {
     return earlyStops.stream()
-      .filter(EarlyStop::shouldStop)
+      .filter(EarlyStop::terminable)
       .findFirst()
       .map(EarlyStop::terminationMessage)
       .orElse("");
+  }
+
+  public void printTerminationMessage() {
+    System.out.println(terminationMessage());
   }
 
   public List<EarlyStop> getEarlyStops() {
