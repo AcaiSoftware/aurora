@@ -1,7 +1,7 @@
 package gg.acai.aurora;
 
-import gg.acai.aurora.image.DrawVectorImage;
-import gg.acai.aurora.image.Image;
+import gg.acai.aurora.publics.image.DrawVectorImage;
+import gg.acai.aurora.publics.image.Image;
 
 import java.util.Collection;
 
