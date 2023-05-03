@@ -1,4 +1,4 @@
-package gg.acai.aurora.ml;
+package gg.acai.aurora.degree;
 
 /**
  * @author Clouke
