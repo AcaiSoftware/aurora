@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  * @since 02.03.2023 13:13
  * © Aurora - All Rights Reserved
  */
-public class TrainingBuilder {
+public class NeuralNetworkBuilder {
 
   protected boolean shouldPrintStats = true;
   protected boolean autoSave = false;
@@ -43,12 +43,12 @@ public class TrainingBuilder {
   protected TestSet evaluationSet;
   protected AccuracySupplier accuracySupplier;
 
-  public TrainingBuilder name(String name) {
+  public NeuralNetworkBuilder name(String name) {
     this.name = name;
     return this;
   }
 
-  public TrainingBuilder layers(Consumer<LayerMapper> mapper) {
+  public NeuralNetworkBuilder layers(Consumer<LayerMapper> mapper) {
     LayerMapper layerMapper = new LayerMapper();
     mapper.accept(layerMapper);
     inputLayerSize = layerMapper.inputLayerSize;
@@ -57,70 +57,70 @@ public class TrainingBuilder {
     return this;
   }
 
-  public TrainingBuilder printing(Bar progressBar) {
+  public NeuralNetworkBuilder printing(Bar progressBar) {
     this.progressBar = progressBar;
     return this;
   }
 
-  public TrainingBuilder epochs(int epochs) {
+  public NeuralNetworkBuilder epochs(int epochs) {
     this.epochs = epochs;
     return this;
   }
 
-  public TrainingBuilder learningRate(double learningRate) {
+  public NeuralNetworkBuilder learningRate(double learningRate) {
     this.learningRate = learningRate;
     return this;
   }
 
-  public TrainingBuilder accuracySupplier(AccuracySupplier accuracySupplier) {
+  public NeuralNetworkBuilder accuracySupplier(AccuracySupplier accuracySupplier) {
     this.accuracySupplier = accuracySupplier;
     return this;
   }
 
-  public TrainingBuilder fromTune(Tune tune) {
+  public NeuralNetworkBuilder fromTune(Tune tune) {
     this.learningRate = tune.learningRate();
     this.epochs = tune.epochs();
     this.hiddenLayerSize = tune.layers();
     return this;
   }
 
-  public TrainingBuilder activationFunction(ActivationFunction activationFunction) {
+  public NeuralNetworkBuilder activationFunction(ActivationFunction activationFunction) {
     this.activationFunction = activationFunction;
     return this;
   }
 
-  public TrainingBuilder optimizer(Optimizer optimizer) {
+  public NeuralNetworkBuilder optimizer(Optimizer optimizer) {
     this.optimizer = optimizer;
     return this;
   }
 
-  public TrainingBuilder evaluationSet(TestSet set) {
+  public NeuralNetworkBuilder evaluationSet(TestSet set) {
     this.evaluationSet = set;
     return this;
   }
 
-  public TrainingBuilder disableStatsPrint() {
+  public NeuralNetworkBuilder disableStatsPrint() {
     this.shouldPrintStats = false;
     return this;
   }
 
-  public TrainingBuilder autoSave() {
+  public NeuralNetworkBuilder autoSave() {
     this.autoSave = true;
     return this;
   }
 
-  public TrainingBuilder earlyStops(EarlyStop... earlyStops) {
+  public NeuralNetworkBuilder earlyStops(EarlyStop... earlyStops) {
     this.earlyStoppers.add(earlyStops);
     return this;
   }
 
   @SafeVarargs
-  public final TrainingBuilder epochActions(EpochAction<NeuralNetwork>... epochActions) {
+  public final NeuralNetworkBuilder epochActions(EpochAction<NeuralNetwork>... epochActions) {
     this.epochActions.addAll(Arrays.asList(epochActions));
     return this;
   }
 
-  public TrainingBuilder withDataSet(DataSet set) {
+  public NeuralNetworkBuilder withDataSet(DataSet set) {
     this.set = set;
     return this;
   }

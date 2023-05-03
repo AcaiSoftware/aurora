@@ -48,7 +48,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   private double loss = -1.0;
   private boolean completed;
 
-  public NeuralNetworkTrainer(@Nonnull TrainingBuilder builder) {
+  public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
     super(builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
     super.setActivationFunction(builder.activationFunction);
     super.name = builder.name;
