@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
 /**
+ * A wrapped neural network for the purpose of saving and loading or transferring between models
+ *
  * @author Clouke
  * @since 02.03.2023 17:10
  * © Aurora - All Rights Reserved
