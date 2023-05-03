@@ -9,6 +9,47 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
+ * HyperparameterTuning can be used to find the best hyperparameters for a given model.
+ * <p><b>Example Usage: (in this example, we are tuning a neural network)</b></p>
+ * <pre>
+ *  {@code
+ *    HyperparameterTuning tuning = new HyperparameterTuningBuilder()
+ *       .options(options -> options
+ *         .generateTunes(MinMaxParameters.builder()
+ *           .learningRate(0.01, 0.1, 0.02) // min --> max --> step
+ *           .epochs(1, 1_000) // min --> max
+ *           .layers(1, 2) // min --> max
+ *           .build())
+ *         .evaluator(new CrossValidator(4, new BestAccuracyEvaluator())))
+ *       .processor(tune -> new NeuralNetworkBuilder()
+ *         .learningRate(tune.learningRate())
+ *         .epochs(tune.epochs())
+ *         .layers(mapper -> mapper
+ *           .inputLayers(inputLayerSize)
+ *           .hiddenLayers(tune.layers())
+ *           .outputLayers(outputLayerSize))
+ *         .disableStatsPrint()
+ *         .build())
+ *       .inputs(inputs)
+ *       .targets(outputs)
+ *       .build();
+ *
+ *     HyperparameterTuningResult result = tuning.find();
+ *  }
+ * </pre>
+ *
+ * <p>
+ *  Tuning is thread-safe and supports parallel tuning.
+ *  by default, the tuning will run on a single thread, but can be parallelized by calling
+ *  {@link HyperparameterOptionsBuilder#parallel()} before building the options.
+ * </p>
+ *
+ * <p> Supported evaluators:
+ * <ul>
+ *   <li> BestAccuracyEvaluator </li>
+ * </ul>
+ * More evaluators will be added in the future.
+ *
  * @author Clouke
  * @since 16.04.2023 21:04
  * © Aurora - All Rights Reserved
@@ -29,6 +70,11 @@ public class HyperparameterTuning {
     this.tunes = tunes;
   }
 
+  /**
+   * Finds the best hyperparameters for the given model.
+   *
+   * @return Returns a {@link HyperparameterTuningResult} containing the best hyperparameters.
+   */
   public HyperparameterTuningResult find() {
     Map<Tune, Double> scores = new HashMap<>();
     TuningEvaluator evaluator = options.evaluator();
