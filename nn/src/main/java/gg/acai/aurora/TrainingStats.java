@@ -1,6 +1,8 @@
 package gg.acai.aurora;
 
 /**
+ * A stats accumulator for the purpose of training a neural network
+ *
  * @author Clouke
  * @since 03.03.2023 15:01
  * © Aurora - All Rights Reserved
@@ -22,18 +24,38 @@ public class TrainingStats {
     this.time = time;
   }
 
+  /**
+   * Gets the number of epochs the neural network was trained for
+   *
+   * @return The number of epochs
+   */
   public int epochs() {
     return epochs;
   }
 
+  /**
+   * Gets the learning rate the neural network was trained with
+   *
+   * @return The learning rate
+   */
   public double learningRate() {
     return learningRate;
   }
 
+  /**
+   * Gets the accuracy of the neural network
+   *
+   * @return The accuracy
+   */
   public double accuracy() {
     return accuracy;
   }
 
+  /**
+   * Gets the time taken to train the neural network
+   *
+   * @return The time taken
+   */
   public double time() {
     return time;
   }
@@ -47,6 +69,9 @@ public class TrainingStats {
       "• Time: " + seconds + "s" + "\n";
   }
 
+  /**
+   * Prints the training stats to the console
+   */
   public void print() {
     System.out.println(this);
   }
