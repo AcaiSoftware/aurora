@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.model.ActivationFunctionSerializer;
+import gg.acai.aurora.sets.DataSetSerializer;
 
 /**
  * @author Clouke
@@ -14,11 +15,13 @@ public final class GsonSpec {
 
   private static final Gson STANDARD = new GsonBuilder()
     .registerTypeAdapter(ActivationFunction.class, new ActivationFunctionSerializer())
+    .registerTypeAdapter(DataSetSerializer.class, new DataSetSerializer())
     .create();
 
   private static final Gson PRETTY = new GsonBuilder()
     .setPrettyPrinting()
     .registerTypeAdapter(ActivationFunction.class, new ActivationFunctionSerializer())
+    .registerTypeAdapter(DataSetSerializer.class, new DataSetSerializer())
     .create();
 
   public static Gson standard() {
@@ -27,9 +30,5 @@ public final class GsonSpec {
 
   public static Gson pretty() {
     return PRETTY;
-  }
-
-  public static Gson get(boolean pretty) {
-    return pretty ? pretty() : standard();
   }
 }
