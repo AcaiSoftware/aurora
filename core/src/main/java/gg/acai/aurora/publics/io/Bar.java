@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
+ * A configurable progress bar which is displayed during training.
+ *
  * @author Clouke
  * @since 25.04.2023 07:00
  * © Aurora - All Rights Reserved
@@ -41,6 +43,9 @@ public class Bar implements Closeable {
     this(symbols, length, false, false);
   }
 
+  /**
+   * Increments the progress bar by one tick.
+   */
   public void tick() {
     if (scaledIndex > length) {
       return;
@@ -55,6 +60,11 @@ public class Bar implements Closeable {
     nextIndex++;
   }
 
+  /**
+   * Prints the progress bar with the given attributes.
+   *
+   * @param attributes The attributes to print.
+   */
   public void print(Attributes attributes) {
     String bar = toString();
     if (attributes != null) {

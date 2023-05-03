@@ -9,19 +9,21 @@ import java.io.FileReader;
 import java.util.function.Supplier;
 
 /**
+ * A class for Aurora specific information.
+ *
  * @author Clouke
  * @since 12.02.2023 21:52
  * © Acava - All Rights Reserved
  */
 public class Aurora {
 
-  private static final Logger LOGGER = new StandardLogger("Aurora");
   private static Supplier<String> VERSION;
 
-  public static void log(String message) {
-    LOGGER.log(message);
-  }
-
+  /**
+   * Gets the version of Aurora.
+   *
+   * @return Returns the version of Aurora
+   */
   public static String version() {
     if (VERSION == null) {
       VERSION = () -> {
@@ -34,7 +36,7 @@ public class Aurora {
               .trim())
             .orElse("ignore");
         } catch (FileNotFoundException e) {
-          log("Failed to read version from pom.xml: " + e.getMessage());
+          System.out.println("Failed to read version from pom.xml: " + e.getMessage());
           return "ignore";
         }
       };
@@ -43,6 +45,11 @@ public class Aurora {
     return VERSION.get();
   }
 
+  /**
+   * Checks if Aurora is running in a UI environment.
+   *
+   * @return Returns true if Aurora is running in a UI environment
+   */
   public static boolean supportsUI() {
     return System.getProperty("aurora.ui") != null;
   }
