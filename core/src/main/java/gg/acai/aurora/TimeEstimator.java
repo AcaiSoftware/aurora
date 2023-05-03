@@ -1,6 +1,6 @@
 package gg.acai.aurora;
 
-import gg.acai.acava.collect.pairs.Pairs;
+import gg.acai.acava.collect.pairs.Pair;
 
 /**
  * @author Clouke
@@ -18,7 +18,7 @@ public interface TimeEstimator<T> extends Runnable {
 
   double estimated(T t);
 
-  Pairs<Double, Time> estimateWith(T t);
+  Pair<Double, Time> estimateWith(T t);
 
   enum Time {
     HOURS, MINUTES, SECONDS;
