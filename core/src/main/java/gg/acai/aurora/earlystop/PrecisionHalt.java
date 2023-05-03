@@ -1,13 +1,13 @@
 package gg.acai.aurora.earlystop;
 
-import gg.acai.aurora.Attributes;
+import gg.acai.acava.commons.Attributes;
 
 /**
  * @author Clouke
  * @since 23.04.2023 06:41
  * © Aurora - All Rights Reserved
  */
-public class PrecisionHalt extends AbstractEarlyStop {
+public class PrecisionHalt implements EarlyStop {
 
   private final double target;
   private final int minEpochs;
@@ -33,7 +33,15 @@ public class PrecisionHalt extends AbstractEarlyStop {
   }
 
   @Override
-  public boolean shouldStop() {
+  public boolean terminable() {
     return reached;
+  }
+
+  @Override
+  public String terminationMessage() {
+    return "The training process has been stopped due to reaching the target accuracy.\n" +
+      "Target: " + target + "\n" +
+      "Minimum epochs: " + minEpochs + "\n" +
+      "Reached: " + reached;
   }
 }
