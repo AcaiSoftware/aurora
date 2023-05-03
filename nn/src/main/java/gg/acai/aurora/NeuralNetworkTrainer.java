@@ -1,228 +1,226 @@
 package gg.acai.aurora;
 
 import com.google.common.base.Preconditions;
-import gg.acai.acava.collect.pairs.Pairs;
-import gg.acai.acava.commons.graph.Graph;
-import gg.acai.acava.io.Callback;
+import gg.acai.acava.commons.Attributes;
+import gg.acai.acava.commons.AttributesMapper;
 import gg.acai.aurora.earlystop.EarlyStoppers;
-import gg.acai.aurora.ml.Trainable;
-import gg.acai.aurora.ml.TrainingTimeEstimator;
-import gg.acai.aurora.extension.ModelTrainListener;
-import gg.acai.aurora.extension.TrainingTickEvent;
+import gg.acai.aurora.model.EpochAction;
+import gg.acai.aurora.publics.io.ComplexProgressTicker;
+import gg.acai.aurora.model.Evaluation;
+import gg.acai.aurora.model.ModelMetrics;
+import gg.acai.aurora.model.IterableTimeEstimator;
 import gg.acai.aurora.optimizers.Optimizer;
 import gg.acai.aurora.sets.DataSet;
+import gg.acai.aurora.publics.Ticker;
+import gg.acai.aurora.sets.TestSet;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.ExecutorService;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author Clouke
  * @since 11.02.2023 16:18
  * © Acava - All Rights Reserved
  */
-public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Trainable {
+public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements NeuralNetwork {
+
+  private static final Ticker<Long> TICKER = Ticker.systemMillis();
 
   private final int epochs;
   private final double learningRate;
-  private final ExecutorService thread;
-  private final ModelTrainListener listener;
   private final TimeEstimator<Integer> estimator;
-  private final boolean printTrainingProgress;
   private final boolean autoSave;
   private final boolean shouldPrintStats;
-  private final int maxCycleBuffer;
-  private final Graph<Double> graph;
   private final DataSet set;
   private final EarlyStoppers earlyStoppers;
-  private final Attributes attributes = new Attributes();
-  private Callback<NeuralNetworkTrainer> callback;
-  private double[] accuracyTest;
+  private final Attributes attributes = new AttributesMapper();
   private final Optimizer optimizer;
+  private final ComplexProgressTicker progressTicker;
+  private final TestSet evaluationSet;
+  private final Set<EpochAction<NeuralNetwork>> epochActions;
+  private final AccuracySupplier accuracySupplier;
+  private Consumer<NeuralNetwork> completion;
 
-  private long start;
-  private long tick;
-  private double accurateEstimation;
-  private int lastPercentage;
-  private double lastAccuracy;
+  private long time;
   private double accuracy = -1.0;
+  private double loss = -1.0;
   private boolean completed;
 
   public NeuralNetworkTrainer(@Nonnull TrainingBuilder builder) {
     super(builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
     super.setActivationFunction(builder.activationFunction);
+    super.name = builder.name;
     this.epochs = builder.epochs;
     this.learningRate = builder.learningRate;
-    this.thread = builder.thread;
-    this.listener = builder.listener;
-    this.printTrainingProgress = builder.shouldPrintTrainingProgress;
     this.autoSave = builder.autoSave;
-    this.accuracyTest = builder.accuracyTest;
     this.shouldPrintStats = builder.shouldPrintStats;
-    this.maxCycleBuffer = builder.maxCycleBuffer;
-    this.graph = builder.graph;
-    this.estimator = new TrainingTimeEstimator(epochs);
     this.set = builder.set;
     this.earlyStoppers = builder.earlyStoppers;
     this.optimizer = builder.optimizer.apply(learningRate);
+    this.evaluationSet = builder.evaluationSet;
+    this.epochActions = builder.epochActions;
+    this.progressTicker = new ComplexProgressTicker(builder.progressBar, 1);
+    this.accuracySupplier = builder.accuracySupplier;
+    this.estimator = new IterableTimeEstimator(epochs);
   }
 
+  @Override
   public void train() {
-    if (set == null || set.inputs() == null || set.targets() == null) throw new IllegalArgumentException("You must provide a dataset to train on!");
+    if (set == null || set.inputs() == null || set.targets() == null) throw new IllegalStateException("No data set provided!");
     train(set.inputs(), set.targets());
   }
 
   @Override
   public void train(double[][] inputs, double[][] targets) {
-    if (inputs.length != targets.length) throw new IllegalArgumentException("Inputs and targets must have the same length!");
-    if (accuracyTest == null) accuracyTest = new double[]{targets[0][0]};
+    if (inputs.length != targets.length)
+      throw new IllegalArgumentException("Inputs and targets must have the same length!");
 
-    Runnable task = () -> {
-      start = System.currentTimeMillis();
-      for (int e = 0; e <= epochs; e++) {
-        estimator.tick();
-        tick = System.nanoTime();
-        for (int i = 0; i < inputs.length; i++) {
-          // Perform forward propagation
-          double[] hidden = new double[weights_input_to_hidden[0].length];
-          for (int j = 0; j < hidden.length; j++) {
-            hidden[j] = biases_hidden[j];
-            for (int k = 0; k < inputs[i].length; k++) {
-              hidden[j] += inputs[i][k] * weights_input_to_hidden[k][j];
-            }
-            hidden[j] = activationFunction.apply(hidden[j]);
-          }
-          double[] output = new double[weights_hidden_to_output[0].length];
-          for (int j = 0; j < output.length; j++) {
-            output[j] = biases_output[j];
-            for (int k = 0; k < hidden.length; k++) {
-              output[j] += hidden[k] * weights_hidden_to_output[k][j];
-            }
-            output[j] = activationFunction.apply(output[j]);
-          }
-          // Compute error
-          double[] error = new double[output.length];
-          for (int j = 0; j < output.length; j++) {
-            error[j] = targets[i][j] - output[j];
-          }
-          // Perform backpropagation
-          double[] delta_output = new double[output.length];
-          for (int j = 0; j < output.length; j++) {
-            delta_output[j] = error[j] * activationFunction.derivative(output[j]);
-          }
-          double[] delta_hidden = new double[hidden.length];
-          for (int j = 0; j < hidden.length; j++) {
-            double sum = 0;
-            for (int k = 0; k < output.length; k++) {
-              sum += delta_output[k] * weights_hidden_to_output[j][k];
-            }
-            delta_hidden[j] = sum * activationFunction.derivative(hidden[j]);
-          }
+    AccuracySupplier supplier = Optional
+      .ofNullable(accuracySupplier)
+      .orElse(() -> new double[]{targets[0][0]});
 
-          // Update weights and biases
-          optimizer.update(i, weights_input_to_hidden, weights_hidden_to_output, delta_hidden, delta_output, biases_hidden, biases_output, inputs, hidden);
+    time = TICKER.read();
+    for (int epoch = 0; epoch <= epochs; epoch++) {
+      estimator.tick();
+      for (int i = 0; i < inputs.length; i++) {
+        // Perform forward propagation
+        double[] hidden = new double[weights_input_to_hidden[0].length];
+        for (int j = 0; j < hidden.length; j++) {
+          hidden[j] = biases_hidden[j];
+          for (int k = 0; k < inputs[i].length; k++) {
+            hidden[j] += inputs[i][k] * weights_input_to_hidden[k][j];
+          }
+          hidden[j] = activationFunction.apply(hidden[j]);
         }
-        boolean stagnation = proceedTick(e);
-        if (stagnation) {
-          printStagnationWarning();
-          break;
+        double[] output = new double[weights_hidden_to_output[0].length];
+        for (int j = 0; j < output.length; j++) {
+          output[j] = biases_output[j];
+          for (int k = 0; k < hidden.length; k++) {
+            output[j] += hidden[k] * weights_hidden_to_output[k][j];
+          }
+          output[j] = activationFunction.apply(output[j]);
+        }
+
+        // Compute error
+        double[] error = new double[output.length];
+        for (int j = 0; j < output.length; j++) {
+          error[j] = targets[i][j] - output[j];
+        }
+        double loss = 0.0;
+        for (double d : error) {
+          loss += Math.pow(d, 2);
+        }
+        loss /= error.length;
+        this.loss = loss;
+
+        // Perform backpropagation
+        double[] delta_output = new double[output.length];
+        for (int j = 0; j < output.length; j++) {
+          delta_output[j] = error[j] * activationFunction.derivative(output[j]);
+        }
+        double[] delta_hidden = new double[hidden.length];
+        for (int j = 0; j < hidden.length; j++) {
+          double sum = 0;
+          for (int k = 0; k < output.length; k++) {
+            sum += delta_output[k] * weights_hidden_to_output[j][k];
+          }
+          delta_hidden[j] = sum * activationFunction.derivative(hidden[j]);
+        }
+
+        // Update weights and biases
+        optimizer.update(i, weights_input_to_hidden, weights_hidden_to_output, delta_hidden, delta_output, biases_hidden, biases_output, inputs, hidden);
+      }
+
+      if (!epochActions.isEmpty()) {
+        for (EpochAction<NeuralNetwork> action : epochActions) {
+          action.onEpochIteration(epoch, this);
         }
       }
-      endTick();
-    };
 
-    if (thread != null) {
-      thread.execute(task);
-      return;
-    }
+      int pct = (int) ((double) epoch / epochs * 100.0);
+      double[] output = predict(supplier.test());
+      accuracy = Math.pow(output[0] - 1, 2) * 100.0;
 
-    task.run();
-  }
+      attributes.set("epoch", epoch)
+        .set("accuracy", accuracy)
+        .set("stage", pct)
+        .set("time left", estimator)
+        .set("loss", loss);
 
-  public void whenComplete(Callback<NeuralNetworkTrainer> callback) {
-    this.callback = callback;
-  }
-
-  public TrainingStats stats() {
-    Preconditions.checkArgument(completed, "Training is not completed yet!");
-    return new TrainingStats(epochs, learningRate, accuracy, start, accurateEstimation, graph);
-  }
-
-  private boolean proceedTick(int currentEpoch) {
-    if (listener == null && !printTrainingProgress) {
-      return false; // No need to proceed if there is no listener and no need to print progress
-    }
-
-    double percent = (double) currentEpoch / epochs * 100.0;
-    int pct = (int) percent;
-    boolean toReturn = false;
-    String progress = null;
-    if (pct != lastPercentage) {
-      StringBuilder buf = new StringBuilder();
-      char incomplete = '░';
-      char complete = '█';
-      for (int i = 0; i <= 100; i++)
-        buf.append(i <= percent ? complete : incomplete);
-
-      progress = buf.toString();
-      if (graph != null) {
-        long diff = System.nanoTime() - tick;
-        double micros = diff / 1000.0;
-        graph.addNode(micros);
+      progressTicker.tick(pct, attributes);
+      if (earlyStoppers.tick(attributes)) {
+        earlyStoppers.printTerminationMessage();
+        break;
       }
     }
 
-    double estimation = estimator.estimated(currentEpoch);
-    if (pct == 5)
-      accurateEstimation = estimation;
-
-    if (listener != null) {
-      TrainingTickEvent event = new TrainingTickEvent(currentEpoch, epochs, percent, progress, estimation);
-      listener.onTrain(event);
-    }
-
-    if (printTrainingProgress && progress != null) {
-      if (accuracyTest != null) {
-        double[] output = predict(accuracyTest);
-        accuracy = QRMath.round(Math.pow(output[0] - 1, 2) * 100.0);
-      }
-
-      attributes.set("epoch", currentEpoch);
-      attributes.set("accuracy", accuracy);
-      toReturn = earlyStoppers.tick(attributes);
-
-      lastAccuracy = accuracy;
-      String b = Aurora.ANSI_BOLD;
-      String r = Aurora.RESET;
-      Pairs<Double, TimeEstimator.Time> estim = estimator.estimateWith(currentEpoch);
-      double roundedEstimation = QRMath.round(estim.left());
-      System.out.print("\r" + progress + " ─ " + b + pct + "/100%" + r + " ─ Time Left: " + b + roundedEstimation + estim.right().plural() + r + (accuracy != -1.0 ? " ─ Accuracy: " + b + accuracy + "%" : ""));
-    }
-    lastPercentage = (int) percent;
-    return toReturn;
-  }
-
-  private void endTick() {
-    start = System.currentTimeMillis() - start;
+    time = TICKER.call() - time;
     completed = true;
     if (autoSave) {
-      NeuralNetworkModel model = save();
-      model.saveOnClose(true);
-      model.close();
+      NeuralNetworkModel model = toModel(name);
+      model.save();
     }
-    if (callback != null)
-      callback.onCallback(this);
+
+    if (evaluationSet != null) {
+      Evaluation evaluation = evaluate(evaluationSet);
+      evaluation.printSummary();
+    }
 
     if (shouldPrintStats) {
       TrainingStats stats = stats();
       stats.print();
     }
+
+    if (completion != null)
+      completion.accept(this);
   }
 
-  public NeuralNetworkModel save() {
-    return saveAs(null);
+  @Override
+  public Evaluation evaluate(TestSet set) {
+    Evaluation evaluation = new ModelMetrics(this, set);
+    evaluation.evaluate();
+    return evaluation;
   }
 
-  public NeuralNetworkModel saveAs(String name) {
+  @Override
+  public Optimizer optimizer() {
+    return optimizer;
+  }
+
+  @Override
+  public Attributes attributes() {
+    return attributes.copy();
+  }
+
+  @Override
+  public Set<EpochAction<NeuralNetwork>> iterationActions() {
+    return epochActions;
+  }
+
+  public TrainingStats stats() {
+    Preconditions.checkArgument(completed, "The training process has not been completed yet!");
+    return new TrainingStats(epochs, learningRate, accuracy, time);
+  }
+
+  @Override
+  public double accuracy() {
+    return accuracy;
+  }
+
+  @Override
+  public void close() {
+    synchronized (this) {
+      progressTicker.close();
+      completed = false;
+      accuracy = -1.0;
+      loss = -1.0;
+    }
+  }
+
+  @Override
+  public NeuralNetworkModel toModel(String name) {
     WrappedNeuralNetwork wrapper = wrap();
     NeuralNetworkModel model = new NeuralNetworkModel(wrapper);
     model.setActivationFunction(activationFunction);
@@ -230,30 +228,13 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Train
     return model;
   }
 
-  public boolean isCompleted() {
-    return completed;
-  }
-
-  private void printStagnationWarning() {
-    String b = Aurora.ANSI_BOLD;
-    String r = Aurora.RESET;
-    String bullet = Aurora.BULLET;
-
-    System.out.println(b + "\nWARNING: The training process has been stopped due to training stagnation" + r + " (The model got stuck and is not improving).\n" +
-      b + "Options:" + r + "\n" +
-      bullet + "Try re-training the model\n" +
-      bullet + "Change the learning rate (current: " + learningRate + ")\n" +
-      bullet + "Change the model architecture" + "\n" +
-      bullet + "Change the training data" + "\n" +
-      bullet + "Change the training parameters (epochs, etc.)\n" +
-      bullet + "Try using" + b + " HyperparameterTuning" + r + " to find the best parameters for your model." + "\n" +
-      "Buffered for " + /* cycle.current() */ -1 + "/" + maxCycleBuffer + " cycles. If you wish to disable this feature, " +
-      "use TrainingBuilder#disableCycleBuffer() or set the maxCycleBuffer to -1\n"
-    );
+  @Override
+  public void onCompletion(Consumer<NeuralNetwork> function) {
+    this.completion = function;
   }
 
   @Override
-  public double accuracy() {
-    return accuracy;
+  public NeuralNetworkModel toModel() {
+    return toModel(name);
   }
 }
