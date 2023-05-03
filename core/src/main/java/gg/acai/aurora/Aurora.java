@@ -1,11 +1,11 @@
 package gg.acai.aurora;
 
+import gg.acai.acava.io.filter.reader.BufferedFilterableReader;
 import gg.acai.acava.io.logging.Logger;
 import gg.acai.acava.io.logging.StandardLogger;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.function.Supplier;
 
 /**
@@ -14,10 +14,6 @@ import java.util.function.Supplier;
  * © Acava - All Rights Reserved
  */
 public class Aurora {
-
-  public static final String ANSI_BOLD = "\033[1m";
-  public static final String RESET = "\033[0m";
-  public static final String BULLET = "• ";
 
   private static final Logger LOGGER = new StandardLogger("Aurora");
   private static Supplier<String> VERSION;
@@ -28,27 +24,27 @@ public class Aurora {
 
   public static String version() {
     if (VERSION == null) {
-      String version = "ignore";
-      try (BufferedReader reader = new BufferedReader(new FileReader("pom.xml"))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-          if (line.contains("<version>")) {
-            version = line
+      VERSION = () -> {
+        try {
+          return new BufferedFilterableReader()
+            .findOptionally(new FileReader("pom.xml"), line -> line.contains("<version>"))
+            .map(line -> line
               .replace("<version>", "")
               .replace("</version>", "")
-              .trim();
-              break;
-          }
+              .trim())
+            .orElse("ignore");
+        } catch (FileNotFoundException e) {
+          log("Failed to read version from pom.xml: " + e.getMessage());
+          return "ignore";
         }
-      } catch (IOException e) {
-        log("Failed to read version from pom.xml: " + e.getMessage());
-      }
-
-      String result = version;
-      VERSION = () -> result;
+      };
     }
 
     return VERSION.get();
+  }
+
+  public static boolean supportsUI() {
+    return System.getProperty("aurora.ui") != null;
   }
 
 }
