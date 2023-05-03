@@ -14,6 +14,28 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
+ * A neural network that can be trained and evaluated, and can be converted into a storable model.
+ * <p> Example Usage:
+ * <p><b>Building a Neural Network</b>
+ * <pre>{@code
+ *  NeuralNetworkTrainer trainer = new NeuralNetworkBuilder()
+ *    .name("my_model")
+ *    .learningRate(0.1)
+ *    .epochs(1_000_000)
+ *    .optimizer(new StochasticGradientDescent())
+ *    .earlyStops(new Stagnation(20)) // in case stagnation happens, we will stop training to prevent unnecessary training
+ *    .printing(Bar.CLASSIC)
+ *    .activationFunction(ActivationFunction.SIGMOID)
+ *    .epochActions(new EpochAutoSave(10_000, "C:\\Users\\my_user\\models")) // every 10K epochs
+ *    .layers(mapper -> mapper
+ *      .inputLayers(3) // add your input layer size here
+ *      .hiddenLayers(3) // add your hidden layer size here
+ *      .outputLayers(1)) // add your output layer size here
+ *    .build();
+ *
+ *  trainer.train(inputs, outputs); // train the neural network
+ *}</pre>
+ *
  * @author Clouke
  * @since 30.04.2023 17:40
  * © Aurora - All Rights Reserved
@@ -55,7 +77,7 @@ public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetwork
   /**
    * Trains this neural network with the given inputs and outputs.
    *
-   * @throws IllegalStateException if no dataset was set.
+   * @throws IllegalStateException if no dataset was applied.
    */
   @Override
   void train() throws IllegalStateException;

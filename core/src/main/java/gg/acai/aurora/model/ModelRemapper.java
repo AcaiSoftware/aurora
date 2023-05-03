@@ -1,6 +1,8 @@
 package gg.acai.aurora.model;
 
 /**
+ * A model conversion which provides a remapper for name, saving, and versioning.
+ *
  * @author Clouke
  * @since 16.04.2023 15:37
  * © Aurora - All Rights Reserved

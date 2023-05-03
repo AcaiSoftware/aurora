@@ -1,6 +1,8 @@
 package gg.acai.aurora.exception;
 
 /**
+ * A runtime exception which occurs when failing to store a model.
+ *
  * @author Clouke
  * @since 18.04.2023 18:09
  * © Aurora - All Rights Reserved
