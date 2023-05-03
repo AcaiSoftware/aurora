@@ -3,6 +3,8 @@ package gg.acai.aurora.earlystop;
 import gg.acai.acava.commons.Attributes;
 
 /**
+ * A precision halt stops the training process when the target accuracy is reached.
+ *
  * @author Clouke
  * @since 23.04.2023 06:41
  * © Aurora - All Rights Reserved

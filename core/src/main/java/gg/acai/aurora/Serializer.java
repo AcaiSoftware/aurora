@@ -3,6 +3,8 @@ package gg.acai.aurora;
 import javax.annotation.Nonnull;
 
 /**
+ * A serializable object.
+ *
  * @author Clouke
  * @since 29.01.2023 03:55
  * © Acava - All Rights Reserved
