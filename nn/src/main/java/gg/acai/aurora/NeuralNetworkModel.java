@@ -3,6 +3,8 @@ package gg.acai.aurora;
 import gg.acai.aurora.model.Model;
 
 /**
+ * A storable & loadable neural network model.
+ *
  * @author Clouke
  * @since 27.02.2023 12:24
  * © Aurora - All Rights Reserved

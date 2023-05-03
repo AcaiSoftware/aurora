@@ -20,6 +20,26 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
+ * <p> Example Usage:
+ * <p><b>Building a Neural Network</b>
+ * <pre>{@code
+ *  NeuralNetworkTrainer trainer = new NeuralNetworkBuilder()
+ *    .name("my_model")
+ *    .learningRate(0.1)
+ *    .epochs(1_000_000)
+ *    .optimizer(new StochasticGradientDescent())
+ *    .earlyStops(new Stagnation(20)) // in case stagnation happens, we will stop training to prevent unnecessary training
+ *    .printing(Bar.CLASSIC)
+ *    .activationFunction(ActivationFunction.SIGMOID)
+ *    .epochActions(new EpochAutoSave(10_000, "C:\\Users\\my_user\\models")) // every 10K epochs
+ *    .layers(mapper -> mapper
+ *      .inputLayers(3) // add your input layer size here
+ *      .hiddenLayers(3) // add your hidden layer size here
+ *      .outputLayers(1)) // add your output layer size here
+ *    .build();
+ *
+ *  trainer.train(inputs, outputs); // train the neural network
+ *}</pre>
  * @author Clouke
  * @since 11.02.2023 16:18
  * © Acava - All Rights Reserved
@@ -50,8 +70,16 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
 
   public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
     super(builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
-    super.setActivationFunction(builder.activationFunction);
     super.name = builder.name;
+    NeuralNetworkModel model = builder.model;
+    if (model != null) {
+      weights_input_to_hidden = model.weights_input_to_hidden;
+      weights_hidden_to_output = model.weights_hidden_to_output;
+      biases_hidden = model.biases_hidden;
+      biases_output = model.biases_output;
+      name = model.name;
+    }
+    setActivationFunction(builder.activationFunction);
     this.epochs = builder.epochs;
     this.learningRate = builder.learningRate;
     this.autoSave = builder.autoSave;
