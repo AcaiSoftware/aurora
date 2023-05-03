@@ -1,6 +1,8 @@
 package gg.acai.aurora.model;
 
 /**
+ * An evaluation metric provider for models.
+ *
  * @author Clouke
  * @since 27.04.2023 21:04
  * © Aurora - All Rights Reserved
