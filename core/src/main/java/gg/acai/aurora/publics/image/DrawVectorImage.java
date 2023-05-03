@@ -1,4 +1,4 @@
-package gg.acai.aurora.image;
+package gg.acai.aurora.publics.image;
 
 import gg.acai.aurora.Vec2D;
 
@@ -34,8 +34,8 @@ public class DrawVectorImage implements Image {
     }
 
     // Scale the values to fit within the console window
-    double xScale = 60 / (maxX - minX);
-    double yScale = 20 / (maxY - minY);
+    double xScale = 60.0 / (maxX - minX);
+    double yScale = 20.0 / (maxY - minY);
 
     StringBuilder builder = new StringBuilder();
     for (int i = 0; i < yScale * (maxY - minY); i++) {
