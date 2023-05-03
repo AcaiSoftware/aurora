@@ -1,6 +1,5 @@
-package gg.acai.aurora.ml;
+package gg.acai.aurora.model;
 
-import gg.acai.aurora.Accuracy;
 import gg.acai.aurora.sets.DataSet;
 
 /**
@@ -14,6 +13,10 @@ public interface Trainable extends Accuracy {
 
   default void train(DataSet set) {
     train(set.inputs(), set.targets());
+  }
+
+  default void train() {
+    throw new UnsupportedOperationException("This model does not support training without data.");
   }
 
 }
