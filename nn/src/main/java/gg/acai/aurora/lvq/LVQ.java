@@ -9,8 +9,19 @@ import gg.acai.acava.commons.Attributes;
  */
 public interface LVQ {
 
+  /**
+   * Classifies the input and returns the index of the winning neuron.
+   *
+   * @param input the input to classify
+   * @return Returns the index of the winning neuron
+   */
   int classify(double[] input);
 
+  /**
+   * Gets the attributes of this LVQ.
+   *
+   * @return Returns the attributes of this LVQ.
+   */
   Attributes attributes();
 
 }

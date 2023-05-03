@@ -3,17 +3,12 @@ package gg.acai.aurora.lvq;
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.commons.AttributesMapper;
 import gg.acai.acava.io.Closeable;
-import gg.acai.aurora.model.Evaluation;
-import gg.acai.aurora.publics.io.Bar;
 import gg.acai.aurora.publics.io.ComplexProgressTicker;
 import gg.acai.aurora.model.Trainable;
-import gg.acai.aurora.sets.TestSet;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
+ * A trainable LVQ neural network implementation.
+ *
  * @author Clouke
  * @since 28.04.2023 12:45
  * © Aurora - All Rights Reserved
@@ -40,6 +35,13 @@ public class LVQNeuralNetwork extends AbstractLVQNeuralNetwork implements Traina
     this.attributes = new AttributesMapper();
   }
 
+  /**
+   * Trains this LVQ on the given inputs and outputs.
+   * <p><strong>NOTE:</strong> The outputs must be convertible to an array of ints.</p>
+   *
+   * @param inputs The inputs to train on
+   * @param outputs The outputs to train on
+   */
   @Override
   public void train(double[][] inputs, double[][] outputs) {
     int[] targets = new int[outputs.length];
@@ -53,6 +55,12 @@ public class LVQNeuralNetwork extends AbstractLVQNeuralNetwork implements Traina
     train(inputs, targets);
   }
 
+  /**
+   * Trains this LVQ on the given inputs and targets.
+   *
+   * @param inputs The inputs to train on
+   * @param targets The targets to train on
+   */
   public void train(double[][] inputs, int[] targets) {
     for (int epoch = 0; epoch <= epochs; epoch++) {
       int i = random.nextInt(inputs.length);

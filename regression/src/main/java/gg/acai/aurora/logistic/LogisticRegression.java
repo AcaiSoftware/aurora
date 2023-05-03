@@ -9,6 +9,8 @@ import gg.acai.aurora.model.MLContextProvider;
 import gg.acai.aurora.model.Trainable;
 
 /**
+ * A trainable logistic regression implementation.
+ *
  * @author Clouke
  * @since 01.04.2023 15:30
  * © Aurora - All Rights Reserved
@@ -31,6 +33,12 @@ public class LogisticRegression extends AbstractLogisticRegression implements ML
     this.attributes = new AttributesMapper();
   }
 
+  /**
+   * Fits the model to the given data.
+   *
+   * @param inputs The inputs to train on
+   * @param outputs The outputs to train on
+   */
   @Override
   public void train(double[][] inputs, double[][] outputs) {
     if (inputs.length != outputs.length)
