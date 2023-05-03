@@ -2,7 +2,6 @@ package gg.acai.aurora.model;
 
 import gg.acai.acava.collect.maps.BiHashMap;
 import gg.acai.acava.collect.maps.BiMap;
-import gg.acai.aurora.ml.Trainable;
 
 import java.util.LinkedList;
 import java.util.List;
