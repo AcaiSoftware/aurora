@@ -1,11 +1,12 @@
 package gg.acai.aurora.logistic;
 
+import gg.acai.acava.commons.Attributes;
+import gg.acai.acava.commons.AttributesMapper;
+import gg.acai.aurora.publics.io.Bar;
+import gg.acai.aurora.publics.io.ComplexProgressTicker;
 import gg.acai.aurora.model.ActivationFunction;
-import gg.acai.aurora.ml.MLContextProvider;
-import gg.acai.aurora.ml.Trainable;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import gg.acai.aurora.model.MLContextProvider;
+import gg.acai.aurora.model.Trainable;
 
 /**
  * @author Clouke
@@ -14,17 +15,20 @@ import java.io.InputStreamReader;
  */
 public class LogisticRegression extends AbstractLogisticRegression implements MLContextProvider, Trainable {
 
+  private final ComplexProgressTicker ticker;
+  private final Attributes attributes;
   private final double learningRate;
   private final int epochs;
   private double accuracy = 0.0;
   private double loss = 0.0;
-  private int lastPrintedEpoch = 0;
 
-  public LogisticRegression(int inputSize, int outputSize, double learningRate, int epochs, ActivationFunction activation) {
+  public LogisticRegression(int inputSize, int outputSize, double learningRate, int epochs, ActivationFunction activation, Bar progressBar) {
     super(inputSize, outputSize);
     this.learningRate = learningRate;
     this.epochs = epochs;
     this.activation = activation;
+    this.ticker = new ComplexProgressTicker(progressBar, 1);
+    this.attributes = new AttributesMapper();
   }
 
   @Override
@@ -39,35 +43,32 @@ public class LogisticRegression extends AbstractLogisticRegression implements ML
         double prediction = predict(input)[0];
         double error = prediction - output[0];
 
-        for (int j = 0; j < weights.length; j++) {
+        for (int j = 0; j < weights.length; j++)
           weights[j] -= learningRate * error * input[j];
-        }
 
-        for (int j = 0; j < biases.length; j++) {
+        for (int j = 0; j < biases.length; j++)
           biases[j] -= learningRate * error;
-        }
 
-        tick(epoch, error);
+        double loss = Math.pow(error, 2);
+        double accuracy = 1.0 - loss;
+        this.accuracy = accuracy <= 1.0 ? accuracy : this.accuracy;
+        this.loss = loss != 0.0 ? loss : this.loss;
       }
-    }
-    System.out.println("\n");
-  }
+      double percent = (double) epoch / epochs * 100.0;
+      int pct = (int) percent;
+      attributes.set("epoch", epoch)
+        .set("accuracy", accuracy)
+        .set("loss", loss)
+        .set("stage", pct);
 
-  private void tick(int epoch, double error) {
-    double loss = Math.pow(error, 2);
-    double acc = 1.0 - loss;
-    double lastLoss = this.loss;
-    this.accuracy = acc < 1.0 ? acc : this.accuracy;
-    this.loss = loss != 0.0 ? loss : this.loss;
-    if (lastLoss != loss && loss != 0.0 && epoch % 10_000 == 0 && epoch != lastPrintedEpoch) {
-      int steps = epoch / 10_000;
-      System.out.println("Epoch: " + epoch + " | Step: " + (steps) + " | Loss: " + loss + " | Accuracy: " + accuracy);
-      lastPrintedEpoch = epoch;
+      ticker.tick(pct, attributes);
     }
+    ticker.close();
   }
 
   @Override
   public double accuracy() {
     return accuracy;
   }
+
 }
