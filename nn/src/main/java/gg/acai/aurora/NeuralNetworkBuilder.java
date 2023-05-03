@@ -77,7 +77,7 @@ public class NeuralNetworkBuilder {
   }
 
   /**
-   * Applies a name to this neural network model - for saving & loading purposes
+   * Applies a name to this neural network model - for saving and loading purposes
    *
    * @param name The name to apply
    * @return This builder for chaining

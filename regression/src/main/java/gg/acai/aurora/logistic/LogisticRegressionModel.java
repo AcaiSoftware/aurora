@@ -5,7 +5,7 @@ import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.model.Model;
 
 /**
- * A storable & loadable logistic regression model implementation.
+ * A storable and loadable logistic regression model implementation.
  *
  * @author Clouke
  * @since 16.04.2023 20:57

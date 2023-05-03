@@ -20,7 +20,7 @@ public interface GrammarRule {
 
   /**
    * Applies the grammar rule to the text
-   * (e.g "Happy I am" -> "I am happy")
+   * (e.g "Happy I am" to "I am happy")
    *
    * @param text The text to apply the grammar rule to
    * @return Returns the text with the grammar rule applied
@@ -37,7 +37,7 @@ public interface GrammarRule {
 
   /**
    * Fits the grammar rule to the given rules
-   * (e.g "I -> subject", "am -> verb")
+   * (e.g "I - subject", "am - verb")
    *
    * @param rules The rules to fit the grammar rule to
    */

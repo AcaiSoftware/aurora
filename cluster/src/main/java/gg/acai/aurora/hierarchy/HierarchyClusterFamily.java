@@ -152,7 +152,7 @@ public class HierarchyClusterFamily implements Iterable<Map.Entry<Double, Double
   /**
    * Gets a map of the nodes and their distances from the centroid.
    * <p>
-   * Represents the format: <b>(node, distance)
+   * Represents the format: <b>(node, distance)</b>
    *
    * @return Returns a map of the nodes and their distances from the centroid
    */

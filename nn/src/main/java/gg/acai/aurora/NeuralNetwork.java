@@ -59,7 +59,7 @@ public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetwork
    *    <li>time</li>
    *    <li>stage</li>
    *  </ul>
-   * </p>
+   *
    *
    * <p>The attributes can be used to get information about the training process.
    *

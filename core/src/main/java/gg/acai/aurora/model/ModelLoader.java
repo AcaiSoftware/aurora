@@ -41,7 +41,7 @@ import java.util.function.Consumer;
  *     model = loader.load(NeuralNetworkModel.class);
  *   }
  * }</pre>
- * </p>
+ *
  *
  * <p>This model loader can be used for any {@link Model} implementation
  * such as
