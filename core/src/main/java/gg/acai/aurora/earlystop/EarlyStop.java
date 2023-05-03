@@ -11,7 +11,7 @@ public interface EarlyStop {
 
   void tick(Attributes attributes);
 
-  boolean shouldStop();
+  boolean terminable();
 
   String terminationMessage();
 
