@@ -62,10 +62,7 @@ public class ModelLoader implements AutoCloseable {
       .standard()
       .fromJson(json, modelClass);
 
-    if (model == null) {
-      throw new InvalidModelException("Could not import model with json");
-    }
-
+    Requisites.requireNonNull(model, "Could not import model with json");
     if (remapper != null) {
       ModelRemapperBuilder builder = new ModelRemapperBuilder();
       remapper.accept(builder);
