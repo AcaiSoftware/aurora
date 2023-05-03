@@ -77,13 +77,6 @@
       <version>2.6</version>
     </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.mitchtalmadge/asciigraph -->
-    <dependency>
-      <groupId>com.mitchtalmadge</groupId>
-      <artifactId>asciigraph</artifactId>
-      <version>1.0.3</version>
-    </dependency>
-
     <!-- Guava -->
     <dependency>
       <groupId>com.google.guava</groupId>
