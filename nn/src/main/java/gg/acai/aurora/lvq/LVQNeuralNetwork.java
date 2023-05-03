@@ -3,6 +3,7 @@ package gg.acai.aurora.lvq;
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.commons.AttributesMapper;
 import gg.acai.acava.io.Closeable;
+import gg.acai.aurora.model.ModelConvertible;
 import gg.acai.aurora.publics.io.ComplexProgressTicker;
 import gg.acai.aurora.model.Trainable;
 
@@ -13,7 +14,7 @@ import gg.acai.aurora.model.Trainable;
  * @since 28.04.2023 12:45
  * © Aurora - All Rights Reserved
  */
-public class LVQNeuralNetwork extends AbstractLVQNeuralNetwork implements Trainable, Closeable {
+public class LVQNeuralNetwork extends AbstractLVQNeuralNetwork implements Trainable, ModelConvertible<LVQNeuralNetworkModel>, Closeable {
 
   private double learningRate;
   private double decayRate;
@@ -126,5 +127,12 @@ public class LVQNeuralNetwork extends AbstractLVQNeuralNetwork implements Traina
   @Override
   public Attributes attributes() {
     return attributes.copy();
+  }
+
+  @Override
+  public LVQNeuralNetworkModel toModel(String name) {
+    LVQNeuralNetworkModel model = new LVQNeuralNetworkModel(weights, numInputs, numOutputs);
+    model.name(name);
+    return model;
   }
 }
