@@ -1,6 +1,8 @@
 package gg.acai.aurora.benchmarks;
 
 /**
+ * A wrapper for {@link BenchmarkResult}s.
+ *
  * @author Clouke
  * @since 18.04.2023 00:04
  * © Aurora - All Rights Reserved
