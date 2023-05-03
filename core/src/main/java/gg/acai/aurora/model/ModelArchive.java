@@ -22,7 +22,12 @@ public class ModelArchive {
     String name = model.nameOpt()
       .orElseGet(() -> {
         String date = new SimpleDateFormat(DATE_FORMAT).format(new Date());
-        return MODEL_ARCHIVE + "-" + date;
+        String type = "unknown";
+        if (model instanceof MLContextProvider)
+          type = ((MLContextProvider) model)
+            .context()
+            .toShort();
+        return type + MODEL_ARCHIVE + "-" + date;
       });
     File file = new File(directory);
     if (!file.exists()) {
