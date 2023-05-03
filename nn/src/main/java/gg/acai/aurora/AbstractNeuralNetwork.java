@@ -12,6 +12,8 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * An abstract neural network implementation.
+ *
  * @author Clouke
  * @since 15.02.2023 06:38
  * © Acava - All Rights Reserved
@@ -25,8 +27,8 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
 
   protected double[][] weights_input_to_hidden;
   protected double[][] weights_hidden_to_output;
-  protected final double[] biases_hidden;
-  protected final double[] biases_output;
+  protected double[] biases_hidden;
+  protected double[] biases_output;
 
   public AbstractNeuralNetwork(int inputSize, int hiddenSize, int outputSize) {
     weights_input_to_hidden = new double[inputSize][hiddenSize];
@@ -85,10 +87,20 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
     return output;
   }
 
+  /**
+   * Gets the activation function of this neural network.
+   *
+   * @return The activation function of this neural network.
+   */
   public ActivationFunction activation() {
     return activationFunction;
   }
 
+  /**
+   * Wraps this neural network into a {@link WrappedNeuralNetwork}.
+   *
+   * @return The wrapped neural network.
+   */
   public WrappedNeuralNetwork wrap() {
     return new WrappedNeuralNetwork(weights_input_to_hidden, weights_hidden_to_output, biases_hidden, biases_output);
   }

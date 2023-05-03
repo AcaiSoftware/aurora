@@ -1,6 +1,8 @@
 package gg.acai.aurora.optimizers;
 
 /**
+ * An abstract optimizer implementation with a learning rate.
+ *
  * @author Clouke
  * @since 25.04.2023 11:22
  * © Aurora - All Rights Reserved

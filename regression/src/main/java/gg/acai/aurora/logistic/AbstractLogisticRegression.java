@@ -9,6 +9,8 @@ import gg.acai.aurora.model.Predictable;
 import java.util.Arrays;
 
 /**
+ * An abstract implementation of a logistic regression
+ *
  * @author Clouke
  * @since 01.04.2023 15:38
  * © Aurora - All Rights Reserved

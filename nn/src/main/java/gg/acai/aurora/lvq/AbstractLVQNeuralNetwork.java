@@ -15,6 +15,9 @@ import java.util.function.BiFunction;
  */
 public abstract class AbstractLVQNeuralNetwork implements LVQ, Predictable, MLContextProvider {
 
+  /**
+   * Euclidean distance function.
+   */
   protected static final BiFunction<double[], double[], Double> EUC = QRMath::distance;
 
   protected final transient Random random = new Random();
@@ -39,6 +42,12 @@ public abstract class AbstractLVQNeuralNetwork implements LVQ, Predictable, MLCo
     }
   }
 
+  /**
+   * Classifies the input and returns the index of the winning neuron.
+   *
+   * @param input the input to classify
+   * @return Returns the index of the winning neuron
+   */
   @Override
   public double[] predict(double[] input) {
     return new double[] {
@@ -46,6 +55,12 @@ public abstract class AbstractLVQNeuralNetwork implements LVQ, Predictable, MLCo
     };
   }
 
+  /**
+   * Classifies the input and returns the index of the winning neuron.
+   *
+   * @param input the input to classify
+   * @return Returns the index of the winning neuron
+   */
   @Override
   public int classify(double[] input) {
     int winner = 0;
@@ -60,6 +75,11 @@ public abstract class AbstractLVQNeuralNetwork implements LVQ, Predictable, MLCo
     return winner;
   }
 
+  /**
+   * Gets the ML context of this LVQ neural network.
+   *
+   * @return Returns the ML context of this LVQ neural network.
+   */
   @Override
   public MLContext context() {
     return MLContext.LEARNING_VECTOR_QUANTIZATION;
