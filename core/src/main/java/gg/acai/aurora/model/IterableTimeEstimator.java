@@ -6,6 +6,10 @@ import gg.acai.aurora.TimeEstimator;
 import gg.acai.aurora.publics.Ticker;
 
 /**
+ * An iterable time estimator which estimates the time remaining for a given number of epochs.
+ * <p>
+ * Tick by each iteration to feed the estimator with data.
+ *
  * @author Clouke
  * @author Jonathan
  * @since 09.02.2023 17:10

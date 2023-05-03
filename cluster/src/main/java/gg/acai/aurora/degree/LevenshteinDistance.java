@@ -1,12 +1,21 @@
 package gg.acai.aurora.degree;
 
 /**
+ * A utility class for computing the Levenshtein distance between two CharSequences.
+ *
  * @author Clouke
  * @since 07.03.2023 02:46
  * © Aurora - All Rights Reserved
  */
 public class LevenshteinDistance {
 
+  /**
+   * Computes the Levenshtein distance between two CharSequences.
+   *
+   * @param lhs The left-hand side CharSequence
+   * @param rhs The right-hand side CharSequence
+   * @return Returns the Levenshtein distance between the two CharSequences
+   */
   public static int compute(CharSequence lhs, CharSequence rhs) {
     int l_length = lhs.length();
     int r_length = rhs.length();

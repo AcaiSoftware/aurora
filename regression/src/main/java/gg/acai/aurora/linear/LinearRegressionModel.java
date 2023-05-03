@@ -5,6 +5,8 @@ import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.model.Model;
 
 /**
+ * A storable & loadable linear regression model implementation.
+ *
  * @author Clouke
  * @since 03.05.2023 11:38
  * © Aurora - All Rights Reserved

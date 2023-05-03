@@ -7,11 +7,12 @@ import gg.acai.aurora.model.Trainable;
 import gg.acai.aurora.publics.io.ComplexProgressTicker;
 
 /**
+ * A trainable linear regression implementation.
+ *
  * @author Clouke
  * @since 03.05.2023 00:31
  * © Aurora - All Rights Reserved
  */
-
 public class LinearRegression extends AbstractLinearRegression implements Trainable, ModelConvertible<LinearRegressionModel> {
 
   private final ComplexProgressTicker ticker;
@@ -32,6 +33,12 @@ public class LinearRegression extends AbstractLinearRegression implements Traina
     this.attributes = new AttributesMapper();
   }
 
+  /**
+   * Fits the model to the given data.
+   *
+   * @param x the x values
+   * @param y the y values
+   */
   public void fit(double[] x, double[] y) {
     int m = x.length;
     for (int epoch = 0; epoch <= epochs; epoch++) {
