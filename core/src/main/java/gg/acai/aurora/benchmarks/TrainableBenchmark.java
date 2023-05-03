@@ -3,6 +3,8 @@ package gg.acai.aurora.benchmarks;
 import gg.acai.aurora.model.Trainable;
 
 /**
+ * The default implementation of a trainable benchmark.
+ *
  * @author Clouke
  * @since 18.04.2023 00:03
  * © Aurora - All Rights Reserved
