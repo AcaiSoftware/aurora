@@ -3,3 +3,4 @@
 
 # Note
 Documentation & Maven dependency coming soon
+Meanwhile take a look at our [Wiki](https://github.com/AcaiSoftware/aurora/wiki)
