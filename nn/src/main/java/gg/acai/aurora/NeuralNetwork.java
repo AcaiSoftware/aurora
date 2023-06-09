@@ -2,11 +2,7 @@ package gg.acai.aurora;
 
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.io.Closeable;
-import gg.acai.aurora.model.ActivationFunction;
-import gg.acai.aurora.model.EpochAction;
-import gg.acai.aurora.model.Evaluation;
-import gg.acai.aurora.model.ModelConvertible;
-import gg.acai.aurora.model.Trainable;
+import gg.acai.aurora.model.*;
 import gg.acai.aurora.optimizers.Optimizer;
 import gg.acai.aurora.sets.TestSet;
 
@@ -40,7 +36,7 @@ import java.util.function.Consumer;
  * @since 30.04.2023 17:40
  * © Aurora - All Rights Reserved
  */
-public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetworkModel>, Closeable {
+public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetworkModel>, Pausable, Closeable {
 
   /**
    * Get the optimizer of this neural network.
