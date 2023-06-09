@@ -1,6 +1,5 @@
 package gg.acai.aurora;
 
-
 import com.google.gson.Gson;
 import gg.acai.acava.commons.Attributes;
 import gg.acai.aurora.model.ActivationFunction;
@@ -12,9 +11,7 @@ import gg.acai.aurora.optimizers.Optimizer;
 import gg.acai.aurora.sets.DataSet;
 import gg.acai.aurora.sets.TestSet;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -39,6 +36,8 @@ public class NeuralNetworkTF implements NeuralNetwork, Predictable {
   private final DataSet dataSet;
   private Consumer<NeuralNetwork> completion;
 
+  private final String paramsPath;
+
   public NeuralNetworkTF(NeuralNetworkTFBuilder builder) {
     this.pythonPath = builder.pythonPath;
     this.epochs = builder.epochs;
@@ -46,59 +45,64 @@ public class NeuralNetworkTF implements NeuralNetwork, Predictable {
     this.learningRate = builder.learningRate;
     this.layers = builder.layers;
     this.dataSet = builder.dataSet;
+    this.paramsPath = new File(pythonPath).getParent() + File.separator + "options" + File.separator + "parameters.json";
   }
 
-  @Override
+  @Override @SuppressWarnings("ResultOfMethodCallIgnored")
   public void train(double[][] inputs, double[][] outputs) {
     try {
-      /*
-       * Flags:
-       * - inputs: The inputs of the data set
-       * - outputs: The outputs of the data set
-       * - e: The amount of epochs
-       * - opt: The optimizer
-       * - layers: Dense layers
-       * - lr: The learning rate
-       */
+      long parametersTime = System.currentTimeMillis();
+      Parameters parameters = new Parameters(
+        pythonPath,
+        inputs,
+        outputs,
+        epochs,
+        learningRate,
+        optimizer,
+        layers
+      );
+
+      File paramsFile = new File(paramsPath);
+      if (!paramsFile.exists()) paramsFile
+        .getParentFile()
+        .mkdirs();
+      paramsFile.createNewFile();
+      try (FileWriter fileWriter = new FileWriter(paramsFile)) {
+        fileWriter.write(parameters.toString());
+      }
+      System.out.println("Parameters written in " + (System.currentTimeMillis() - parametersTime) + "ms");
+
       Process process = new ProcessBuilder(
         "python", pythonPath,
-        "-inputs", Arrays.deepToString(inputs),
-        "-outputs", Arrays.deepToString(outputs),
-        "-e", String.valueOf(epochs),
-        "-opt", optimizer,
-        "-layers", String.valueOf(layers),
-        "-lr", String.valueOf(learningRate))
+        "-options", paramsPath)
         /*
          * Inherit the IO of the current process to get the output of the python script
-         * and print it to the console
          */
         .inheritIO()
         .start();
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      String line;
-      String lastLine = null;
-      while ((line = reader.readLine()) != null) {
-        lastLine = line;
+
+      int exitCode = process.waitFor();
+      if (exitCode != 0)
+        throw new Exception("Python script exited with code " + exitCode);
+
+      File file = new File(paramsPath).getParentFile().getParentFile();
+      String model_info;
+      try (FileReader fileReader = new FileReader(file + File.separator + "model.json")) {
+        model_info = new BufferedReader(fileReader).readLine();
       }
 
       WrappedNeuralNetwork wrapper;
       try {
         Gson gson = GsonSpec.standard();
-        wrapper = gson.fromJson(lastLine, WrappedNeuralNetwork.class);
+        wrapper = gson.fromJson(model_info, WrappedNeuralNetwork.class);
       } catch (Exception e) {
-        throw new Exception("Failed to parse JSON: " + lastLine);
+        throw new Exception("Failed to parse JSON: " + model_info);
       }
-
       this.weights_input_hidden = wrapper.weights_input_to_hidden();
       this.weights_hidden_output = wrapper.weights_hidden_to_output();
       this.biases_hidden = wrapper.biases_hidden();
       this.biases_output = wrapper.biases_output();
-
-      int exitCode = process.waitFor();
-      if (exitCode != 0)
-        throw new Exception("Python script exited with code " + exitCode);
-      System.out.println("Completed training");
       if (completion != null)
         completion.accept(this);
 
@@ -155,7 +159,9 @@ public class NeuralNetworkTF implements NeuralNetwork, Predictable {
 
   @Override
   public Evaluation evaluate(TestSet set) {
-    return new ModelMetrics(this, set);
+    ModelMetrics metrics = new ModelMetrics(this, set);
+    metrics.evaluate();
+    return metrics;
   }
 
   @Override
