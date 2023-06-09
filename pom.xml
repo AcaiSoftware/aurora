@@ -13,6 +13,7 @@
     <module>regression</module>
     <module>cluster</module>
     <module>nlp-tools</module>
+    <module>nn-tf</module>
   </modules>
 
   <properties>
