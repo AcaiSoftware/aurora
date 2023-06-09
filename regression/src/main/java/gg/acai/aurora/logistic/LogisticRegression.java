@@ -2,6 +2,7 @@ package gg.acai.aurora.logistic;
 
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.commons.AttributesMapper;
+import gg.acai.aurora.model.ModelConvertible;
 import gg.acai.aurora.publics.io.Bar;
 import gg.acai.aurora.publics.io.ComplexProgressTicker;
 import gg.acai.aurora.model.ActivationFunction;
@@ -15,7 +16,7 @@ import gg.acai.aurora.model.Trainable;
  * @since 01.04.2023 15:30
  * © Aurora - All Rights Reserved
  */
-public class LogisticRegression extends AbstractLogisticRegression implements MLContextProvider, Trainable {
+public class LogisticRegression extends AbstractLogisticRegression implements MLContextProvider, ModelConvertible<LogisticRegressionModel>, Trainable {
 
   private final ComplexProgressTicker ticker;
   private final Attributes attributes;
@@ -79,4 +80,10 @@ public class LogisticRegression extends AbstractLogisticRegression implements ML
     return accuracy;
   }
 
+  @Override
+  public LogisticRegressionModel toModel(String name) {
+    LogisticRegressionModel model = new LogisticRegressionModel(weights, biases);
+    model.name(name);
+    return model;
+  }
 }
