@@ -70,7 +70,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   private boolean paused;
 
   public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
-    super(builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
+    super(builder.seed, builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
     super.name = builder.name;
     NeuralNetworkModel model = builder.model;
     if (model != null) {
