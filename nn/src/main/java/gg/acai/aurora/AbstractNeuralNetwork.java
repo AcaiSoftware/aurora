@@ -30,10 +30,10 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
   protected double[] biases_hidden;
   protected double[] biases_output;
 
-  public AbstractNeuralNetwork(int inputSize, int hiddenSize, int outputSize) {
+  public AbstractNeuralNetwork(long seed, int inputSize, int hiddenSize, int outputSize) {
+    Random random = new Random(seed);
     weights_input_to_hidden = new double[inputSize][hiddenSize];
     biases_hidden = new double[hiddenSize];
-    Random random = ThreadLocalRandom.current();
     for (int i = 0; i < inputSize; i++) {
       for (int j = 0; j < hiddenSize; j++) {
         weights_input_to_hidden[i][j] = random.nextGaussian();

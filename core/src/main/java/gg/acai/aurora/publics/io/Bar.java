@@ -56,6 +56,9 @@ public class Bar implements Closeable {
       scaledIndex = (nextIndex * length) / 100;
     }
 
+    if (scaledIndex > length) { // check if we're out of bounds
+      scaledIndex = length;
+    }
     bar[scaledIndex] = symbols.complete();
     nextIndex++;
   }

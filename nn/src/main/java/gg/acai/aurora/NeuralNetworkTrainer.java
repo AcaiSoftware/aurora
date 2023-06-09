@@ -67,9 +67,10 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   private double accuracy = -1.0;
   private double loss = -1.0;
   private boolean completed;
+  private boolean paused;
 
   public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
-    super(builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
+    super(builder.seed, builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
     super.name = builder.name;
     NeuralNetworkModel model = builder.model;
     if (model != null) {
@@ -111,6 +112,15 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
 
     time = TICKER.read();
     for (int epoch = 0; epoch <= epochs; epoch++) {
+      if (paused) {
+        try {
+          synchronized (this) {
+            while (paused) wait();
+          }
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
       estimator.tick();
       for (int i = 0; i < inputs.length; i++) {
         // Perform forward propagation
@@ -171,6 +181,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
       double[] output = predict(supplier.test());
       accuracy = Math.pow(output[0] - 1, 2) * 100.0;
 
+      estimator.setIteration(epoch);
       attributes.set("epoch", epoch)
         .set("accuracy", accuracy)
         .set("stage", pct)
@@ -264,5 +275,21 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   @Override
   public NeuralNetworkModel toModel() {
     return toModel(name);
+  }
+
+  @Override
+  public synchronized void pause() {
+    paused = true;
+  }
+
+  @Override
+  public synchronized void resume() {
+    paused = false;
+    notifyAll();
+  }
+
+  @Override
+  public boolean paused() {
+    return paused;
   }
 }

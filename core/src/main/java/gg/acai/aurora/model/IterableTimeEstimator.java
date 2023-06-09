@@ -22,6 +22,7 @@ public final class IterableTimeEstimator implements TimeEstimator<Integer> {
   private long tick = -1;
   private final int maxEpochs;
   private double average = -1.0;
+  private int iteration;
 
   public IterableTimeEstimator(int maxEpochs) {
     this.maxEpochs = maxEpochs;
@@ -55,8 +56,13 @@ public final class IterableTimeEstimator implements TimeEstimator<Integer> {
   }
 
   @Override
+  public void setIteration(int iteration) {
+    this.iteration = iteration;
+  }
+
+  @Override
   public String toString() {
-    double estimated = estimated(maxEpochs);
+    double estimated = estimated(iteration);
     if (estimated < 60) return estimated + "s";
     else if (estimated < 3600) {
       int minutes = (int) (estimated / 60.0);

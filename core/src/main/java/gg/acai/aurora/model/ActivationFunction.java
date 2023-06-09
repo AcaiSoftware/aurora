@@ -1,5 +1,6 @@
 package gg.acai.aurora.model;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleUnaryOperator;
 
@@ -17,7 +18,7 @@ public final class ActivationFunction {
   public static final ActivationFunction SIGMOID = new ActivationFunction("sigmoid", x -> 1 / (1 + Math.exp(-x)), x -> x * (1 - x));
   public static final ActivationFunction TANH = new ActivationFunction("tanh", Math::tanh, x -> 1 - Math.pow(x, 2));
   public static final ActivationFunction RELU = new ActivationFunction("relu", x -> Math.max(0, x), x -> x > 0 ? 1 : 0);
-  public static final ActivationFunction SOFTMAX = new ActivationFunction("softmax", x -> 1 / (1 + Math.exp(-x)), x -> x * (1 - x));
+  public static final ActivationFunction SOFTMAX = new ActivationFunction("softmax", ActivationFunction::softmax, ActivationFunction::softmaxDerivative);
   public static final ActivationFunction SOFTPLUS = new ActivationFunction("softplus", x -> Math.log(1 + Math.exp(x)), x -> 1 / (1 + Math.exp(-x)));
 
   private final String name;
@@ -113,6 +114,17 @@ public final class ActivationFunction {
     } catch (IllegalArgumentException e) {
       return Optional.empty();
     }
+  }
+
+  public static double softmax(double x) {
+    double expX = Math.exp(x);
+    double expSum = Math.exp(1) + expX;
+    return expX / expSum;
+  }
+
+  public static double softmaxDerivative(double x) {
+    double softmaxX = softmax(x);
+    return softmaxX * (1 - softmaxX);
   }
 
 }
