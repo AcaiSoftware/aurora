@@ -64,6 +64,7 @@ public class NeuralNetworkBuilder {
   protected TestSet evaluationSet;
   protected AccuracySupplier accuracySupplier;
   protected NeuralNetworkModel model;
+  protected long seed = System.currentTimeMillis();
 
   /**
    * Applies a model to this builder for re-training / improvement purposes
@@ -73,6 +74,17 @@ public class NeuralNetworkBuilder {
    */
   public NeuralNetworkBuilder from(NeuralNetworkModel model) {
     this.model = model;
+    return this;
+  }
+
+  /**
+   * Applies the randomization seed to this neural network model
+   *
+   * @param seed The seed to apply
+   * @return This builder for chaining
+   */
+  public NeuralNetworkBuilder seed(long seed) {
+    this.seed = seed;
     return this;
   }
 
