@@ -21,6 +21,10 @@ public interface TimeEstimator<T> extends Runnable {
     tick();
   }
 
+  default void setIteration(int iteration) {
+    // Do nothing
+  }
+
   /**
    * Gets the estimated time remaining.
    *
