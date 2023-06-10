@@ -1,5 +1,6 @@
 package gg.acai.aurora;
 
+import com.google.common.collect.Maps;
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.commons.AttributesMapper;
 import gg.acai.aurora.model.EpochAction;
@@ -14,6 +15,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Map;
+
 /**
  * @author Clouke
  * @since 10.06.2023 02:38
@@ -23,6 +26,22 @@ public class GraphEpochIteration<T extends Attributed> extends Application imple
 
   private final ObservableList<XYChart.Data<Number, Number>> lossData;
   private final ObservableList<XYChart.Data<Number, Number>> accuracyData;
+
+  private static final Map<String, String> DESIGN;
+
+  static {
+    DESIGN = Maps.newHashMap();
+    DESIGN.put("background-color", "#1b1b1f");
+    DESIGN.put("horizontal-grid-lines", "#ffffff");
+    DESIGN.put("vertical-grid-lines", "#ffffff");
+    DESIGN.put("series-line", "#0000ff");
+    DESIGN.put("loss-line", "#a33eb8");
+    DESIGN.put("accuracy-line", "#3eb895");
+  }
+
+  static String apply(String target) {
+    return DESIGN.getOrDefault(target, "#ffffff");
+  }
 
   public GraphEpochIteration(ObservableList<XYChart.Data<Number, Number>> lossData, ObservableList<XYChart.Data<Number, Number>> accuracyData) {
     this.lossData = lossData;
@@ -52,6 +71,7 @@ public class GraphEpochIteration<T extends Attributed> extends Application imple
     LineChart<Number, Number> accuracyChart = createChart("Accuracy", "Accuracy", accuracyData);
 
     VBox vbox = new VBox(lossChart, accuracyChart);
+    vbox.setStyle("-fx-background-color: " + apply("background-color") + ";");
     Scene scene = new Scene(vbox, 800, 600);
 
     primaryStage.setScene(scene);
@@ -65,8 +85,34 @@ public class GraphEpochIteration<T extends Attributed> extends Application imple
     yAxis.setLabel(yAxisLabel);
 
     LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
+    chart.setStyle("-fx-background-color: " + apply("background-color") + ";");
     chart.setTitle(title);
-    chart.getData().add(new XYChart.Series<>(data));
+
+    XYChart.Series<Number, Number> series = new XYChart.Series<>(data);
+    chart.getData().add(series);
+    chart.lookup(".default-color0.chart-series-line").setStyle("-fx-stroke: " + apply(title.toLowerCase() + "-line") + ";");
+    chart.setCreateSymbols(false);
+
+    /*
+    for (XYChart.Data<Number, Number> point : series.getData()) {
+      Node node = point.getNode();
+      node.setStyle("-fx-background-color: gray;");
+    }
+
+    // Add a listener to handle new data points
+    data.addListener((ListChangeListener<XYChart.Data<Number, Number>>) change -> {
+      while (change.next()) {
+        if (change.wasAdded()) {
+          Platform.runLater(() -> {
+            for (XYChart.Data<Number, Number> point : change.getAddedSubList()) {
+              Node node = point.getNode();
+              node.setStyle("-fx-background-color: gray;");
+            }
+          });
+        }
+      }
+    });
+     */
 
     return chart;
   }
@@ -85,5 +131,4 @@ public class GraphEpochIteration<T extends Attributed> extends Application imple
       }
     }
   }
-
 }
