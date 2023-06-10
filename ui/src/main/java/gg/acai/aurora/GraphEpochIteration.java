@@ -51,7 +51,7 @@ public class GraphEpochIteration<T extends Attributed> extends Application imple
     LineChart<Number, Number> lossChart = createChart("Loss", "Loss", lossData);
     LineChart<Number, Number> accuracyChart = createChart("Accuracy", "Accuracy", accuracyData);
 
-    VBox vbox = new VBox(20.0, lossChart, accuracyChart);
+    VBox vbox = new VBox(lossChart, accuracyChart);
     Scene scene = new Scene(vbox, 800, 600);
 
     primaryStage.setScene(scene);
