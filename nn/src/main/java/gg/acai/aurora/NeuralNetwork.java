@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * @since 30.04.2023 17:40
  * © Aurora - All Rights Reserved
  */
-public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetworkModel>, Pausable, Closeable {
+public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetworkModel>, Pausable, Closeable, Attributed {
 
   /**
    * Get the optimizer of this neural network.
@@ -61,6 +61,7 @@ public interface NeuralNetwork extends Trainable, ModelConvertible<NeuralNetwork
    *
    * @return Returns a copy of the attributes in this neural network.
    */
+  @Override
   Attributes attributes();
 
   /**
