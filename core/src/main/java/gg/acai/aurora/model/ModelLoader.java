@@ -3,11 +3,10 @@ package gg.acai.aurora.model;
 import gg.acai.acava.Requisites;
 import gg.acai.aurora.GsonSpec;
 import gg.acai.aurora.exception.InvalidModelException;
+import gg.acai.aurora.publics.io.bin.BinaryFileIO;
+import gg.acai.aurora.publics.io.bin.BinaryWrapper;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.function.Consumer;
 
@@ -89,6 +88,16 @@ public class ModelLoader implements AutoCloseable {
       this.json = builder.toString();
     } catch (Exception e) {
       throw new InvalidModelException("Could not import model from url " + url.toString(), e);
+    }
+  }
+
+  public ModelLoader(BinaryWrapper path) {
+    Requisites.requireNonNull(path, "path cannot be null");
+    Requisites.requireNonNull(path.composed(), "path.composed() cannot be null");
+    try {
+      this.json = BinaryFileIO.loadFromBin(path.composed());
+    } catch (IOException e) {
+      throw new RuntimeException("Could not import model from binary file " + path.composed());
     }
   }
 
