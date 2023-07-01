@@ -1,5 +1,7 @@
 package gg.acai.aurora.model;
 
+import gg.acai.aurora.publics.io.bin.BinaryFileIO;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
@@ -40,6 +42,47 @@ public class ModelArchive {
     File file = new File(directory);
     if (!file.exists()) {
       file.mkdirs();
+    }
+
+    File modelFile = new File(file, name + ".json");
+    try (FileWriter writer = new FileWriter(modelFile)) {
+      writer.write(model.serialize());
+    } catch (Exception e) {
+      failure.accept(e);
+    }
+  }
+
+  /**
+   * Saves the model to the model directory as a compressed .bin file
+   *
+   * @param model The model to save.
+   * @param failure The failure consumer to accept exceptions.
+   */
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  public static void saveBinaryModel(Model model, Consumer<? super Exception> failure) {
+    String directory = model.saveDirectoryPath();
+    String name = model.nameOpt()
+      .orElseGet(() -> {
+        String date = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        String type = "unknown";
+        if (model instanceof MLContextProvider)
+          type = ((MLContextProvider) model)
+            .context()
+            .toShort();
+        return type + MODEL_ARCHIVE + "-" + date;
+      });
+    File file = new File(directory);
+    if (!file.exists()) {
+      file.mkdirs();
+    }
+
+    try {
+      BinaryFileIO.saveAsBin(
+        model::serialize,
+        directory + "/" + name + ".model"
+      );
+    } catch (Exception e) {
+      failure.accept(e);
     }
 
     File modelFile = new File(file, name + ".json");
