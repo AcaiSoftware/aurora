@@ -99,4 +99,26 @@ public interface Model extends Serializer, SavePoint, Closeable {
     save();
   }
 
+  /**
+   * Saves this model to a compressed .bin file.
+   *
+   * @throws ModelStorageException If an error occurs while saving this model.
+   */
+  default void saveBinary() throws ModelStorageException {
+    ModelArchive.saveBinaryModel(this, e -> {
+      throw new ModelStorageException(e);
+    });
+  }
+
+  /**
+   * Saves this model to a compressed .bin file to the specified save directory.
+   *
+   * @param saveDirectory The save directory to save this model to.
+   * @throws ModelStorageException If an error occurs while saving this model.
+   */
+  default void saveBinary(String saveDirectory) throws ModelStorageException {
+    saveDirectoryPath(saveDirectory);
+    saveBinary();
+  }
+
 }
