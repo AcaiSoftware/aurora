@@ -42,32 +42,32 @@ import java.util.function.Consumer;
  *}</pre>
  * @author Clouke
  * @since 11.02.2023 16:18
- * © Acava - All Rights Reserved
+ * © Aurora - All Rights Reserved
  */
 public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements NeuralNetwork {
 
-  private static final Ticker<Long> TICKER = Ticker.systemMillis();
+  protected static final Ticker<Long> TICKER = Ticker.systemMillis();
 
-  private final int epochs;
-  private final double learningRate;
-  private final TimeEstimator<Integer> estimator;
-  private final boolean autoSave;
-  private final boolean shouldPrintStats;
-  private final DataSet set;
-  private final EarlyStoppers earlyStoppers;
-  private final Attributes attributes = new AttributesMapper();
-  private final Optimizer optimizer;
-  private final ComplexProgressTicker progressTicker;
-  private final TestSet evaluationSet;
-  private final Set<EpochAction<NeuralNetwork>> epochActions;
-  private final AccuracySupplier accuracySupplier;
-  private Consumer<NeuralNetwork> completion;
+  protected final int epochs;
+  protected final double learningRate;
+  protected final TimeEstimator<Integer> estimator;
+  protected final boolean autoSave;
+  protected final boolean shouldPrintStats;
+  protected final DataSet set;
+  protected final EarlyStoppers earlyStoppers;
+  protected final Attributes attributes = new AttributesMapper();
+  protected final Optimizer optimizer;
+  protected final ComplexProgressTicker progressTicker;
+  protected final TestSet evaluationSet;
+  protected final Set<EpochAction<NeuralNetwork>> epochActions;
+  protected final AccuracySupplier accuracySupplier;
+  protected Consumer<NeuralNetwork> completion;
 
-  private long time;
-  private double accuracy = -1.0;
-  private double loss = -1.0;
-  private boolean completed;
-  private boolean paused;
+  protected long time;
+  protected double accuracy = -1.0;
+  protected double loss = -1.0;
+  protected boolean completed;
+  protected boolean paused;
 
   public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
     super(builder.seed, builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
@@ -171,12 +171,6 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
         optimizer.update(i, weights_input_to_hidden, weights_hidden_to_output, delta_hidden, delta_output, biases_hidden, biases_output, inputs, hidden);
       }
 
-      if (!epochActions.isEmpty()) {
-        for (EpochAction<NeuralNetwork> action : epochActions) {
-          action.onEpochIteration(epoch, this);
-        }
-      }
-
       int pct = (int) ((double) epoch / epochs * 100.0);
       double[] output = predict(supplier.test());
       accuracy = Math.pow(output[0] - 1, 2) * 100.0;
@@ -187,6 +181,12 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
         .set("stage", pct)
         .set("time left", estimator)
         .set("loss", loss);
+
+      if (!epochActions.isEmpty()) {
+        for (EpochAction<NeuralNetwork> action : epochActions) {
+          action.onEpochIteration(epoch, this);
+        }
+      }
 
       progressTicker.tick(pct, attributes);
       if (earlyStoppers.tick(attributes)) {
@@ -292,4 +292,16 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   public boolean paused() {
     return paused;
   }
+
+  public long countParameters() {
+    long count = 0;
+
+    for (double[] weights : weights_input_to_hidden) count += weights.length;
+    for (double[] weights : weights_hidden_to_output) count += weights.length;
+    for (double ignored : biases_hidden) count++;
+    for (double ignored : biases_output) count++;
+
+    return count;
+  }
+
 }
