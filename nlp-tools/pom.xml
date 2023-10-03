@@ -23,6 +23,24 @@
       <artifactId>aurora-core</artifactId>
       <version>1.0.0</version>
     </dependency>
+
+    <dependency>
+      <groupId>gg.acai</groupId>
+      <artifactId>aurora-nn</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>gg.acai</groupId>
+      <artifactId>aurora-opt</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>gg.acai</groupId>
+      <artifactId>aurora-ui</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
 
 </project>
