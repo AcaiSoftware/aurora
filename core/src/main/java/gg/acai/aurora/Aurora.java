@@ -1,12 +1,11 @@
 package gg.acai.aurora;
 
 import gg.acai.acava.io.filter.reader.BufferedFilterableReader;
-import gg.acai.acava.io.logging.Logger;
-import gg.acai.acava.io.logging.StandardLogger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 /**
  * A class for Aurora specific information.
@@ -17,6 +16,7 @@ import java.util.function.Supplier;
  */
 public class Aurora {
 
+  private static final Logger LOGGER = Logger.getLogger("Aurora");
   private static Supplier<String> VERSION;
 
   /**
@@ -36,13 +36,17 @@ public class Aurora {
               .trim())
             .orElse("ignore");
         } catch (FileNotFoundException e) {
-          System.out.println("Failed to read version from pom.xml: " + e.getMessage());
+          LOGGER.warning("Failed to read version from pom.xml: " + e.getMessage());
           return "ignore";
         }
       };
     }
 
     return VERSION.get();
+  }
+
+  public static Logger logger() {
+    return LOGGER;
   }
 
   /**

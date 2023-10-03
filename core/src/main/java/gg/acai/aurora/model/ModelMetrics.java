@@ -43,39 +43,42 @@ public class ModelMetrics implements Evaluation {
   }
 
   public ModelMetrics(Predictable model, TestSet testSet) {
-    this(model, testSet, 0.5);
+    this(
+      model,
+      testSet,
+      0.5
+    );
   }
 
   @Override
   public void evaluate() {
-    int truePositives = 0;
-    int falsePositives = 0;
-    int trueNegatives = 0;
-    int falseNegatives = 0;
+    int truePos = 0;
+    int falsePos = 0;
+    int trueNeg = 0;
+    int falseNeg = 0;
 
     for (Map.Entry<double[], double[]> entry : testSet.asMap().entrySet()) {
       double[] input = entry.getKey();
       double[] output = model.predict(input);
       double[] target = entry.getValue();
 
-      // Count true positives, false positives, true negatives, and false negatives
       for (int j = 0; j < output.length; j++) {
         if (output[j] >= threshold && target[j] == 1.0) {
-          truePositives++;
+          truePos++;
         } else if (output[j] >= threshold && target[j] == 0.0) {
-          falsePositives++;
+          falsePos++;
         } else if (output[j] < threshold && target[j] == 0.0) {
-          trueNegatives++;
+          trueNeg++;
         } else if (output[j] < threshold && target[j] == 1.0) {
-          falseNegatives++;
+          falseNeg++;
         }
       }
     }
 
     // Calculate metrics
-    accuracy = (double) (truePositives + trueNegatives) / (truePositives + trueNegatives + falsePositives + falseNegatives);
-    precision = (double) truePositives / (truePositives + falsePositives);
-    recall = (double) truePositives / (truePositives + falseNegatives);
+    accuracy = (double) (truePos + trueNeg) / (truePos + trueNeg + falsePos + falseNeg);
+    precision = (double) truePos / (truePos + falsePos);
+    recall = (double) truePos / (truePos + falseNeg);
     f1Score = 2.0 * precision * recall / (precision + recall);
   }
 
@@ -125,7 +128,7 @@ public class ModelMetrics implements Evaluation {
 
   @Override
   public String toString() {
-    return "CommonPredictableEvaluation{" +
+    return "ModelMetrics{" +
       "accuracy=" + accuracy +
       ", precision=" + precision +
       ", recall=" + recall +

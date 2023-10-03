@@ -1,15 +1,19 @@
 package gg.acai.aurora;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import gg.acai.acava.annotated.Optionally;
+import gg.acai.aurora.initializers.ComposedWeights;
+import gg.acai.aurora.initializers.WeightInitializer;
 import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.model.MLContextProvider;
 import gg.acai.aurora.model.MLContext;
 import gg.acai.aurora.model.Predictable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * An abstract neural network implementation.
@@ -30,28 +34,23 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
   protected double[] biases_hidden;
   protected double[] biases_output;
 
-  public AbstractNeuralNetwork(long seed, int inputSize, int hiddenSize, int outputSize) {
-    Random random = new Random(seed);
-    weights_input_to_hidden = new double[inputSize][hiddenSize];
-    biases_hidden = new double[hiddenSize];
-    for (int i = 0; i < inputSize; i++) {
-      for (int j = 0; j < hiddenSize; j++) {
-        weights_input_to_hidden[i][j] = random.nextGaussian();
-      }
-    }
-    for (int i = 0; i < hiddenSize; i++) {
-      biases_hidden[i] = random.nextGaussian();
-    }
-    weights_hidden_to_output = new double[hiddenSize][outputSize];
-    biases_output = new double[outputSize];
-    for (int i = 0; i < hiddenSize; i++) {
-      for (int j = 0; j < outputSize; j++) {
-        weights_hidden_to_output[i][j] = random.nextGaussian();
-      }
-    }
-    for (int i = 0; i < outputSize; i++) {
-      biases_output[i] = random.nextGaussian();
-    }
+  public AbstractNeuralNetwork(long seed, int inputSize, int hiddenSize, int outputSize, WeightInitializer initializer) {
+    ComposedWeights composer = initializer.initialize(
+      seed,
+      inputSize,
+      hiddenSize,
+      outputSize
+    );
+
+    Preconditions.checkNotNull(
+      composer,
+      "composer cannot be null, WeightInitializer=" + initializer.getClass().getName()
+    );
+
+    weights_input_to_hidden = composer.weights_input_to_hidden();
+    weights_hidden_to_output = composer.weights_hidden_to_output();
+    biases_hidden = composer.biases_hidden();
+    biases_output = composer.biases_output();
   }
 
   public AbstractNeuralNetwork(double[][] weights_input_to_hidden, double[][] weights_hidden_to_output, double[] biases_hidden, double[] biases_output) {
@@ -92,6 +91,7 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
    *
    * @return The activation function of this neural network.
    */
+  @Nullable
   public ActivationFunction activation() {
     return activationFunction;
   }
@@ -101,8 +101,14 @@ public abstract class AbstractNeuralNetwork implements MLContextProvider, Predic
    *
    * @return The wrapped neural network.
    */
+  @Nonnull
   public WrappedNeuralNetwork wrap() {
-    return new WrappedNeuralNetwork(weights_input_to_hidden, weights_hidden_to_output, biases_hidden, biases_output);
+    return new WrappedNeuralNetwork(
+      weights_input_to_hidden,
+      weights_hidden_to_output,
+      biases_hidden,
+      biases_output
+    );
   }
 
   @Override

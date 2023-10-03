@@ -50,7 +50,9 @@ public interface Model extends Serializer, SavePoint, Closeable {
    * Gets the version of this model.
    *
    * @return Returns the version of this model.
+   * @deprecated May not be applied.
    */
+  @Deprecated
   String version();
 
   /**
@@ -104,7 +106,7 @@ public interface Model extends Serializer, SavePoint, Closeable {
    *
    * @throws ModelStorageException If an error occurs while saving this model.
    */
-  default void saveBinary() throws ModelStorageException {
+  default void compile() throws ModelStorageException {
     ModelArchive.saveBinaryModel(this, e -> {
       throw new ModelStorageException(e);
     });
@@ -116,9 +118,9 @@ public interface Model extends Serializer, SavePoint, Closeable {
    * @param saveDirectory The save directory to save this model to.
    * @throws ModelStorageException If an error occurs while saving this model.
    */
-  default void saveBinary(String saveDirectory) throws ModelStorageException {
+  default void compile(String saveDirectory) throws ModelStorageException {
     saveDirectoryPath(saveDirectory);
-    saveBinary();
+    compile();
   }
 
 }

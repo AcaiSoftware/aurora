@@ -3,21 +3,28 @@ package gg.acai.aurora;
 import com.google.common.base.Preconditions;
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.commons.AttributesMapper;
+import gg.acai.aurora.batch.Batch;
+import gg.acai.aurora.batch.BatchIterator;
 import gg.acai.aurora.earlystop.EarlyStoppers;
 import gg.acai.aurora.model.EpochAction;
+import gg.acai.aurora.noise.Noise;
+import gg.acai.aurora.policy.DecayPolicy;
 import gg.acai.aurora.publics.io.ComplexProgressTicker;
 import gg.acai.aurora.model.Evaluation;
 import gg.acai.aurora.model.ModelMetrics;
 import gg.acai.aurora.model.IterableTimeEstimator;
 import gg.acai.aurora.optimizers.Optimizer;
+import gg.acai.aurora.regularization.Regularization;
 import gg.acai.aurora.sets.DataSet;
 import gg.acai.aurora.publics.Ticker;
 import gg.acai.aurora.sets.TestSet;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * <p> Example Usage:
@@ -42,36 +49,46 @@ import java.util.function.Consumer;
  *}</pre>
  * @author Clouke
  * @since 11.02.2023 16:18
- * © Acava - All Rights Reserved
+ * © Aurora - All Rights Reserved
  */
 public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements NeuralNetwork {
 
-  private static final Ticker<Long> TICKER = Ticker.systemMillis();
+  protected static final Ticker<Long> TICKER = Ticker.systemMillis();
 
-  private final int epochs;
-  private final double learningRate;
-  private final TimeEstimator<Integer> estimator;
-  private final boolean autoSave;
-  private final boolean shouldPrintStats;
-  private final DataSet set;
-  private final EarlyStoppers earlyStoppers;
-  private final Attributes attributes = new AttributesMapper();
-  private final Optimizer optimizer;
-  private final ComplexProgressTicker progressTicker;
-  private final TestSet evaluationSet;
-  private final Set<EpochAction<NeuralNetwork>> epochActions;
-  private final AccuracySupplier accuracySupplier;
-  private Consumer<NeuralNetwork> completion;
+  protected final int epochs;
+  protected double learningRate;
+  protected final TimeEstimator<Integer> estimator;
+  protected final boolean autoSave;
+  protected final boolean shouldPrintStats;
+  protected final DataSet set;
+  protected final EarlyStoppers earlyStoppers;
+  protected final Attributes attributes = new AttributesMapper();
+  protected final Optimizer optimizer;
+  protected final ComplexProgressTicker progressTicker;
+  protected final TestSet evaluationSet;
+  protected final Set<EpochAction<NeuralNetwork>> epochActions;
+  protected final AccuracySupplier accuracySupplier;
+  protected final DecayPolicy<Double> learningRateDecay;
+  protected final Regularization regularization;
+  protected final Noise noise;
+  protected Consumer<NeuralNetwork> completion;
 
-  private long time;
-  private double accuracy = -1.0;
-  private double loss = -1.0;
-  private boolean completed;
-  private boolean paused;
+  protected long time;
+  protected double accuracy = -1.0;
+  protected double loss = -1.0;
+  protected boolean completed;
+  protected boolean paused;
 
   public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
-    super(builder.seed, builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
-    super.name = builder.name;
+    super(
+      builder.seed,
+      builder.inputLayerSize,
+      builder.hiddenLayerSize,
+      builder.outputLayerSize,
+      builder.weightInitializer
+    );
+
+    this.name = builder.name;
     NeuralNetworkModel model = builder.model;
     if (model != null) {
       weights_input_to_hidden = model.weights_input_to_hidden;
@@ -87,18 +104,25 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
     this.shouldPrintStats = builder.shouldPrintStats;
     this.set = builder.set;
     this.earlyStoppers = builder.earlyStoppers;
-    this.optimizer = builder.optimizer.apply(learningRate);
+    this.optimizer = builder.optimizer;
     this.evaluationSet = builder.evaluationSet;
     this.epochActions = builder.epochActions;
     this.progressTicker = new ComplexProgressTicker(builder.progressBar, 1);
     this.accuracySupplier = builder.accuracySupplier;
     this.estimator = new IterableTimeEstimator(epochs);
+    this.learningRateDecay = builder.learningRateDecay;
+    this.regularization = builder.regularization;
+    this.noise = builder.noise;
   }
 
   @Override
   public void train() {
-    if (set == null || set.inputs() == null || set.targets() == null) throw new IllegalStateException("No data set provided!");
-    train(set.inputs(), set.targets());
+    if (set == null || set.inputs() == null || set.targets() == null)
+      throw new IllegalStateException("No data set provided!");
+    train(
+      set.inputs(),
+      set.targets()
+    );
   }
 
   @Override
@@ -167,18 +191,38 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
           delta_hidden[j] = sum * activationFunction.derivative(hidden[j]);
         }
 
-        // Update weights and biases
-        optimizer.update(i, weights_input_to_hidden, weights_hidden_to_output, delta_hidden, delta_output, biases_hidden, biases_output, inputs, hidden);
-      }
-
-      if (!epochActions.isEmpty()) {
-        for (EpochAction<NeuralNetwork> action : epochActions) {
-          action.onEpochIteration(epoch, this);
+        if (noise != null) {
+          noise.apply(weights_input_to_hidden);
+          noise.apply(weights_hidden_to_output);
         }
+
+        // Update weights and biases
+        optimizer.update(
+          i,
+          weights_input_to_hidden,
+          weights_hidden_to_output,
+          delta_hidden,
+          delta_output,
+          biases_hidden,
+          biases_output,
+          inputs,
+          hidden,
+          learningRate
+        );
+
+        if (regularization != null)
+          regularization.apply(
+            weights_input_to_hidden,
+            weights_hidden_to_output,
+            biases_hidden,
+            biases_output,
+            learningRate
+          );
       }
 
       int pct = (int) ((double) epoch / epochs * 100.0);
       double[] output = predict(supplier.test());
+      fixLearningRate(epoch);
       accuracy = Math.pow(output[0] - 1, 2) * 100.0;
 
       estimator.setIteration(epoch);
@@ -187,6 +231,12 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
         .set("stage", pct)
         .set("time left", estimator)
         .set("loss", loss);
+
+      if (!epochActions.isEmpty()) {
+        for (EpochAction<NeuralNetwork> action : epochActions) {
+          action.onEpochIteration(epoch, this);
+        }
+      }
 
       progressTicker.tick(pct, attributes);
       if (earlyStoppers.tick(attributes)) {
@@ -218,7 +268,10 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
 
   @Override
   public Evaluation evaluate(TestSet set) {
-    Evaluation evaluation = new ModelMetrics(this, set);
+    Evaluation evaluation = new ModelMetrics(
+      this,
+      set
+    );
     evaluation.evaluate();
     return evaluation;
   }
@@ -292,4 +345,21 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   public boolean paused() {
     return paused;
   }
+
+  void fixLearningRate(int step) {
+    if (learningRateDecay == null)
+      return;
+    Double updater = learningRateDecay.value(step);
+    learningRate = (updater == null ? learningRate : updater);
+  }
+
+  public long countParameters() {
+    return Stream.of(weights_input_to_hidden, weights_hidden_to_output)
+      .flatMapToLong(weights -> Arrays
+        .stream(weights)
+        .mapToLong(arr -> arr.length))
+      .sum() + biases_hidden.length + biases_output.length;
+  }
+
+
 }

@@ -7,7 +7,6 @@ package gg.acai.aurora.optimizers;
  */
 @FunctionalInterface
 public interface Optimizer {
-
   /**
    * Updates the weights and biases of the neural network.
    *
@@ -29,18 +28,7 @@ public interface Optimizer {
     double[] biases_hidden,
     double[] biases_output,
     double[][] inputs,
-    double[] hidden
+    double[] hidden,
+    double learningRate
   );
-
-  /**
-   * Applies the learning rate to the optimizer.
-   *
-   * @param learningRate The learning rate to apply
-   * @return Returns this optimizer for chaining
-   * @throws UnsupportedOperationException If the optimizer does not support learning rates
-   */
-  default Optimizer apply(double learningRate) {
-    throw new UnsupportedOperationException("Learning rate cannot be applied to this optimizer.");
-  }
-
 }

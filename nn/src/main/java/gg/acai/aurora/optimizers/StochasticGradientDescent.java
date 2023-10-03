@@ -7,10 +7,10 @@ package gg.acai.aurora.optimizers;
  * @since 25.04.2023 04:16
  * © Aurora - All Rights Reserved
  */
-public class StochasticGradientDescent extends AbstractOptimizer {
+public class StochasticGradientDescent implements Optimizer {
 
   @Override
-  public void update(int iteration, double[][] weights_input_to_hidden, double[][] weights_hidden_to_output, double[] delta_hidden, double[] delta_output, double[] biases_hidden, double[] biases_output, double[][] inputs, double[] hidden) {
+  public void update(int iteration, double[][] weights_input_to_hidden, double[][] weights_hidden_to_output, double[] delta_hidden, double[] delta_output, double[] biases_hidden, double[] biases_output, double[][] inputs, double[] hidden, double learningRate) {
     for (int j = 0; j < weights_input_to_hidden[0].length; j++) {
       for (int k = 0; k < weights_input_to_hidden.length; k++) {
         weights_input_to_hidden[k][j] += learningRate * delta_hidden[j] * inputs[iteration][k];

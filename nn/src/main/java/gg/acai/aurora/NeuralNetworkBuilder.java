@@ -4,11 +4,18 @@ import gg.acai.acava.Requisites;
 import gg.acai.aurora.earlystop.EarlyStop;
 import gg.acai.aurora.earlystop.EarlyStoppers;
 import gg.acai.aurora.hyperparameter.Tune;
+import gg.acai.aurora.initializers.Initializer;
+import gg.acai.aurora.initializers.WeightInitializer;
 import gg.acai.aurora.model.EpochAction;
+import gg.acai.aurora.noise.Noise;
+import gg.acai.aurora.noise.NoiseContext;
+import gg.acai.aurora.optimizers.Optimizers;
+import gg.acai.aurora.policy.DecayPolicy;
 import gg.acai.aurora.publics.io.Bar;
 import gg.acai.aurora.model.ActivationFunction;
 import gg.acai.aurora.optimizers.Optimizer;
 import gg.acai.aurora.optimizers.StochasticGradientDescent;
+import gg.acai.aurora.regularization.Regularization;
 import gg.acai.aurora.sets.DataSet;
 import gg.acai.aurora.sets.TestSet;
 
@@ -64,6 +71,10 @@ public class NeuralNetworkBuilder {
   protected TestSet evaluationSet;
   protected AccuracySupplier accuracySupplier;
   protected NeuralNetworkModel model;
+  protected DecayPolicy<Double> learningRateDecay;
+  protected Regularization regularization;
+  protected WeightInitializer weightInitializer = Initializer.GAUSSIAN.get();
+  protected Noise noise;
   protected long seed = System.currentTimeMillis();
 
   /**
@@ -74,6 +85,7 @@ public class NeuralNetworkBuilder {
    */
   public NeuralNetworkBuilder from(NeuralNetworkModel model) {
     this.model = model;
+    this.activationFunction = model.activation();
     return this;
   }
 
@@ -86,6 +98,15 @@ public class NeuralNetworkBuilder {
   public NeuralNetworkBuilder seed(long seed) {
     this.seed = seed;
     return this;
+  }
+
+  public NeuralNetworkBuilder noise(Noise noise) {
+    this.noise = noise;
+    return this;
+  }
+
+  public NeuralNetworkBuilder noise(NoiseContext context) {
+    return noise(context.get());
   }
 
   /**
@@ -202,6 +223,12 @@ public class NeuralNetworkBuilder {
     return this;
   }
 
+  public NeuralNetworkBuilder optimizer(Optimizers optimizer) {
+    this.optimizer = optimizer.get();
+    return this;
+  }
+
+
   /**
    * Applies the evaluation set to this neural network model after train completion
    *
@@ -267,6 +294,26 @@ public class NeuralNetworkBuilder {
     return this;
   }
 
+  public NeuralNetworkBuilder learningRateDecay(DecayPolicy<Double> decayPolicy) {
+    this.learningRateDecay = decayPolicy;
+    return this;
+  }
+
+  public NeuralNetworkBuilder regularization(Regularization regularization) {
+    this.regularization = regularization;
+    return this;
+  }
+
+  public NeuralNetworkBuilder weightInitializer(WeightInitializer weightInitializer) {
+    this.weightInitializer = weightInitializer;
+    return this;
+  }
+
+  public NeuralNetworkBuilder weightInitializer(Initializer initializer) {
+    this.weightInitializer = initializer.get();
+    return this;
+  }
+
   /**
    * Builds the neural network trainer
    *
@@ -274,11 +321,13 @@ public class NeuralNetworkBuilder {
    * @throws IllegalArgumentException If the input layer size, output layer size, hidden layer size or epochs are less than 0
    */
   public NeuralNetworkTrainer build() {
-    Requisites.checkArgument(inputLayerSize > 0, "Input layer size must be greater than 0");
-    Requisites.checkArgument(outputLayerSize > 0, "Output layer size must be greater than 0");
-    Requisites.checkArgument(hiddenLayerSize > 0, "Hidden layer size must be greater than 0");
-    Requisites.checkArgument(epochs > 0, "Epochs must be greater than 0");
-    Requisites.checkArgument(learningRate > 0.0, "Learning rate must be greater than 0.0");
+    if (model == null) {
+      Requisites.checkArgument(inputLayerSize > 0, "Input layer size must be greater than 0");
+      Requisites.checkArgument(outputLayerSize > 0, "Output layer size must be greater than 0");
+      Requisites.checkArgument(hiddenLayerSize > 0, "Hidden layer size must be greater than 0");
+      Requisites.checkArgument(epochs > 0, "Epochs must be greater than 0");
+      Requisites.checkArgument(learningRate > 0.0, "Learning rate must be greater than 0.0");
+    }
     return new NeuralNetworkTrainer(this);
   }
 

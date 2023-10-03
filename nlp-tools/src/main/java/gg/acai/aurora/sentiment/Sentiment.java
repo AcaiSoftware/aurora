@@ -6,5 +6,7 @@ package gg.acai.aurora.sentiment;
  * © Aurora - All Rights Reserved
  */
 public enum Sentiment {
-  POSITIVE, NEGATIVE, NEUTRAL
+  POSITIVE,
+  NEGATIVE,
+  NEUTRAL
 }
