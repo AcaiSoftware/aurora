@@ -3,21 +3,28 @@ package gg.acai.aurora;
 import com.google.common.base.Preconditions;
 import gg.acai.acava.commons.Attributes;
 import gg.acai.acava.commons.AttributesMapper;
+import gg.acai.aurora.batch.Batch;
+import gg.acai.aurora.batch.BatchIterator;
 import gg.acai.aurora.earlystop.EarlyStoppers;
 import gg.acai.aurora.model.EpochAction;
+import gg.acai.aurora.noise.Noise;
+import gg.acai.aurora.policy.DecayPolicy;
 import gg.acai.aurora.publics.io.ComplexProgressTicker;
 import gg.acai.aurora.model.Evaluation;
 import gg.acai.aurora.model.ModelMetrics;
 import gg.acai.aurora.model.IterableTimeEstimator;
 import gg.acai.aurora.optimizers.Optimizer;
+import gg.acai.aurora.regularization.Regularization;
 import gg.acai.aurora.sets.DataSet;
 import gg.acai.aurora.publics.Ticker;
 import gg.acai.aurora.sets.TestSet;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * <p> Example Usage:
@@ -49,7 +56,7 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   protected static final Ticker<Long> TICKER = Ticker.systemMillis();
 
   protected final int epochs;
-  protected final double learningRate;
+  protected double learningRate;
   protected final TimeEstimator<Integer> estimator;
   protected final boolean autoSave;
   protected final boolean shouldPrintStats;
@@ -61,6 +68,9 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   protected final TestSet evaluationSet;
   protected final Set<EpochAction<NeuralNetwork>> epochActions;
   protected final AccuracySupplier accuracySupplier;
+  protected final DecayPolicy<Double> learningRateDecay;
+  protected final Regularization regularization;
+  protected final Noise noise;
   protected Consumer<NeuralNetwork> completion;
 
   protected long time;
@@ -70,8 +80,15 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
   protected boolean paused;
 
   public NeuralNetworkTrainer(@Nonnull NeuralNetworkBuilder builder) {
-    super(builder.seed, builder.inputLayerSize, builder.hiddenLayerSize, builder.outputLayerSize);
-    super.name = builder.name;
+    super(
+      builder.seed,
+      builder.inputLayerSize,
+      builder.hiddenLayerSize,
+      builder.outputLayerSize,
+      builder.weightInitializer
+    );
+
+    this.name = builder.name;
     NeuralNetworkModel model = builder.model;
     if (model != null) {
       weights_input_to_hidden = model.weights_input_to_hidden;
@@ -87,18 +104,25 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
     this.shouldPrintStats = builder.shouldPrintStats;
     this.set = builder.set;
     this.earlyStoppers = builder.earlyStoppers;
-    this.optimizer = builder.optimizer.apply(learningRate);
+    this.optimizer = builder.optimizer;
     this.evaluationSet = builder.evaluationSet;
     this.epochActions = builder.epochActions;
     this.progressTicker = new ComplexProgressTicker(builder.progressBar, 1);
     this.accuracySupplier = builder.accuracySupplier;
     this.estimator = new IterableTimeEstimator(epochs);
+    this.learningRateDecay = builder.learningRateDecay;
+    this.regularization = builder.regularization;
+    this.noise = builder.noise;
   }
 
   @Override
   public void train() {
-    if (set == null || set.inputs() == null || set.targets() == null) throw new IllegalStateException("No data set provided!");
-    train(set.inputs(), set.targets());
+    if (set == null || set.inputs() == null || set.targets() == null)
+      throw new IllegalStateException("No data set provided!");
+    train(
+      set.inputs(),
+      set.targets()
+    );
   }
 
   @Override
@@ -167,12 +191,38 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
           delta_hidden[j] = sum * activationFunction.derivative(hidden[j]);
         }
 
+        if (noise != null) {
+          noise.apply(weights_input_to_hidden);
+          noise.apply(weights_hidden_to_output);
+        }
+
         // Update weights and biases
-        optimizer.update(i, weights_input_to_hidden, weights_hidden_to_output, delta_hidden, delta_output, biases_hidden, biases_output, inputs, hidden);
+        optimizer.update(
+          i,
+          weights_input_to_hidden,
+          weights_hidden_to_output,
+          delta_hidden,
+          delta_output,
+          biases_hidden,
+          biases_output,
+          inputs,
+          hidden,
+          learningRate
+        );
+
+        if (regularization != null)
+          regularization.apply(
+            weights_input_to_hidden,
+            weights_hidden_to_output,
+            biases_hidden,
+            biases_output,
+            learningRate
+          );
       }
 
       int pct = (int) ((double) epoch / epochs * 100.0);
       double[] output = predict(supplier.test());
+      fixLearningRate(epoch);
       accuracy = Math.pow(output[0] - 1, 2) * 100.0;
 
       estimator.setIteration(epoch);
@@ -218,7 +268,10 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
 
   @Override
   public Evaluation evaluate(TestSet set) {
-    Evaluation evaluation = new ModelMetrics(this, set);
+    Evaluation evaluation = new ModelMetrics(
+      this,
+      set
+    );
     evaluation.evaluate();
     return evaluation;
   }
@@ -293,15 +346,20 @@ public class NeuralNetworkTrainer extends AbstractNeuralNetwork implements Neura
     return paused;
   }
 
-  public long countParameters() {
-    long count = 0;
-
-    for (double[] weights : weights_input_to_hidden) count += weights.length;
-    for (double[] weights : weights_hidden_to_output) count += weights.length;
-    for (double ignored : biases_hidden) count++;
-    for (double ignored : biases_output) count++;
-
-    return count;
+  void fixLearningRate(int step) {
+    if (learningRateDecay == null)
+      return;
+    Double updater = learningRateDecay.value(step);
+    learningRate = (updater == null ? learningRate : updater);
   }
+
+  public long countParameters() {
+    return Stream.of(weights_input_to_hidden, weights_hidden_to_output)
+      .flatMapToLong(weights -> Arrays
+        .stream(weights)
+        .mapToLong(arr -> arr.length))
+      .sum() + biases_hidden.length + biases_output.length;
+  }
+
 
 }
