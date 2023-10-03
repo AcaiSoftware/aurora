@@ -93,11 +93,12 @@ public class ModelLoader implements AutoCloseable {
 
   public ModelLoader(BinaryWrapper path) {
     Requisites.requireNonNull(path, "path cannot be null");
-    Requisites.requireNonNull(path.composed(), "path.composed() cannot be null");
+    String composed = path.composed();
+    Requisites.requireNonNull(composed, "path.composed() cannot be null");
     try {
-      this.json = BinaryFileIO.loadFromBin(path.composed());
+      this.json = BinaryFileIO.loadFromBin(composed);
     } catch (IOException e) {
-      throw new RuntimeException("Could not import model from binary file " + path.composed());
+      throw new RuntimeException("Could not import model from binary file " + composed);
     }
   }
 
@@ -124,6 +125,10 @@ public class ModelLoader implements AutoCloseable {
     }
 
     return (M) model;
+  }
+
+  public <M extends Model> M load(OverridableLoader<M> loader) {
+    return loader.load(json);
   }
 
   public <M extends Model> M load(Class<? extends Model> modelClass) {
