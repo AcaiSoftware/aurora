@@ -1,5 +1,7 @@
 package gg.acai.aurora.model;
 
+import gg.acai.aurora.batch.Batch;
+import gg.acai.aurora.batch.BatchIterator;
 import gg.acai.aurora.sets.DataSet;
 
 /**
@@ -26,6 +28,19 @@ public interface Trainable extends Accuracy {
    */
   default void train(DataSet set) {
     train(set.inputs(), set.targets());
+  }
+
+  default void train(BatchIterator<double[]> iterator) {
+    while (iterator.hasNext()) {
+      Batch<double[]> batch = iterator.next();
+      double[][] inputs = batch.data().toArray(new double[0][]);
+      double[][] outputs = batch.labels().toArray(new double[0][]);
+      System.out.println("\nTraining on batch " + batch.index() + " of " + iterator.size() + " batches");
+      train(
+        inputs,
+        outputs
+      );
+    }
   }
 
   /**
