@@ -132,19 +132,4 @@ public class GraphEpochIteration<T extends Attributed> extends Application imple
     return chart;
   }
 
-
-  public static void main(String[] args) {
-    GraphEpochIteration<Attributed> graphEpochIteration = new GraphEpochIteration<>();
-    Attributes attributes = new AttributesMapper();
-    for (int i = 0; i < 100; i++) {
-      attributes.set("loss", Math.random());
-      attributes.set("accuracy", Math.random());
-      graphEpochIteration.onEpochIteration(i, () -> attributes);
-      try {
-        Thread.sleep(120);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-  }
 }
