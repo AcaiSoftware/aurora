@@ -82,7 +82,7 @@ public class MSTClusterer implements Clusterer {
         // not needed
         assert input[i].length == input[j].length;
 
-        if (input[i].length == input[j].length) {
+        if (input[i].length != input[j].length) {
           throw new IllegalArgumentException("Mismatching data point degrees");
         }
 
